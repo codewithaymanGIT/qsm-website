@@ -1,41 +1,47 @@
-// Builds the private review link: each exported page becomes one
-// self-contained HTML file (CSS, fonts and scripts inlined), because the
-// preview host blocks separately served stylesheets and scripts.
-// Production deployments use the normal `next build` output instead.
-import { execSync } from "node:child_process";
+// Builds the private review link. The preview host serves static files only and
+// blocks separately loaded stylesheets and scripts, so this script:
+//   1. builds and starts the real server (NEXT_PUBLIC_PREVIEW=1, dev database),
+//   2. crawls every page linked from the homepage,
+//   3. writes each page as one self-contained HTML file (CSS, fonts, scripts inlined).
+// Production deployments use the normal server build instead.
+import { execSync, spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(import.meta.dirname, "..");
-const out = path.join(root, "out");
 const dest = path.join(root, "preview");
-// Every exported page except the not-found variants.
-function listPages(dir = out, rel = "") {
-  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((d) => {
-    const r = path.posix.join(rel, d.name);
-    if (d.isDirectory()) return d.name.startsWith("_") || d.name === "404" ? [] : listPages(path.join(dir, d.name), r);
-    return d.name === "index.html" ? [r] : [];
-  });
+const PORT = 4300;
+const origin = `http://127.0.0.1:${PORT}`;
+// Pages not linked from the menus but still reviewed.
+const EXTRA_ROUTES = ["/clients-partners/"];
+
+const env = { ...process.env, NEXT_PUBLIC_PREVIEW: "1", NEXT_DIST_DIR: ".next-preview" };
+execSync("npx next build", { cwd: root, stdio: "inherit", env });
+const server = spawn("npx", ["next", "start", "-p", String(PORT), "-H", "127.0.0.1"], { cwd: root, env, stdio: "ignore" });
+
+const assetCache = new Map();
+async function fetchAsset(url) {
+  if (!assetCache.has(url)) {
+    const res = await fetch(new URL(url, origin));
+    if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
+    assetCache.set(url, Buffer.from(await res.arrayBuffer()));
+  }
+  return assetCache.get(url);
 }
-
-execSync("npx next build", { cwd: root, stdio: "inherit" });
-const pages = listPages();
-
-const read = (p) => fs.readFileSync(path.join(out, p.replace(/^\//, "").split("?")[0]));
+const text = async (url) => (await fetchAsset(url)).toString("utf8");
 
 // The host rejects a raw U+FFFD; the escape is equivalent inside JS and CSS strings.
 const clean = (s) => s.replaceAll("�", "\\uFFFD");
 
-function inlineCss(href) {
-  const dir = path.posix.dirname(href);
-  const css = read(href)
-    .toString("utf8")
-    // Latin subset only: the site is English, and each preview page embeds its fonts.
-    .replace(/@font-face\{[^}]*unicode-range:[^}]*\}/g, (face) => (face.includes("U+0-FF") ? face : ""))
-    .replace(/url\((\.\.\/media\/[^)]+\.woff2)\)/g, (_, rel) => {
-      const font = read(path.posix.join(dir, rel)).toString("base64");
-      return `url(data:font/woff2;base64,${font})`;
-    });
+async function inlineCss(href) {
+  let css = await text(href);
+  // Latin subset only: the site is English, and each preview page embeds its fonts.
+  css = css.replace(/@font-face\{[^}]*unicode-range:[^}]*\}/g, (face) => (face.includes("U+0-FF") ? face : ""));
+  const fonts = [...css.matchAll(/url\((\.\.\/media\/[^)]+\.woff2)\)/g)].map((m) => m[1]);
+  for (const rel of new Set(fonts)) {
+    const data = (await fetchAsset(new URL(rel, new URL(href, origin)).pathname)).toString("base64");
+    css = css.replaceAll(`url(${rel})`, `url(data:font/woff2;base64,${data})`);
+  }
   return `<style>${clean(css)}</style>`;
 }
 
@@ -44,18 +50,41 @@ function inlineCss(href) {
 const CHUNK_HEADER = '"object"==typeof document?document.currentScript:void 0';
 const ASSET_PREFIX = "let e=document.currentScript;if(!(e instanceof HTMLScriptElement))";
 
-function inlineScript(src, inlined) {
-  inlined?.add(src);
-  let js = read(src).toString("utf8");
+async function inlineScript(src, inlined) {
+  inlined.add(src);
+  let js = await text(src);
   js = js.replaceAll(CHUNK_HEADER, `{getAttribute:()=>${JSON.stringify(src)}}`);
   js = js.replaceAll(ASSET_PREFIX, `let e={src:location.origin+${JSON.stringify(src)}};if(!1)`);
   js = clean(js).replaceAll("</script", "<\\/script");
   return `<script>${js}</script>`;
 }
 
-// Pages are separate files on the preview host, so internal links become
-// relative file paths, and clicks bypass Next's client router (it would fetch
-// route data the host does not serve).
+// Async-aware replace that always uses a function replacer (library code contains
+// "$'"-style sequences that a string replacement would expand).
+async function replaceAsync(str, re, fn) {
+  const parts = [];
+  let last = 0;
+  for (const m of str.matchAll(re)) {
+    parts.push(str.slice(last, m.index), await fn(...m));
+    last = m.index + m[0].length;
+  }
+  return parts.join("") + str.slice(last);
+}
+
+// Code loaded on demand (menu animation, form validation) is requested by path at runtime.
+async function inlineLazyChunks(html, inlined) {
+  let extra = "";
+  for (;;) {
+    const wanted = [...new Set((html + extra).match(/static\/chunks\/[\w.-]+\.js/g) ?? [])]
+      .map((p) => `/_next/${p}`)
+      .filter((src) => !inlined.has(src));
+    if (wanted.length === 0) return html.replace("</body>", () => `${extra}</body>`);
+    for (const src of wanted) extra += await inlineScript(src, inlined);
+  }
+}
+
+// Pages are separate files on the host: internal links become relative file paths,
+// and clicks bypass Next's client router (it would fetch data the host does not serve).
 function toFile(href, prefix) {
   const [p, query] = href.split("?");
   const file = `${prefix}${p.replace(/^\//, "")}${p.endsWith("/") ? "" : "/"}index.html`;
@@ -66,45 +95,71 @@ function navScript(prefix) {
   return `<script>window.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href]");if(!a||a.target==="_blank"||e.metaKey||e.ctrlKey)return;var h=a.getAttribute("href");if(!h||h[0]==="#"||/^[a-z][a-z0-9+.-]*:|^\\/\\//i.test(h))return;e.preventDefault();e.stopImmediatePropagation();if(h[0]!=="/"){location.href=h;return}var q=h.split("?"),p=q[0].replace(/^\\//,"");location.href=${JSON.stringify(prefix)}+p+(p===""||/\\/$/.test(p)?"":"/")+"index.html"+(q[1]?"?"+q[1]:"")},true);</script>`;
 }
 
-fs.rmSync(dest, { recursive: true, force: true });
-fs.mkdirSync(dest, { recursive: true });
+const internal = (href) =>
+  href.startsWith("/") && !href.startsWith("//") && !/^\/(_next|api|files)\//.test(href) && !href.startsWith("/icon");
 
-// Code loaded on demand (menu animation, form validation) is requested by path
-// at runtime; embed every chunk the page can reach so those requests resolve.
-function inlineLazyChunks(html, inlined) {
-  let extra = "";
-  for (;;) {
-    const wanted = [...new Set((html + extra).match(/static\/chunks\/[\w.-]+\.js/g) ?? [])]
-      .map((p) => `/_next/${p}`)
-      .filter((src) => !inlined.has(src));
-    // Function replacer: library code contains "$'" style sequences that a string replacement would expand.
-    if (wanted.length === 0) return html.replace("</body>", () => `${extra}</body>`);
-    for (const src of wanted) extra += inlineScript(src, inlined);
+async function waitForServer() {
+  for (let i = 0; i < 60; i++) {
+    try {
+      if ((await fetch(origin)).ok) return;
+    } catch {}
+    await new Promise((r) => setTimeout(r, 500));
   }
+  throw new Error("Server did not start");
 }
 
-for (const page of pages) {
+async function crawl() {
+  const seen = new Set(["/", ...EXTRA_ROUTES]);
+  const queue = [...seen];
+  const pages = new Map();
+  while (queue.length) {
+    const route = queue.shift();
+    const res = await fetch(origin + route);
+    if (!res.ok) throw new Error(`${route}: HTTP ${res.status}`);
+    const html = await res.text();
+    pages.set(route, html);
+    for (const [, href] of html.matchAll(/href="([^"#?]+)/g)) {
+      if (internal(href) && href.endsWith("/") && !seen.has(href)) {
+        seen.add(href);
+        queue.push(href);
+      }
+    }
+  }
+  return pages;
+}
+
+async function packPage(route, source) {
   const inlined = new Set();
-  const prefix = "../".repeat(page.split("/").length - 1);
-  let html = read(page).toString("utf8");
-  html = html
-    .replace(/<head>/, () => `<head>${navScript(prefix)}`)
-    .replace(/href="(\/(?!\/|_next\/|icon\.)[^"#]*)"/g, (_, href) => `href="${toFile(href, prefix)}"`)
-    .replace(/<link rel="preload"[^>]*as="font"[^>]*\/>/g, "")
-    .replace(/<link rel="stylesheet" href="([^"]+)"[^>]*\/>/g, (_, href) => inlineCss(href))
-    .replace(/<link rel="preload" as="script"[^>]*href="([^"]+)"[^>]*\/>/g, (_, src) => inlineScript(src, inlined))
-    .replace(/<script src="[^"]+" noModule=""><\/script>/g, "")
-    .replace(/<script src="([^"]+)" async=""><\/script>/g, (_, src) => inlineScript(src, inlined))
-    .replace(/<link rel="icon" href="[^"]+"[^>]*\/>/, () => {
-      const svg = read("icon.svg").toString("base64");
-      return `<link rel="icon" href="data:image/svg+xml;base64,${svg}" type="image/svg+xml"/>`;
-    });
-  html = inlineLazyChunks(html, inlined);
-  if (!html.includes("getAttribute:()=>")) throw new Error(`${page}: chunk header patch did not apply`);
+  const prefix = "../".repeat(route.split("/").filter(Boolean).length);
+  let html = source.replace(/<head>/, () => `<head>${navScript(prefix)}`);
+  html = html.replace(/<link rel="preload"[^>]*as="font"[^>]*\/>/g, () => "");
+  html = await replaceAsync(html, /<link rel="stylesheet" href="([^"]+)"[^>]*\/>/g, (_, href) => inlineCss(href));
+  html = await replaceAsync(html, /<link rel="preload" as="script"[^>]*href="([^"]+)"[^>]*\/>/g, (_, src) => inlineScript(src, inlined));
+  html = html.replace(/<script src="[^"]+" noModule=""><\/script>/g, () => "");
+  html = await replaceAsync(html, /<script src="([^"]+)" async=""><\/script>/g, (_, src) => inlineScript(src, inlined));
+  html = await replaceAsync(html, /<link rel="icon" href="([^"]+)"[^>]*\/>/g, async (_, href) => {
+    const svg = (await fetchAsset(href)).toString("base64");
+    return `<link rel="icon" href="data:image/svg+xml;base64,${svg}" type="image/svg+xml"/>`;
+  });
+  html = html.replace(/href="(\/(?!\/|_next\/|icon)[^"#]*)"/g, (_, href) => `href="${toFile(href, prefix)}"`);
+  html = await inlineLazyChunks(html, inlined);
+  if (!html.includes("getAttribute:()=>")) throw new Error(`${route}: chunk header patch did not apply`);
   const leftovers = html.match(/(src|href)="\/_next[^"]*"/g);
-  if (leftovers) throw new Error(`${page}: unresolved assets ${leftovers.join(", ")}`);
-  const file = path.join(dest, page);
-  fs.mkdirSync(path.dirname(file), { recursive: true });
-  fs.writeFileSync(file, clean(html));
-  console.log(`${page}: ${(fs.statSync(file).size / 1024).toFixed(0)} KB`);
+  if (leftovers) throw new Error(`${route}: unresolved assets ${leftovers.join(", ")}`);
+  return clean(html);
+}
+
+try {
+  await waitForServer();
+  const pages = await crawl();
+  fs.rmSync(dest, { recursive: true, force: true });
+  for (const [route, source] of pages) {
+    const file = path.join(dest, route, "index.html");
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, await packPage(route, source));
+    console.log(`${route}: ${(fs.statSync(file).size / 1024).toFixed(0)} KB`);
+  }
+  console.log(`${pages.size} pages`);
+} finally {
+  server.kill();
 }

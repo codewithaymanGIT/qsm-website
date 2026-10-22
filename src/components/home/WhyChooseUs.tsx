@@ -5,11 +5,11 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 const reasons = [
   {
     title: "Imported grades",
-    body: "Tool, die and mould steels brought in to recognised AISI, DIN and JIS specifications, so the grade on your drawing is the grade you receive.",
+    body: "Tool, die and mould steels from mills in China, Taiwan, Germany, Japan, Italy and Austria, alongside Indian mills, to recognised AISI, DIN and JIS specifications.",
   },
   {
     title: "Precision processing",
-    body: "Bandsaw cutting, machining and surface grinding in-house, so material reaches your toolroom closer to finished size.",
+    body: "Bandsaw cutting, machining and surface grinding, so material reaches your toolroom closer to finished size.",
   },
   {
     title: "Reliable supply",

@@ -6,7 +6,7 @@ export const settings: Settings = {
   contactName: "Mohit Agrawal",
   phone: "[PHONE]",
   whatsapp: "[WHATSAPP]",
-  email: "[EMAIL]",
+  email: "qualitysteelsmetals@yahoo.com",
   officeAddress: "[OFFICE ADDRESS]",
   mapEmbedUrl: null,
   heroVideo: null,
@@ -18,6 +18,16 @@ export const timeline: TimelineEntry[] = [
     year: "2002",
     title: "A beginning with Rs 500",
     body: "Hemant Agrawal founded Quality Steel and Metals with Rs 500 and a commitment to supplying the right steel, honestly and on time.",
+  },
+  {
+    year: "2009",
+    title: "Our own premises",
+    body: "The business moved into its own shop, a base for holding stock and serving customers directly.",
+  },
+  {
+    year: "2013",
+    title: "A dedicated warehouse",
+    body: "A dedicated warehouse added space for a wider range of grades and sizes, ready to cut and dispatch.",
   },
   {
     year: "Today",

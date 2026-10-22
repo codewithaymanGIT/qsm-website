@@ -64,7 +64,9 @@ describe("content (database-backed)", () => {
   });
 
   it("only states verified timeline facts", async () => {
-    expect((await getTimeline()).map((t) => t.year)).toEqual(["2002", "Today"]);
+    expect((await getTimeline()).map((t) => t.year)).toEqual(["2002", "2009", "2013", "Today"]);
+    // The warehouse location is never published.
+    expect(JSON.stringify(await getTimeline())).not.toMatch(/bhosari/i);
   });
 
   it("starts with no partner logos and has gallery slots", async () => {
@@ -84,5 +86,17 @@ describe("content (database-backed)", () => {
       t: await getTimeline(),
     });
     expect(all).not.toMatch(/₹|\bprice|in stock|award|certified|ISO 9001|clients include/i);
+  });
+
+  it("uses the owner's confirmed details", async () => {
+    expect((await getSettings()).email).toBe("qualitysteelsmetals@yahoo.com");
+    const hchcr = await getProduct("hchcr");
+    expect(hchcr?.equivalents).toContain("AISI D3");
+    expect(hchcr?.overview).not.toMatch(/D2/);
+  });
+
+  it("does not claim in-house machining or grinding", async () => {
+    const text = JSON.stringify(await getServices());
+    expect(text).not.toMatch(/in-house|we mill|we grind/i);
   });
 });

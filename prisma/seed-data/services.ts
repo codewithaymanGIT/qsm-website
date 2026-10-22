@@ -16,7 +16,7 @@ export const services: Service[] = [
     name: "Precision Machining",
     summary: "Milled, squared blocks and plates delivered closer to final size.",
     description: [
-      "We mill and square blocks and plates to your dimensions so they are ready for your toolroom.",
+      "Blocks and plates are milled and squared to your dimensions, so they arrive ready for your toolroom.",
       "Send a drawing with your enquiry and we will confirm what can be machined before quoting.",
     ],
     capabilities: ["Six-side milling", "Squaring", "Machining to drawing"],

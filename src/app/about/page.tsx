@@ -20,6 +20,10 @@ export const metadata: Metadata = {
 
 const sourcing = [
   {
+    title: "Mills we import from",
+    body: "Tier-1 and established mills in China, Taiwan, Germany, Japan, Italy and Austria, alongside Indian mills, so we can match the grade to your budget and application.",
+  },
+  {
     title: "Grades to recognised standards",
     body: "We supply steel to AISI, DIN and JIS designations, so you can order from the specification on your drawing.",
   },
@@ -50,7 +54,7 @@ export default async function AboutPage() {
           <Reveal>
             <SectionHeading tone="light" kicker="Sourcing expertise" title={<span id="sourcing">Knowing steel is the job.</span>} />
           </Reveal>
-          <ul className="mt-14 grid gap-px bg-ink/12 md:grid-cols-3">
+          <ul className="mt-14 grid gap-px bg-ink/12 md:grid-cols-2">
             {sourcing.map((s) => (
               <Reveal as="li" key={s.title} className="bg-surface p-8 lg:p-10">
                 <span aria-hidden="true" className="mb-8 block h-1.5 w-8 bg-gold" />

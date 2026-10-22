@@ -83,6 +83,7 @@ export default async function GradePage({ params }: PageProps<"/grades/[slug]">)
               <Spec label="Hardness" value={product.hardness} />
               <Spec label="Available forms" value={product.forms.join(", ")} />
               <Spec label="Equivalents" value={product.equivalents.join(", ")} />
+              <Spec label="Certificates" value="Mill test certificates available on request." />
             </dl>
           </Reveal>
         </Container>

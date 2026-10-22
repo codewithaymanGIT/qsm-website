@@ -20,6 +20,7 @@ for (const [slug, name] of grades) {
     const composition = page.getByRole("table", { name: /chemical composition/i });
     await expect(composition).toContainText("Cr");
     await expect(page.getByText("Typical values. Confirm against mill certificate.").first()).toBeVisible();
+    await expect(page.getByText("Mill test certificates available on request.")).toBeVisible();
     // No downloads exist yet, so the section is hidden rather than empty.
     await expect(page.getByRole("heading", { name: /downloads/i })).toHaveCount(0);
     const related = page.getByRole("region", { name: /related grades/i }).getByRole("link");

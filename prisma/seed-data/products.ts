@@ -313,7 +313,7 @@ export const products: Product[] = [
     tagline: "High-carbon high-chromium die steel",
     equivalents: ["AISI D3", "DIN 1.2080", "X210Cr12"],
     overview:
-      "HCHCR (high-carbon, high-chromium) steel offers very high wear resistance for long production runs. In the trade the name is also used for D2-type steel, so please confirm the exact grade when you enquire.",
+      "HCHCR (high-carbon, high-chromium) steel to AISI D3 offers very high wear resistance for long production runs, making it a long-standing choice for blanking and drawing dies.",
     applications: [
       "Blanking dies for long runs",
       "Drawing and coining dies",

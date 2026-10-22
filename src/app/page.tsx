@@ -1,11 +1,26 @@
-import { Reveal } from "@/components/ui/Reveal";
+import { CategoryCards } from "@/components/home/CategoryCards";
+import { EnquiryBanner } from "@/components/home/EnquiryBanner";
+import { FounderTimeline } from "@/components/home/FounderTimeline";
+import { Hero } from "@/components/home/Hero";
+import { InfrastructureGallery } from "@/components/home/InfrastructureGallery";
+import { ServicesPreview } from "@/components/home/ServicesPreview";
+import { Snapshot } from "@/components/home/Snapshot";
+import { WhyChooseUs } from "@/components/home/WhyChooseUs";
+import { getGallery, getSettings, getTimeline } from "@/lib/content";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
 export default function Home() {
+  const settings = getSettings();
   return (
-    <section className="flex min-h-screen items-center px-5 pt-24 sm:px-8 lg:px-12">
-      <Reveal>
-        <h1 className="text-display font-semibold">Quality Steel and Metals</h1>
-      </Reveal>
-    </section>
+    <>
+      <Hero videoSrc={settings.heroVideo} />
+      <Snapshot />
+      <CategoryCards />
+      <WhyChooseUs />
+      <ServicesPreview />
+      <FounderTimeline entries={getTimeline()} />
+      <InfrastructureGallery items={getGallery()} />
+      <EnquiryBanner whatsappUrl={buildWhatsAppUrl(settings.whatsapp)} />
+    </>
   );
 }

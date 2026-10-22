@@ -7,9 +7,9 @@ export function EnquiryBanner({ whatsappUrl }: { whatsappUrl: string }) {
   return (
     <section className="relative isolate overflow-hidden bg-ink py-28 lg:py-44">
       <div aria-hidden="true" className="absolute inset-0 -z-10">
-        <div className="absolute top-[18%] -right-[10%] h-16 w-[55%] bg-gradient-to-r from-[#7a5d24] via-[#d9b877] to-[#8c6c33] opacity-25 sm:h-24" />
-        <div className="absolute top-[42%] -right-[4%] h-16 w-[55%] bg-gradient-to-r from-[#1b1b1b] via-[#3a3a3a] to-[#161616] opacity-70 sm:h-24" />
-        <div className="absolute top-[66%] right-[2%] h-16 w-[55%] bg-gradient-to-r from-[#1b1b1b] via-[#3a3a3a] to-[#161616] opacity-40 sm:h-24" />
+        <div className="absolute top-[18%] -right-[10%] h-16 w-[55%] bg-gradient-to-r from-[#1D5BD8] via-[#79B6EA] to-[#2F6FE0] opacity-25 sm:h-24" />
+        <div className="absolute top-[42%] -right-[4%] h-16 w-[55%] bg-gradient-to-r from-[#0E2242] via-[#2A4A7A] to-[#0B1C38] opacity-70 sm:h-24" />
+        <div className="absolute top-[66%] right-[2%] h-16 w-[55%] bg-gradient-to-r from-[#0E2242] via-[#2A4A7A] to-[#0B1C38] opacity-40 sm:h-24" />
         <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/30" />
       </div>
       <Container>

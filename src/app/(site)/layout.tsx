@@ -14,7 +14,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   const gradeNames = Object.fromEntries((await getProducts()).map((p) => [p.slug, p.name]));
   return (
     <>
-      <a href="#main" className="fixed top-2 left-2 z-[60] -translate-y-20 bg-gold px-4 py-2 text-ink focus:translate-y-0">
+      <a href="#main" className="fixed top-2 left-2 z-[60] -translate-y-20 bg-accent px-4 py-2 text-ink focus:translate-y-0">
         Skip to content
       </a>
       <SmoothScroll />

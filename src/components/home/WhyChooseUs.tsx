@@ -41,10 +41,10 @@ export function WhyChooseUs() {
         <ul className="border-t border-ink/12">
           {reasons.map((r) => (
             <Reveal as="li" key={r.title} className="grid grid-cols-[3rem_minmax(0,1fr)] gap-4 border-b border-ink/12 py-9 sm:grid-cols-[5rem_minmax(0,1fr)] sm:py-11">
-              <span aria-hidden="true" className="mt-4 block h-1.5 w-8 bg-gold" />
+              <span aria-hidden="true" className="mt-4 block h-1.5 w-8 bg-accent" />
               <div>
                 <h3 className="text-h3 font-semibold">{r.title}</h3>
-                <p className="mt-3 max-w-xl text-lg leading-relaxed text-neutral-600">{r.body}</p>
+                <p className="mt-3 max-w-xl text-lg leading-relaxed text-slate-600">{r.body}</p>
               </div>
             </Reveal>
           ))}

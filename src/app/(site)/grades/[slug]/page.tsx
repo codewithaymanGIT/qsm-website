@@ -69,7 +69,7 @@ export default async function GradePage({ params }: PageProps<"/grades/[slug]">)
       <section aria-labelledby="overview" className="py-24 lg:py-32">
         <Container className="grid gap-14 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-24">
           <Reveal>
-            <h2 id="overview" className="mb-5 text-sm font-medium text-gold">
+            <h2 id="overview" className="mb-5 text-sm font-medium text-accent">
               Overview
             </h2>
             <p className="font-display text-[clamp(1.5rem,2.6vw,2.4rem)] leading-snug font-medium tracking-[-0.015em]">
@@ -77,7 +77,7 @@ export default async function GradePage({ params }: PageProps<"/grades/[slug]">)
             </p>
           </Reveal>
           <Reveal>
-            <h2 className="mb-5 text-sm font-medium text-gold">Specifications</h2>
+            <h2 className="mb-5 text-sm font-medium text-accent">Specifications</h2>
             <dl className="border-t border-white/10">
               <Spec label="Category" value={category.name} />
               <Spec label="Hardness" value={product.hardness} />
@@ -85,7 +85,7 @@ export default async function GradePage({ params }: PageProps<"/grades/[slug]">)
               <Spec label="Equivalents" value={product.equivalents.join(", ")} />
               <Spec label="Certificates" value="Mill test certificates available on request." />
             </dl>
-            <Link href={`/weight-calculator/?grade=${product.slug}`} className="mt-6 inline-flex min-h-11 items-center gap-2 text-gold underline-offset-4 hover:underline">
+            <Link href={`/weight-calculator/?grade=${product.slug}`} className="mt-6 inline-flex min-h-11 items-center gap-2 text-accent underline-offset-4 hover:underline">
               Calculate {product.name} weight <ArrowIcon className="h-4 w-4" />
             </Link>
           </Reveal>
@@ -134,11 +134,11 @@ export default async function GradePage({ params }: PageProps<"/grades/[slug]">)
             {related.map((r) => (
               <li key={r.slug} className="bg-ink">
                 <Link href={`/grades/${r.slug}/`} className="group flex h-full flex-col p-7 transition-colors hover:bg-graphite">
-                  <span className="font-display text-5xl font-semibold tracking-[-0.03em] transition-colors group-hover:text-gold">
+                  <span className="font-display text-5xl font-semibold tracking-[-0.03em] transition-colors group-hover:text-accent">
                     {r.name}
                   </span>
                   <span className="mt-3 text-mist">{r.tagline}</span>
-                  <ArrowIcon className="mt-8 h-5 w-5 text-surface/50 transition-colors group-hover:text-gold" />
+                  <ArrowIcon className="mt-8 h-5 w-5 text-surface/50 transition-colors group-hover:text-accent" />
                 </Link>
               </li>
             ))}
@@ -175,7 +175,7 @@ function Downloads({ datasheets, certificates }: { datasheets: Download[]; certi
         <ul className="mt-8 grid gap-3 sm:grid-cols-2">
           {files.map((f) => (
             <li key={f.href}>
-              <a href={f.href} className="flex items-center justify-between border border-white/12 px-5 py-4 hover:border-gold">
+              <a href={f.href} className="flex items-center justify-between border border-white/12 px-5 py-4 hover:border-accent">
                 {f.title}
                 <ArrowIcon className="h-4 w-4" />
               </a>

@@ -34,11 +34,11 @@ export async function Footer() {
           ]}
         />
         <div>
-          <h2 className="font-display text-sm font-medium text-gold">Contact</h2>
+          <h2 className="font-display text-sm font-medium text-accent">Contact</h2>
           <address className="mt-5 space-y-2 not-italic text-surface/75">
             <p>{s.contactName}</p>
-            <p><a href={telHref(s.phone)} className="hover:text-gold">{s.phone}</a></p>
-            <p><a href={`mailto:${s.email}`} className="hover:text-gold">{s.email}</a></p>
+            <p><a href={telHref(s.phone)} className="hover:text-accent">{s.phone}</a></p>
+            <p><a href={`mailto:${s.email}`} className="hover:text-accent">{s.email}</a></p>
             <p className="text-mist">{s.officeAddress}</p>
           </address>
         </div>
@@ -54,11 +54,11 @@ export async function Footer() {
 function FooterList({ title, items }: { title: string; items: { href: string; label: string }[] }) {
   return (
     <div>
-      <h2 className="font-display text-sm font-medium text-gold">{title}</h2>
+      <h2 className="font-display text-sm font-medium text-accent">{title}</h2>
       <ul className="mt-5 space-y-2.5">
         {items.map((i) => (
           <li key={i.href}>
-            <Link href={i.href} className="text-surface/75 transition-colors hover:text-gold">
+            <Link href={i.href} className="text-surface/75 transition-colors hover:text-accent">
               {i.label}
             </Link>
           </li>

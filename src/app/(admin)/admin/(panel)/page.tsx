@@ -27,7 +27,7 @@ async function Dashboard() {
     <div className="space-y-10">
       <p className="text-mist">Signed in as {user.name}.</p>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Link href="/admin/leads/?status=NEW" className={`${card} block p-6 hover:border-gold/50`}>
+        <Link href="/admin/leads/?status=NEW" className={`${card} block p-6 hover:border-accent/50`}>
           <p className="text-sm text-mist">New enquiries</p>
           <p className="mt-2 font-display text-4xl font-semibold tabular-nums">{fresh}</p>
         </Link>

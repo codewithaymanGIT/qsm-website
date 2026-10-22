@@ -18,9 +18,9 @@ export function PageHero({ title, intro, crumbs, children, huge }: PageHeroProps
   return (
     <section className="steel-texture grain relative isolate overflow-hidden border-b border-white/8 pt-36 pb-16 lg:pt-44 lg:pb-24">
       <div aria-hidden="true" className="absolute top-24 -right-24 -z-10 hidden w-[42%] max-w-[640px] md:block">
-        <div className="hero-plate h-10 w-[78%] bg-gradient-to-r from-[#7a5d24] via-[#d9b877] to-[#8c6c33] opacity-70 lg:h-14" />
-        <div className="hero-plate mt-4 ml-[10%] h-10 w-[78%] bg-gradient-to-r from-[#1b1b1b] via-[#3a3a3a] to-[#161616] lg:h-14" style={{ animationDelay: "0.12s" }} />
-        <div className="hero-plate mt-4 ml-[20%] h-10 w-[78%] bg-gradient-to-r from-[#1b1b1b] via-[#3a3a3a] to-[#161616] opacity-50 lg:h-14" style={{ animationDelay: "0.24s" }} />
+        <div className="hero-plate h-10 w-[78%] bg-gradient-to-r from-[#1D5BD8] via-[#79B6EA] to-[#2F6FE0] opacity-70 lg:h-14" />
+        <div className="hero-plate mt-4 ml-[10%] h-10 w-[78%] bg-gradient-to-r from-[#0E2242] via-[#2A4A7A] to-[#0B1C38] lg:h-14" style={{ animationDelay: "0.12s" }} />
+        <div className="hero-plate mt-4 ml-[20%] h-10 w-[78%] bg-gradient-to-r from-[#0E2242] via-[#2A4A7A] to-[#0B1C38] opacity-50 lg:h-14" style={{ animationDelay: "0.24s" }} />
       </div>
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-ink via-ink/80 to-transparent" />
       <Container>
@@ -30,7 +30,7 @@ export function PageHero({ title, intro, crumbs, children, huge }: PageHeroProps
               {crumbs.map((c, i) => (
                 <li key={c.href} className="flex items-center gap-2">
                   {i > 0 && <span aria-hidden="true">/</span>}
-                  <Link href={c.href} className="hover:text-gold">
+                  <Link href={c.href} className="hover:text-accent">
                     {c.label}
                   </Link>
                 </li>

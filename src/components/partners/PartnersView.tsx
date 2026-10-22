@@ -37,7 +37,7 @@ function NotFoundBlock() {
       <Container>
         <h1 className="text-h2 font-semibold">Page not found</h1>
         <p className="mt-5 max-w-lg text-lg text-mist">This page is not available yet.</p>
-        <Link href="/" className="mt-8 inline-flex min-h-12 items-center bg-gold px-7 font-medium text-ink hover:bg-[#d8b679]">
+        <Link href="/" className="mt-8 inline-flex min-h-12 items-center bg-accent px-7 font-medium text-ink hover:bg-[#79B6EA]">
           Go to the homepage
         </Link>
       </Container>

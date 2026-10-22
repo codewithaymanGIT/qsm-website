@@ -24,7 +24,7 @@ export function MobileActionBar({ phone, whatsapp, gradeNames }: Props) {
         <PhoneIcon className="h-5 w-5" />
         Call
       </a>
-      <Link href="/quote/" className={`${item} bg-gold text-ink`}>
+      <Link href="/quote/" className={`${item} bg-accent text-ink`}>
         <QuoteIcon className="h-5 w-5" />
         Get a quote
       </Link>

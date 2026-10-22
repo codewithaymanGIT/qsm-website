@@ -30,7 +30,7 @@ export async function CategoryCards({ showHeading = true, homeLabelsOn = true }:
               <Reveal as="li" key={c.slug}>
                 <Link
                   href={`/products/${c.slug}/`}
-                  className="group grid h-full grid-cols-1 overflow-hidden border border-white/8 bg-graphite transition-colors duration-500 hover:border-gold/50 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]"
+                  className="group grid h-full grid-cols-1 overflow-hidden border border-white/8 bg-graphite transition-colors duration-500 hover:border-accent/50 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden sm:aspect-auto sm:min-h-64">
                     <div className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]">
@@ -44,7 +44,7 @@ export async function CategoryCards({ showHeading = true, homeLabelsOn = true }:
                       <p className="text-sm text-surface/60">
                         {grades.length > 0 ? grades.map((g) => g.name).join(", ") : "Ask us about available grades"}
                       </p>
-                      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center border border-white/15 transition-colors duration-500 group-hover:border-gold group-hover:bg-gold group-hover:text-ink">
+                      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center border border-white/15 transition-colors duration-500 group-hover:border-accent group-hover:bg-accent group-hover:text-ink">
                         <ArrowIcon className="h-4 w-4" />
                       </span>
                     </div>

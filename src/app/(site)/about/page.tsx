@@ -57,9 +57,9 @@ export default async function AboutPage() {
           <ul className="mt-14 grid gap-px bg-ink/12 md:grid-cols-2">
             {sourcing.map((s) => (
               <Reveal as="li" key={s.title} className="bg-surface p-8 lg:p-10">
-                <span aria-hidden="true" className="mb-8 block h-1.5 w-8 bg-gold" />
+                <span aria-hidden="true" className="mb-8 block h-1.5 w-8 bg-accent" />
                 <h3 className="font-display text-2xl font-semibold">{s.title}</h3>
-                <p className="mt-4 text-lg leading-relaxed text-neutral-600">{s.body}</p>
+                <p className="mt-4 text-lg leading-relaxed text-slate-600">{s.body}</p>
               </Reveal>
             ))}
           </ul>
@@ -86,7 +86,7 @@ function FileList({ id, title, files }: { id: string; title: string; files: Down
         <ul className="mt-8 grid gap-3 sm:grid-cols-2">
           {files.map((f) => (
             <li key={f.href}>
-              <a href={f.href} className="flex items-center justify-between border border-white/12 px-5 py-4 hover:border-gold">
+              <a href={f.href} className="flex items-center justify-between border border-white/12 px-5 py-4 hover:border-accent">
                 {f.title}
                 <ArrowIcon className="h-4 w-4" />
               </a>

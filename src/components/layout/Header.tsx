@@ -55,7 +55,7 @@ export function Header({ links, phone, whatsappUrl }: HeaderProps) {
                     >
                       {l.label}
                       <span
-                        className={`absolute -bottom-0.5 left-0 h-px bg-gold transition-[width] duration-500 ${
+                        className={`absolute -bottom-0.5 left-0 h-px bg-accent transition-[width] duration-500 ${
                           active ? "w-full" : "w-0"
                         }`}
                       />
@@ -69,14 +69,14 @@ export function Header({ links, phone, whatsappUrl }: HeaderProps) {
           <div className="flex items-center gap-2 sm:gap-4">
             <a
               href={telHref(phone)}
-              className="hidden items-center gap-2 text-[15px] text-surface/75 transition-colors hover:text-gold xl:inline-flex"
+              className="hidden items-center gap-2 text-[15px] text-surface/75 transition-colors hover:text-accent xl:inline-flex"
             >
               <PhoneIcon className="h-4 w-4" />
               {phone}
             </a>
             <Link
               href="/quote/"
-              className="hidden min-h-11 items-center bg-gold px-5 text-[15px] font-medium text-ink transition-colors hover:bg-[#d8b679] sm:inline-flex"
+              className="hidden min-h-11 items-center bg-accent px-5 text-[15px] font-medium text-ink transition-colors hover:bg-[#79B6EA] sm:inline-flex"
             >
               Request quote
             </Link>

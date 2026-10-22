@@ -25,7 +25,7 @@ export default async function QuotePage() {
               <div className="border-b border-white/10 py-4">
                 <dt className="text-sm text-mist">WhatsApp</dt>
                 <dd className="mt-1">
-                  <a href={buildWhatsAppUrl(s.whatsapp)} target="_blank" rel="noopener noreferrer" className="text-lg hover:text-gold">
+                  <a href={buildWhatsAppUrl(s.whatsapp)} target="_blank" rel="noopener noreferrer" className="text-lg hover:text-accent">
                     {s.whatsapp}
                   </a>
                 </dd>

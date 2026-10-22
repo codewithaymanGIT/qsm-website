@@ -50,7 +50,7 @@ for (const width of [1440, 390]) {
     const h1 = page.locator("h1");
     expect(parseFloat(await h1.evaluate((el) => getComputedStyle(el).fontSize))).toBeGreaterThan(40);
     expect(await h1.evaluate((el) => getComputedStyle(el).fontFamily)).toMatch(/Inter Tight/);
-    expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe("rgb(10, 10, 10)");
+    expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe("rgb(10, 26, 51)");
     await expect(page.getByRole("link", { name: "Skip to content" })).not.toBeInViewport();
 
     if (width < 1024) {

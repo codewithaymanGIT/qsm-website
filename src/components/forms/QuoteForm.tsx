@@ -36,7 +36,7 @@ const empty: QuoteInput = { name: "", company: "", phone: "", email: "", grade: 
 const noFile: PickedFile = { file: null, error: null };
 
 const field =
-  "w-full border border-white/15 bg-graphite px-4 py-3 text-base text-surface placeholder:text-surface/35 transition-colors focus:border-gold focus:outline-none aria-[invalid=true]:border-red-400/70";
+  "w-full border border-white/15 bg-graphite px-4 py-3 text-base text-surface placeholder:text-surface/35 transition-colors focus:border-accent focus:outline-none aria-[invalid=true]:border-red-400/70";
 
 /** Reads ?grade= from the address; must sit inside a Suspense boundary. */
 export function QuoteFormFromUrl(props: Props) {
@@ -116,7 +116,7 @@ export function QuoteForm({ grades, whatsapp, defaultGrade, defaultDimensions, d
 
   if (outcome.kind === "sent" || outcome.kind === "preview") {
     return (
-      <div className="border border-gold/40 bg-graphite p-8 sm:p-10" role="status">
+      <div className="border border-accent/40 bg-graphite p-8 sm:p-10" role="status">
         {outcome.kind === "sent" ? (
           <>
             <p className="font-display text-2xl font-semibold">Enquiry received.</p>
@@ -144,7 +144,7 @@ export function QuoteForm({ grades, whatsapp, defaultGrade, defaultDimensions, d
           {outcome.kind === "sent" ? "Also message us on WhatsApp" : "Send on WhatsApp"}
         </a>
         {outcome.kind === "preview" && (
-          <button type="button" onClick={() => setOutcome({ kind: "editing" })} className="mt-4 block min-h-11 text-sm text-mist underline underline-offset-4 hover:text-gold">
+          <button type="button" onClick={() => setOutcome({ kind: "editing" })} className="mt-4 block min-h-11 text-sm text-mist underline underline-offset-4 hover:text-accent">
             Edit enquiry
           </button>
         )}
@@ -214,7 +214,7 @@ export function QuoteForm({ grades, whatsapp, defaultGrade, defaultDimensions, d
       <button
         type="submit"
         disabled={sending}
-        className="mt-8 inline-flex min-h-12 w-full items-center justify-center bg-gold px-8 font-medium text-ink transition-colors hover:bg-[#d8b679] disabled:cursor-wait disabled:opacity-70 sm:w-auto"
+        className="mt-8 inline-flex min-h-12 w-full items-center justify-center bg-accent px-8 font-medium text-ink transition-colors hover:bg-[#79B6EA] disabled:cursor-wait disabled:opacity-70 sm:w-auto"
       >
         {sending ? "Sending…" : "Send enquiry"}
       </button>

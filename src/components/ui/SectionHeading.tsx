@@ -9,8 +9,8 @@ type SectionHeadingProps = {
 };
 
 export function SectionHeading({ kicker, title, intro, tone = "dark", className }: SectionHeadingProps) {
-  const muted = tone === "dark" ? "text-mist" : "text-neutral-600";
-  const kick = tone === "dark" ? "text-gold" : "text-gold-deep";
+  const muted = tone === "dark" ? "text-mist" : "text-slate-600";
+  const kick = tone === "dark" ? "text-accent" : "text-accent-deep";
   return (
     <div className={`max-w-4xl ${className ?? ""}`}>
       {kicker && <p className={`mb-5 text-sm font-medium ${kick}`}>{kicker}</p>}

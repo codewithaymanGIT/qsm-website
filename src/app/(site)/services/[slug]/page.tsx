@@ -39,7 +39,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
       <section aria-labelledby="about-service" className="py-20 lg:py-28">
         <Container className="grid gap-14 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-24">
           <Reveal>
-            <h2 id="about-service" className="mb-5 text-sm font-medium text-gold">
+            <h2 id="about-service" className="mb-5 text-sm font-medium text-accent">
               About this service
             </h2>
             <div className="space-y-6">
@@ -51,7 +51,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
             </div>
           </Reveal>
           <Reveal>
-            <h2 className="mb-5 text-sm font-medium text-gold">What we handle</h2>
+            <h2 className="mb-5 text-sm font-medium text-accent">What we handle</h2>
             <ul className="border-t border-white/10">
               {service.capabilities.map((c) => (
                 <li key={c} className="border-b border-white/10 py-4 text-lg">

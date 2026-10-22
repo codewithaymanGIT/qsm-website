@@ -18,7 +18,7 @@ export async function ServicesPreview() {
             />
           </Reveal>
           <Reveal>
-            <Link href="/services/" className="text-[15px] text-gold underline-offset-8 hover:underline">
+            <Link href="/services/" className="text-[15px] text-accent underline-offset-8 hover:underline">
               All services
             </Link>
           </Reveal>
@@ -32,7 +32,7 @@ export async function ServicesPreview() {
                     <ImageSlot label={s.name} shot={serviceShots[s.slug]} className="h-full w-full" />
                   </div>
                 </div>
-                <h3 className="mt-6 font-display text-2xl font-semibold transition-colors group-hover:text-gold">
+                <h3 className="mt-6 font-display text-2xl font-semibold transition-colors group-hover:text-accent">
                   {s.name}
                 </h3>
                 <p className="mt-2 leading-relaxed text-mist">{s.summary}</p>

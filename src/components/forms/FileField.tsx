@@ -44,7 +44,7 @@ export function FileField({ label, hint, accept, value, onChange }: Props) {
           aria-describedby={`${id}-hint`}
           aria-invalid={value.error ? true : undefined}
           onChange={(e) => pick(e.target.files?.[0])}
-          className="w-full min-w-0 flex-1 text-sm text-mist file:mr-4 file:min-h-10 file:cursor-pointer file:border-0 file:bg-steel file:px-4 file:text-surface hover:file:bg-[#333]"
+          className="w-full min-w-0 flex-1 text-sm text-mist file:mr-4 file:min-h-10 file:cursor-pointer file:border-0 file:bg-steel file:px-4 file:text-surface hover:file:bg-[#24467A]"
         />
         {value.file && (
           <button
@@ -53,7 +53,7 @@ export function FileField({ label, hint, accept, value, onChange }: Props) {
               if (input.current) input.current.value = "";
               onChange({ file: null, error: null });
             }}
-            className="min-h-10 px-2 text-sm text-mist underline-offset-4 hover:text-gold hover:underline"
+            className="min-h-10 px-2 text-sm text-mist underline-offset-4 hover:text-accent hover:underline"
           >
             Remove
           </button>

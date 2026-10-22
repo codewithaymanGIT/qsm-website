@@ -31,9 +31,9 @@ export default async function ServicesPage() {
                     </div>
                   </div>
                   <div>
-                    <h2 className="text-h2 font-semibold transition-colors group-hover:text-gold">{s.name}</h2>
+                    <h2 className="text-h2 font-semibold transition-colors group-hover:text-accent">{s.name}</h2>
                     <p className="mt-5 max-w-lg text-lg leading-relaxed text-mist">{s.summary}</p>
-                    <span className="mt-8 inline-flex items-center gap-2 text-gold">
+                    <span className="mt-8 inline-flex items-center gap-2 text-accent">
                       View service <ArrowIcon className="h-4 w-4" />
                     </span>
                   </div>

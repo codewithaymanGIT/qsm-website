@@ -3,15 +3,15 @@ import { ArrowIcon } from "@/components/ui/icons";
 
 const headline = ["Specialized Tool Steel", "& Industrial Metal", "Solutions Since 2002"];
 
-/** One brushed-steel plate. `gold` marks the top plate of the logo stack. */
-function Plate({ gold, className }: { gold?: boolean; className: string }) {
+/** One brushed-steel plate. `accent` marks the top plate of the logo stack. */
+function Plate({ accent, className }: { accent?: boolean; className: string }) {
   return (
     <div
       className={`absolute ${className}`}
       style={{
-        background: gold
-          ? "linear-gradient(100deg, #8c6c33 0%, #d9b877 38%, #b48d48 55%, #e6c98e 72%, #7a5d24 100%)"
-          : "linear-gradient(100deg, #1b1b1b 0%, #3a3a3a 35%, #232323 55%, #464646 75%, #161616 100%)",
+        background: accent
+          ? "linear-gradient(100deg, #2F6FE0 0%, #79B6EA 38%, #4D8FEF 55%, #A9D1FF 72%, #1D5BD8 100%)"
+          : "linear-gradient(100deg, #0E2242 0%, #2A4A7A 35%, #13294D 55%, #355A8E 75%, #0B1C38 100%)",
         boxShadow: "0 40px 80px rgb(0 0 0 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.18)",
       }}
     >
@@ -58,7 +58,7 @@ export function Hero({ videoSrc }: { videoSrc: string | null }) {
           </div>
           <div className="parallax-top absolute inset-0">
             <div className="hero-plate absolute inset-0" style={{ opacity: 1, animationDelay: "0.4s" }}>
-              <Plate gold className="top-[14%] left-0 h-[17%] w-[76%] animate-[drift_10s_ease-in-out_-6s_infinite]" />
+              <Plate accent className="top-[14%] left-0 h-[17%] w-[76%] animate-[drift_10s_ease-in-out_-6s_infinite]" />
             </div>
           </div>
         </div>
@@ -74,7 +74,7 @@ export function Hero({ videoSrc }: { videoSrc: string | null }) {
           className="hero-fade mb-8 flex items-center gap-4 text-[15px] text-surface/70"
           style={{ animationDelay: "0.2s" }}
         >
-          <span className="h-px w-10 bg-gold" />
+          <span className="h-px w-10 bg-accent" />
           Importer, stockist, distributor and trader
         </p>
         <h1 className="text-display max-w-[14ch] font-semibold sm:max-w-none">

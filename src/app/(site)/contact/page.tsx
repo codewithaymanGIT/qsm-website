@@ -29,7 +29,7 @@ export default async function ContactPage() {
                 <WhatsAppIcon className="h-5 w-5" />
                 WhatsApp
               </a>
-              <a href={telHref(s.phone)} className="inline-flex min-h-12 items-center justify-center gap-2.5 border border-white/25 px-6 font-medium hover:border-gold hover:text-gold">
+              <a href={telHref(s.phone)} className="inline-flex min-h-12 items-center justify-center gap-2.5 border border-white/25 px-6 font-medium hover:border-accent hover:text-accent">
                 <PhoneIcon className="h-5 w-5" />
                 Call
               </a>
@@ -54,7 +54,7 @@ export default async function ContactPage() {
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.officeAddress)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-8 inline-flex min-h-11 items-center text-gold underline-offset-4 hover:underline"
+                  className="mt-8 inline-flex min-h-11 items-center text-accent underline-offset-4 hover:underline"
                 >
                   Open in Google Maps
                 </a>

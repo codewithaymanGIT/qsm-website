@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: { type: "website", siteName: "Quality Steel and Metals", locale: "en_IN" },
 };
 
-export const viewport: Viewport = { themeColor: "#0A0A0A" };
+export const viewport: Viewport = { themeColor: "#0A1A33" };
 
 /** Shared by the public site and the admin panel; each group adds its own chrome. */
 export default function RootLayout({ children }: { children: React.ReactNode }) {

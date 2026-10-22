@@ -19,7 +19,7 @@ export async function AdminNav() {
         <p className="text-surface/85">{user.name}</p>
         <p className="text-mist">{ROLE_LABEL[user.role]}</p>
         <form action={signOut} className="mt-3">
-          <button type="submit" className="min-h-10 text-gold underline-offset-4 hover:underline">
+          <button type="submit" className="min-h-10 text-accent underline-offset-4 hover:underline">
             Sign out
           </button>
         </form>

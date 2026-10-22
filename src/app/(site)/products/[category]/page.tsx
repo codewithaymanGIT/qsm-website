@@ -42,14 +42,14 @@ export default async function CategoryPage({ params }: PageProps<"/products/[cat
                     href={`/grades/${g.slug}/`}
                     className="group grid items-baseline gap-x-10 gap-y-3 border-b border-white/10 py-9 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.4fr)_auto] lg:py-12"
                   >
-                    <span className="font-display text-[clamp(3rem,7vw,6.5rem)] leading-none font-semibold tracking-[-0.04em] transition-colors duration-500 group-hover:text-gold">
+                    <span className="font-display text-[clamp(3rem,7vw,6.5rem)] leading-none font-semibold tracking-[-0.04em] transition-colors duration-500 group-hover:text-accent">
                       {g.name}
                     </span>
                     <span>
                       <span className="block text-xl">{g.tagline}</span>
                       <span className="mt-2 block text-mist">{g.equivalents.join(" / ")}</span>
                     </span>
-                    <span className="hidden h-12 w-12 items-center justify-center border border-white/15 transition-colors duration-500 group-hover:border-gold group-hover:bg-gold group-hover:text-ink md:inline-flex">
+                    <span className="hidden h-12 w-12 items-center justify-center border border-white/15 transition-colors duration-500 group-hover:border-accent group-hover:bg-accent group-hover:text-ink md:inline-flex">
                       <ArrowIcon className="h-4 w-4" />
                     </span>
                   </Link>
@@ -83,7 +83,7 @@ export default async function CategoryPage({ params }: PageProps<"/products/[cat
           <ul className="mt-8 flex flex-wrap gap-3">
             {others.map((c) => (
               <li key={c.slug}>
-                <Link href={`/products/${c.slug}/`} className="inline-flex min-h-11 items-center border border-white/15 px-5 text-surface/80 transition-colors hover:border-gold hover:text-gold">
+                <Link href={`/products/${c.slug}/`} className="inline-flex min-h-11 items-center border border-white/15 px-5 text-surface/80 transition-colors hover:border-accent hover:text-accent">
                   {c.name}
                 </Link>
               </li>

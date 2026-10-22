@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #0a0a0a;
-  --color-graphite: #1a1a1a;
-  --color-steel: #2a2a2a;
-  --color-gold: #c9a35d;
-  --color-gold-deep: #7a5d24;
-  --color-surface: #f8f8f8;
-  --color-mist: #a3a3a3;
+  --color-ink: #0A1A33;
+  --color-graphite: #11264A;
+  --color-steel: #1C3A66;
+  --color-accent: #4C9BDF;
+  --color-accent-deep: #1D5BD8;
+  --color-surface: #F5F8FC;
+  --color-mist: #9DB0CC;
 
   --font-display: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -119,27 +119,27 @@ h4 {
 }
 
 ::selection {
-  background: var(--color-gold);
+  background: var(--color-accent);
   color: var(--color-ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-gold);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
 
 /* Generated brushed-steel texture used until real photography arrives. */
 .steel-texture {
-  background-color: #141414;
+  background-color: #0D1F3D;
   background-image:
     radial-gradient(120% 80% at 20% 0%, rgb(255 255 255 / 0.07), transparent 60%),
-    radial-gradient(90% 70% at 100% 100%, rgb(201 163 93 / 0.08), transparent 60%),
+    radial-gradient(90% 70% at 100% 100%, rgb(77 163 255 / 0.12), transparent 60%),
     repeating-linear-gradient(
       90deg,
       rgb(255 255 255 / 0.018) 0 1px,
       transparent 1px 3px
     ),
-    linear-gradient(160deg, #1e1e1e, #0d0d0d);
+    linear-gradient(160deg, #122849, #081630);
 }
 
 .grain::after {

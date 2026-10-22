@@ -6,7 +6,8 @@ import { validateUpload } from "@/lib/upload-rules";
 import { sniffFile } from "./file-check";
 
 /** Private storage root. Never under public/: files are only served through authenticated routes. */
-export const uploadDir = () => path.resolve(process.env.UPLOAD_DIR ?? "storage/uploads");
+// Runtime-configured folder: tell the bundler not to trace (and package) the whole project from it.
+export const uploadDir = () => path.resolve(/*turbopackIgnore: true*/ process.env.UPLOAD_DIR ?? "storage/uploads");
 
 export type StoredUpload = {
   kind: "DRAWING" | "CAD";
@@ -35,8 +36,8 @@ export async function storeUpload(file: File, kind: StoredUpload["kind"]): Promi
 
   // The stored name comes only from a random id and the allow-listed extension.
   const storedName = `${randomUUID()}.${ext}`;
-  await fs.mkdir(uploadDir(), { recursive: true, mode: 0o750 });
-  await fs.writeFile(path.join(uploadDir(), storedName), bytes, { mode: 0o640, flag: "wx" });
+  await fs.mkdir(/*turbopackIgnore: true*/ uploadDir(), { recursive: true, mode: 0o750 });
+  await fs.writeFile(path.join(/*turbopackIgnore: true*/ uploadDir(), storedName), bytes, { mode: 0o640, flag: "wx" });
   return {
     kind,
     originalName: displayName(file.name),
@@ -48,5 +49,5 @@ export async function storeUpload(file: File, kind: StoredUpload["kind"]): Promi
 }
 
 export async function removeStored(names: string[]) {
-  await Promise.all(names.map((n) => fs.rm(path.join(uploadDir(), path.basename(n)), { force: true })));
+  await Promise.all(names.map((n) => fs.rm(path.join(/*turbopackIgnore: true*/ uploadDir(), path.basename(n)), { force: true })));
 }

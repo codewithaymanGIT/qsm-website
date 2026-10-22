@@ -17,7 +17,13 @@ const EXTRA_ROUTES = ["/clients-partners/"];
 
 const env = { ...process.env, NEXT_PUBLIC_PREVIEW: "1", NEXT_DIST_DIR: ".next-preview" };
 execSync("npx next build", { cwd: root, stdio: "inherit", env });
-const server = spawn("npx", ["next", "start", "-p", String(PORT), "-H", "127.0.0.1"], { cwd: root, env, stdio: "ignore" });
+// Own process group, so stopping it also stops the next-server child (no orphans holding the port).
+const server = spawn(path.join(root, "node_modules/.bin/next"), ["start", "-p", String(PORT), "-H", "127.0.0.1"], {
+  cwd: root,
+  env,
+  stdio: "ignore",
+  detached: true,
+});
 
 const assetCache = new Map();
 async function fetchAsset(url) {
@@ -161,5 +167,5 @@ try {
   }
   console.log(`${pages.size} pages`);
 } finally {
-  server.kill();
+  process.kill(-server.pid, "SIGTERM");
 }

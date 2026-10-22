@@ -1,5 +1,6 @@
 "use client";
 
+import { telHref } from "@/lib/whatsapp";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect } from "react";
@@ -75,7 +76,7 @@ export function MobileMenu({ open, onClose, links, phone, whatsappUrl }: MobileM
             </ul>
           </nav>
           <div className="border-t border-white/10 px-5 py-6 text-surface/70 sm:px-8">
-            <a href={`tel:${phone}`} className="block py-1">{phone}</a>
+            <a href={telHref(phone)} className="block py-1">{phone}</a>
             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="block py-1">
               Chat on WhatsApp
             </a>

@@ -17,3 +17,6 @@ export function buildWhatsAppUrl(number: string, subject?: string, details?: Det
   const digits = number.replace(/\D/g, "");
   return `https://wa.me/${digits}?text=${encodeURIComponent(whatsappMessage(subject, details))}`;
 }
+
+/** tel: link with spaces and punctuation removed (keeps the leading +). */
+export const telHref = (number: string) => `tel:${number.replace(/[^\d+]/g, "")}`;

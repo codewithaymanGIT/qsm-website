@@ -1,5 +1,6 @@
 "use client";
 
+import { telHref } from "@/lib/whatsapp";
 import Link from "next/link";
 import { PhoneIcon, QuoteIcon, WhatsAppIcon } from "@/components/ui/icons";
 import { useWhatsAppUrl } from "@/lib/use-whatsapp-url";
@@ -19,7 +20,7 @@ export function MobileActionBar({ phone, whatsapp, gradeNames }: Props) {
         <WhatsAppIcon className="h-5 w-5" />
         WhatsApp
       </a>
-      <a href={`tel:${phone}`} className={`${item} border-x border-white/10 text-surface`}>
+      <a href={telHref(phone)} className={`${item} border-x border-white/10 text-surface`}>
         <PhoneIcon className="h-5 w-5" />
         Call
       </a>

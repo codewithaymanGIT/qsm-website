@@ -32,3 +32,10 @@ describe("whatsapp details", () => {
     );
   });
 });
+
+describe("telHref", () => {
+  it("dials the number without spaces", async () => {
+    const { telHref } = await import("@/lib/whatsapp");
+    expect(telHref("+91 92841 27584")).toBe("tel:+919284127584");
+  });
+});

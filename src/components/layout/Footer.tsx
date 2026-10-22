@@ -1,3 +1,4 @@
+import { telHref } from "@/lib/whatsapp";
 import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
@@ -36,7 +37,7 @@ export async function Footer() {
           <h2 className="font-display text-sm font-medium text-gold">Contact</h2>
           <address className="mt-5 space-y-2 not-italic text-surface/75">
             <p>{s.contactName}</p>
-            <p><a href={`tel:${s.phone}`} className="hover:text-gold">{s.phone}</a></p>
+            <p><a href={telHref(s.phone)} className="hover:text-gold">{s.phone}</a></p>
             <p><a href={`mailto:${s.email}`} className="hover:text-gold">{s.email}</a></p>
             <p className="text-mist">{s.officeAddress}</p>
           </address>

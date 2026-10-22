@@ -1,3 +1,4 @@
+import { telHref } from "@/lib/whatsapp";
 import type { Metadata } from "next";
 import { Enquiry } from "@/components/forms/Enquiry";
 import { Container } from "@/components/ui/Container";
@@ -13,7 +14,8 @@ export const metadata: Metadata = {
 
 export default async function ContactPage() {
   const s = await getSettings();
-  const addressKnown = !s.officeAddress.startsWith("[");
+  // A maps link only helps once the address has a PIN code; without one it can point to the wrong place.
+  const addressKnown = /\b\d{6}\b/.test(s.officeAddress);
   return (
     <>
       <PageHero title="Talk to us." intro="Call or WhatsApp for the quickest answer. For drawings and detailed requirements, use the enquiry form." />
@@ -27,7 +29,7 @@ export default async function ContactPage() {
                 <WhatsAppIcon className="h-5 w-5" />
                 WhatsApp
               </a>
-              <a href={`tel:${s.phone}`} className="inline-flex min-h-12 items-center justify-center gap-2.5 border border-white/25 px-6 font-medium hover:border-gold hover:text-gold">
+              <a href={telHref(s.phone)} className="inline-flex min-h-12 items-center justify-center gap-2.5 border border-white/25 px-6 font-medium hover:border-gold hover:text-gold">
                 <PhoneIcon className="h-5 w-5" />
                 Call
               </a>

@@ -85,6 +85,9 @@ export default async function GradePage({ params }: PageProps<"/grades/[slug]">)
               <Spec label="Equivalents" value={product.equivalents.join(", ")} />
               <Spec label="Certificates" value="Mill test certificates available on request." />
             </dl>
+            <Link href={`/weight-calculator/?grade=${product.slug}`} className="mt-6 inline-flex min-h-11 items-center gap-2 text-gold underline-offset-4 hover:underline">
+              Calculate {product.name} weight <ArrowIcon className="h-4 w-4" />
+            </Link>
           </Reveal>
         </Container>
       </section>

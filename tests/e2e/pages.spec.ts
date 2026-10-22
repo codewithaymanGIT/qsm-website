@@ -103,3 +103,17 @@ test("clients & partners is hidden until logos exist, with a preview switch", as
   await page.goto("/clients-partners/?preview=1");
   await expect(page.locator("[data-logo]").first()).toBeVisible();
 });
+
+test("call and WhatsApp buttons use the company number", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/grades/h13/");
+  const hrefs = await page.locator("[data-action-bar] a").evaluateAll((as) => as.map((a) => a.getAttribute("href")));
+  expect(hrefs[0]).toMatch(/^https:\/\/wa\.me\/919284127584\?text=/);
+  expect(hrefs[1]).toBe("tel:+919284127584");
+});
+
+test("contact page shows the office address and never the warehouse", async ({ page }) => {
+  await page.goto("/contact/");
+  await expect(page.getByText("Sanghvi Steel Compound").first()).toBeVisible();
+  await expect(page.locator("body")).not.toContainText(/nighoje|chakan|uno minda/i);
+});

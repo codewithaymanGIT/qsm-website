@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useId, useState } from "react";
 import { WhatsAppIcon } from "@/components/ui/icons";
 import type { QuoteInput } from "@/lib/quote-schema";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
@@ -12,6 +12,9 @@ type Props = {
   whatsapp: string;
   /** Grade to preselect (from the page, or from ?grade= via QuoteFormFromUrl). */
   defaultGrade?: string;
+  /** Size and quantity carried over from the weight calculator. */
+  defaultDimensions?: string;
+  defaultQuantity?: string;
   /** Service the enquiry is about, shown above the form. */
   service?: string;
   title?: string;
@@ -37,16 +40,33 @@ const field =
 
 /** Reads ?grade= from the address; must sit inside a Suspense boundary. */
 export function QuoteFormFromUrl(props: Props) {
-  const fromUrl = useSearchParams().get("grade") ?? "";
+  const params = useSearchParams();
+  const fromUrl = params.get("grade") ?? "";
   const known = props.grades.some((g) => g.slug === fromUrl);
-  return <QuoteForm key={fromUrl} {...props} defaultGrade={props.defaultGrade ?? (known ? fromUrl : undefined)} />;
+  return (
+    <QuoteForm
+      key={params.toString()}
+      {...props}
+      defaultGrade={props.defaultGrade ?? (known ? fromUrl : undefined)}
+      defaultDimensions={params.get("dimensions")?.slice(0, 200) ?? undefined}
+      defaultQuantity={params.get("quantity")?.slice(0, 100) ?? undefined}
+    />
+  );
 }
 
-export function QuoteForm({ grades, whatsapp, defaultGrade, service, title = "Send an enquiry" }: Props) {
-  const [values, setValues] = useState<QuoteInput>({ ...empty, grade: defaultGrade ?? "" });
+export function QuoteForm({ grades, whatsapp, defaultGrade, defaultDimensions, defaultQuantity, service, title = "Send an enquiry" }: Props) {
+  const [values, setValues] = useState<QuoteInput>({
+    ...empty,
+    grade: defaultGrade ?? "",
+    dimensions: defaultDimensions ?? "",
+    quantity: defaultQuantity ?? "",
+  });
   const [errors, setErrors] = useState<Errors>({});
   const [drawing, setDrawing] = useState<PickedFile>(noFile);
   const [cad, setCad] = useState<PickedFile>(noFile);
+  // Unique per form instance: a page can hold more than one form (and Next keeps the previous page mounted, hidden).
+  const uid = useId();
+  const fid = (name: string) => `${uid}-${name}`;
   const [outcome, setOutcome] = useState<Outcome>({ kind: "editing" });
   const [trap, setTrap] = useState("");
 
@@ -139,20 +159,20 @@ export function QuoteForm({ grades, whatsapp, defaultGrade, service, title = "Se
       <h2 className="font-display text-2xl font-semibold">{title}</h2>
       {service && <p className="mt-2 text-mist">Service: {service}</p>}
       <div className="mt-8 grid gap-5 md:grid-cols-2 [&>*]:min-w-0">
-        <Field id="q-name" label="Your name" error={errors.name}>
-          <input id="q-name" autoComplete="name" value={values.name} onChange={set("name")} className={field} aria-invalid={!!errors.name} aria-describedby="q-name-err" />
+        <Field id={fid("name")} label="Your name" error={errors.name}>
+          <input id={fid("name")} autoComplete="name" value={values.name} onChange={set("name")} className={field} aria-invalid={!!errors.name} aria-describedby={fid("name-err")} />
         </Field>
-        <Field id="q-company" label="Company (optional)">
-          <input id="q-company" autoComplete="organization" value={values.company} onChange={set("company")} className={field} />
+        <Field id={fid("company")} label="Company (optional)">
+          <input id={fid("company")} autoComplete="organization" value={values.company} onChange={set("company")} className={field} />
         </Field>
-        <Field id="q-phone" label="Phone" error={errors.phone}>
-          <input id="q-phone" type="tel" autoComplete="tel" inputMode="tel" value={values.phone} onChange={set("phone")} className={field} aria-invalid={!!errors.phone} aria-describedby="q-phone-err" />
+        <Field id={fid("phone")} label="Phone" error={errors.phone}>
+          <input id={fid("phone")} type="tel" autoComplete="tel" inputMode="tel" value={values.phone} onChange={set("phone")} className={field} aria-invalid={!!errors.phone} aria-describedby={fid("phone-err")} />
         </Field>
-        <Field id="q-email" label="Email" error={errors.email}>
-          <input id="q-email" type="email" autoComplete="email" value={values.email} onChange={set("email")} className={field} aria-invalid={!!errors.email} aria-describedby="q-email-err" />
+        <Field id={fid("email")} label="Email" error={errors.email}>
+          <input id={fid("email")} type="email" autoComplete="email" value={values.email} onChange={set("email")} className={field} aria-invalid={!!errors.email} aria-describedby={fid("email-err")} />
         </Field>
-        <Field id="q-grade" label="Steel grade">
-          <select id="q-grade" value={values.grade} onChange={set("grade")} className={field}>
+        <Field id={fid("grade")} label="Steel grade">
+          <select id={fid("grade")} value={values.grade} onChange={set("grade")} className={field}>
             <option value="">Not sure / other grade</option>
             {grades.map((g) => (
               <option key={g.slug} value={g.slug}>
@@ -161,25 +181,25 @@ export function QuoteForm({ grades, whatsapp, defaultGrade, service, title = "Se
             ))}
           </select>
         </Field>
-        <Field id="q-quantity" label="Quantity">
-          <input id="q-quantity" placeholder="e.g. 4 pieces or 250 kg" value={values.quantity} onChange={set("quantity")} className={field} />
+        <Field id={fid("quantity")} label="Quantity">
+          <input id={fid("quantity")} placeholder="e.g. 4 pieces or 250 kg" value={values.quantity} onChange={set("quantity")} className={field} />
         </Field>
         <div className="md:col-span-2">
-          <Field id="q-dimensions" label="Dimensions">
-            <input id="q-dimensions" placeholder="e.g. Round 120 mm dia x 300 mm, or Flat 50 x 200 x 300 mm" value={values.dimensions} onChange={set("dimensions")} className={field} />
+          <Field id={fid("dimensions")} label="Dimensions">
+            <input id={fid("dimensions")} placeholder="e.g. Round 120 mm dia x 300 mm, or Flat 50 x 200 x 300 mm" value={values.dimensions} onChange={set("dimensions")} className={field} />
           </Field>
         </div>
         <div className="md:col-span-2">
-          <Field id="q-message" label="Message (optional)" error={errors.message}>
-            <textarea id="q-message" rows={4} value={values.message} onChange={set("message")} className={field} aria-invalid={!!errors.message} aria-describedby="q-message-err" />
+          <Field id={fid("message")} label="Message (optional)" error={errors.message}>
+            <textarea id={fid("message")} rows={4} value={values.message} onChange={set("message")} className={field} aria-invalid={!!errors.message} aria-describedby={fid("message-err")} />
           </Field>
         </div>
         <FileField label="Drawing (PDF, DWG, DXF or image)" hint="Optional. Up to 20 MB." accept=".pdf,.dwg,.dxf,.jpg,.jpeg,.png,.webp" value={errors.drawing ? { file: null, error: errors.drawing } : drawing} onChange={setDrawing} />
         <FileField label="CAD file (STEP, DWG or DXF)" hint="Optional. Up to 20 MB." accept=".step,.stp,.dwg,.dxf" value={errors.cad ? { file: null, error: errors.cad } : cad} onChange={setCad} />
         {/* Spam trap: hidden from people and screen readers; bots tend to fill every field. */}
         <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
-          <label htmlFor="q-website">Website</label>
-          <input id="q-website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
+          <label htmlFor={fid("website")}>Website</label>
+          <input id={fid("website")} tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
         </div>
       </div>
       {outcome.kind === "failed" && (

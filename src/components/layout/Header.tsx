@@ -1,5 +1,6 @@
 "use client";
 
+import { telHref } from "@/lib/whatsapp";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -67,7 +68,7 @@ export function Header({ links, phone, whatsappUrl }: HeaderProps) {
 
           <div className="flex items-center gap-2 sm:gap-4">
             <a
-              href={`tel:${phone}`}
+              href={telHref(phone)}
               className="hidden items-center gap-2 text-[15px] text-surface/75 transition-colors hover:text-gold xl:inline-flex"
             >
               <PhoneIcon className="h-4 w-4" />

@@ -4,10 +4,11 @@ import type { Download, GalleryItem, PartnerLogo, Settings, TimelineEntry } from
 export const settings: Settings = {
   companyName: "Quality Steel and Metals",
   contactName: "Mohit Agrawal",
-  phone: "[PHONE]",
-  whatsapp: "[WHATSAPP]",
+  phone: "+91 92841 27584",
+  whatsapp: "+91 92841 27584",
   email: "qualitysteelsmetals@yahoo.com",
-  officeAddress: "[OFFICE ADDRESS]",
+  // Office only. The warehouse location is deliberately never stored for display.
+  officeAddress: "Sanghvi Steel Compound, Gala Nos. 14, 15, 16 and 26",
   mapEmbedUrl: null,
   heroVideo: null,
 };

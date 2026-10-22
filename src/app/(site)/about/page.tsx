@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { EnquiryBanner } from "@/components/home/EnquiryBanner";
 import { FounderTimeline } from "@/components/home/FounderTimeline";
 import { InfrastructureGallery } from "@/components/home/InfrastructureGallery";
@@ -12,11 +13,13 @@ import type { Download } from "@/content/types";
 import { getBrochure, getCertificates, getGallery, getSettings, getTimeline } from "@/lib/content";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
-export const metadata: Metadata = {
-  title: "About Us",
-  description:
-    "Founded in 2002 by Hemant Agrawal, Quality Steel and Metals imports, stocks, distributes and trades tool steel, die steel, plastic mould steel and special alloy steel.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata("/about/", {
+    title: "About Us",
+    description:
+      "Founded in 2002 by Hemant Agrawal, Quality Steel and Metals imports, stocks, distributes and trades tool steel, die steel, plastic mould steel and special alloy steel.",
+  });
+}
 
 const sourcing = [
   {

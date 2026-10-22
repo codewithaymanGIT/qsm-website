@@ -1,5 +1,6 @@
 import { telHref } from "@/lib/whatsapp";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Enquiry } from "@/components/forms/Enquiry";
 import { Container } from "@/components/ui/Container";
 import { PhoneIcon, WhatsAppIcon } from "@/components/ui/icons";
@@ -7,10 +8,12 @@ import { PageHero } from "@/components/ui/PageHero";
 import { getSettings } from "@/lib/content";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Call, WhatsApp or email Quality Steel and Metals for tool steel, die steel and mould steel enquiries.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata("/contact/", {
+    title: "Contact",
+    description: "Call, WhatsApp or email Quality Steel and Metals for tool steel, die steel and mould steel enquiries.",
+  });
+}
 
 export default async function ContactPage() {
   const s = await getSettings();

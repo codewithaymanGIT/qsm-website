@@ -17,10 +17,11 @@ export function assertDisposableTestDatabase(url: string) {
   }
 }
 
-export default async function setup() {
-  assertDisposableTestDatabase(TEST_DATABASE_URL);
-  execSync("npx prisma migrate deploy", { env: { ...process.env, DATABASE_URL: TEST_DATABASE_URL }, stdio: "pipe" });
-  const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: TEST_DATABASE_URL }) });
+/** Migrates, empties and re-seeds the test database. Also used before the browser tests. */
+export async function resetTestDatabase(url = TEST_DATABASE_URL) {
+  assertDisposableTestDatabase(url);
+  execSync("npx prisma migrate deploy", { env: { ...process.env, DATABASE_URL: url }, stdio: "pipe" });
+  const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: url }) });
   try {
     const tables = await db.$queryRaw<{ tablename: string }[]>`
       SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename <> '_prisma_migrations'`;
@@ -31,4 +32,10 @@ export default async function setup() {
   } finally {
     await db.$disconnect();
   }
+}
+
+/** Fresh data before the run, and again after it so edits made by tests never leak into the next run. */
+export default async function setup() {
+  await resetTestDatabase();
+  return () => resetTestDatabase();
 }

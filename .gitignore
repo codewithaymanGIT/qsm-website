@@ -46,3 +46,7 @@ next-env.d.ts
 !.env.example
 /storage/
 /.next-preview/
+
+# Playwright output
+/test-results/
+/playwright-report/

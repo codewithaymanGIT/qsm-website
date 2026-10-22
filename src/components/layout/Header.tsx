@@ -14,12 +14,17 @@ const MobileMenu = dynamic(() => import("./MobileMenu").then((m) => m.MobileMenu
 
 type HeaderProps = { links: NavLink[]; phone: string; whatsappUrl: string };
 
-export function Header({ links, phone, whatsappUrl }: HeaderProps) {
+/** Header with the current section highlighted. Reads the address, so it sits inside <Suspense>. */
+export function Header(props: HeaderProps) {
+  return <HeaderView {...props} pathname={usePathname()} />;
+}
+
+/** pathname "" (the Suspense fallback) renders the header with no section highlighted. */
+export function HeaderView({ links, phone, whatsappUrl, pathname }: HeaderProps & { pathname: string }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   // Mounted on first use and kept, so the closing animation can play.
   const [menuLoaded, setMenuLoaded] = useState(false);
-  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -43,7 +48,7 @@ export function Header({ links, phone, whatsappUrl }: HeaderProps) {
           <nav aria-label="Main" className="hidden lg:block">
             <ul className="flex items-center gap-9">
               {links.map((l) => {
-                const active = pathname.startsWith(l.href);
+                const active = pathname !== "" && pathname.startsWith(l.href);
                 return (
                   <li key={l.href}>
                     <Link

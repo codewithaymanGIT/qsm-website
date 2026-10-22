@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { EnquiryBanner } from "@/components/home/EnquiryBanner";
 import { Container } from "@/components/ui/Container";
@@ -10,10 +11,12 @@ import { getServices, getSettings } from "@/lib/content";
 import { serviceShots } from "@/lib/service-shots";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
-export const metadata: Metadata = {
-  title: "Processing Services",
-  description: "Bandsaw cutting, precision machining, surface grinding and custom cutting of tool and die steel to your size.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata("/services/", {
+    title: "Processing Services",
+    description: "Bandsaw cutting, precision machining, surface grinding and custom cutting of tool and die steel to your size.",
+  });
+}
 
 export default async function ServicesPage() {
   return (

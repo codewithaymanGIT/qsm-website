@@ -1,6 +1,6 @@
 # Phase 2b: Admin panel (design + plan)
 
-Date: 2026-10-22 · Status: approved to proceed ("then do the admin panel"). Technical decisions are delegated to the builder.
+Date: 2026-10-22 · Status: built (all 12 screens). Technical decisions are delegated to the builder.
 
 ## Intent
 
@@ -23,7 +23,7 @@ Staff run the website without a developer: answer enquiries, and keep products, 
 | Login abuse | At most 10 failed logins per email+IP in 15 minutes (`LoginAttempt` table). Identical error for unknown email and wrong password. | Brute-force resistance, no account enumeration. |
 | Authorization | `requireUser(roles?)` in `src/lib/server/auth.ts`, called in **every** admin page, Server Action and admin route handler. `proxy.ts` only redirects visitors without a cookie (an optimistic check, not security). | The Next 16 guidance: verify close to the data. |
 | Rendering | Admin pages are dynamic. Session reads sit inside `<Suspense>`, and admin data is never cached. | Cache Components rules; staff must see live data. |
-| Mutations | Server Actions with zod validation. Content edits call `revalidateTag(CATALOG_TAG)`. | One-step refresh of the public pages. |
+| Mutations | Server Actions through `adminAction()` (role check, friendly errors, then `updateTag(CATALOG_TAG)`). | One-step refresh of the public pages. Requires `partialPrefetching` off (see the ledger). |
 | CSRF | Server Actions (Next checks the Origin header) and a SameSite=Lax cookie. Route handlers that change data check `Origin` against `Host`. | |
 | Media | Public media (logos, gallery, category images, datasheets, brochure, certificates) is stored under `MEDIA_DIR` (default `./storage/media`) and served by `GET /files/[key]` **only if** the key is referenced by a published database row. Allowed types: images jpg/png/webp, documents pdf. **No SVG** (script risk). Enquiry uploads stay under `UPLOAD_DIR`, served only by `GET /admin/uploads/[id]` to signed-in users. | Public/private separation. |
 | Export | `GET /admin/leads/export`: CSV with a UTF-8 BOM (opens in Excel), honouring the current filters. | "Export inquiries" without a heavy xlsx dependency. |
@@ -35,7 +35,7 @@ Staff run the website without a developer: answer enquiries, and keep products, 
 1. `/admin/login`
 2. Dashboard: new enquiries count, the latest 5, quick links
 3. Enquiries: list (status filter, search, pagination), detail (all fields, files, status, notes), export
-4. Products: list, create/edit (all fields; repeatable rows for composition, mechanical properties and heat treatment), publish toggle, datasheets/MTC uploads
+4. Products: list, create/edit (all fields; repeatable rows for composition, mechanical properties and heat treatment), publish toggle, datasheet uploads (MTCs stay private: owner's rule)
 5. Categories: list, edit, order
 6. Services: list, edit
 7. Gallery: upload, label, order, publish

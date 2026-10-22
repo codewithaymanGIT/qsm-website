@@ -4,19 +4,20 @@ import { card, Loading, PageTitle } from "@/components/admin/ui";
 import { requireUser } from "@/lib/server/auth";
 import { db } from "@/lib/server/db";
 
-export default function DashboardPage() {
+export default function DashboardPage({ searchParams }: PageProps<"/admin">) {
   return (
     <>
       <PageTitle title="Dashboard" />
       <Suspense fallback={<Loading />}>
-        <Dashboard />
+        <Dashboard searchParams={searchParams} />
       </Suspense>
     </>
   );
 }
 
-async function Dashboard() {
+async function Dashboard({ searchParams }: Pick<PageProps<"/admin">, "searchParams">) {
   const user = await requireUser();
+  const denied = (await searchParams).denied === "1";
   const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   const [fresh, thisMonth, latest] = await Promise.all([
     db.lead.count({ where: { status: "NEW" } }),
@@ -25,6 +26,11 @@ async function Dashboard() {
   ]);
   return (
     <div className="space-y-10">
+      {denied && (
+        <p role="alert" className="border border-[#FFC27A]/40 px-4 py-3 text-[#FFC27A]">
+          Your role doesn’t include that page. Ask an admin if you need access.
+        </p>
+      )}
       <p className="text-mist">Signed in as {user.name}.</p>
       <div className="grid gap-4 sm:grid-cols-2">
         <Link href="/admin/leads/?status=NEW" className={`${card} block p-6 hover:border-accent/50`}>

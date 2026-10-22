@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { CategoryCards } from "@/components/home/CategoryCards";
 import { EnquiryBanner } from "@/components/home/EnquiryBanner";
 import { PageHero } from "@/components/ui/PageHero";
 import { getSettings } from "@/lib/content";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
-export const metadata: Metadata = {
-  title: "Products",
-  description:
-    "Plastic mould steel, hot work and cold work tool steel, high speed steel, EN series, alloy steel and mould base plates. Browse grades and technical data.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata("/products/", {
+    title: "Products",
+    description:
+      "Plastic mould steel, hot work and cold work tool steel, high speed steel, EN series, alloy steel and mould base plates. Browse grades and technical data.",
+  });
+}
 
 export default async function ProductsPage() {
   return (

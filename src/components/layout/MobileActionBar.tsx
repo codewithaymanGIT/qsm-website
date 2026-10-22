@@ -7,9 +7,12 @@ import { useWhatsAppUrl } from "@/lib/use-whatsapp-url";
 
 type Props = { phone: string; whatsapp: string; gradeNames: Record<string, string> };
 
-/** Always-visible contact bar on phones and tablets. */
+/** Always-visible contact bar on phones and tablets. Reads the address, so it sits inside <Suspense>. */
 export function MobileActionBar({ phone, whatsapp, gradeNames }: Props) {
-  const whatsappUrl = useWhatsAppUrl(whatsapp, gradeNames);
+  return <MobileActionBarView phone={phone} whatsappUrl={useWhatsAppUrl(whatsapp, gradeNames)} />;
+}
+
+export function MobileActionBarView({ phone, whatsappUrl }: { phone: string; whatsappUrl: string }) {
   const item = "flex flex-1 flex-col items-center justify-center gap-1 text-[12px] font-medium min-h-14";
   return (
     <div

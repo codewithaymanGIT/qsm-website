@@ -16,6 +16,7 @@ export default defineConfig({
     env: {
       DATABASE_URL: process.env.TEST_DATABASE_URL ?? "postgresql://qsm:qsm_dev_password@127.0.0.1:5432/qsm_test",
       UPLOAD_DIR: path.resolve(__dirname, "storage/test-uploads"),
+      MEDIA_DIR: path.resolve(__dirname, "storage/test-media"),
       IP_HASH_SALT: "test-salt",
     },
     // Integration tests share one database; run files one at a time.

@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Enquiry } from "@/components/forms/Enquiry";
 import { Container } from "@/components/ui/Container";
 import { PageHero } from "@/components/ui/PageHero";
 import { getSettings } from "@/lib/content";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
-export const metadata: Metadata = {
-  title: "Request a Quote",
-  description: "Send the grade, size and quantity you need, with drawings or CAD files. Quality Steel and Metals will reply with a quotation.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata("/quote/", {
+    title: "Request a Quote",
+    description: "Send the grade, size and quantity you need, with drawings or CAD files. Quality Steel and Metals will reply with a quotation.",
+  });
+}
 
 export default async function QuotePage() {
   const s = await getSettings();

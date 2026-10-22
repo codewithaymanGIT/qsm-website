@@ -5,8 +5,12 @@ import { useWhatsAppUrl } from "@/lib/use-whatsapp-url";
 
 type Props = { whatsapp: string; gradeNames: Record<string, string> };
 
+/** Reads the address (to name the grade), so it sits inside <Suspense>. */
 export function FloatingWhatsApp({ whatsapp, gradeNames }: Props) {
-  const whatsappUrl = useWhatsAppUrl(whatsapp, gradeNames);
+  return <FloatingWhatsAppView whatsappUrl={useWhatsAppUrl(whatsapp, gradeNames)} />;
+}
+
+export function FloatingWhatsAppView({ whatsappUrl }: { whatsappUrl: string }) {
   return (
     <a
       href={whatsappUrl}

@@ -123,7 +123,7 @@ export async function getGallery(): Promise<GalleryItem[]> {
   "use cache";
   cacheCatalog();
   const rows = await db.galleryItem.findMany({ where: { published: true }, orderBy: { order: "asc" } });
-  return rows.map((g) => ({ id: g.id, label: g.label, shot: g.shot, aspect: g.aspect as GalleryItem["aspect"] }));
+  return rows.map((g) => ({ id: g.id, label: g.label, shot: g.shot, aspect: g.aspect as GalleryItem["aspect"], src: g.imageKey ? fileHref(g.imageKey) : null }));
 }
 
 export async function getPartners(): Promise<PartnerLogo[]> {

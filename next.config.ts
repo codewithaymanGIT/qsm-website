@@ -8,7 +8,11 @@ const nextConfig: NextConfig = {
   distDir: process.env.NEXT_DIST_DIR || ".next",
   trailingSlash: true,
   cacheComponents: true,
-  partialPrefetching: true,
+  experimental: {
+    // Admin uploads: PDFs up to 20 MB travel through Server Actions and the /admin proxy.
+    serverActions: { bodySizeLimit: "21mb" },
+    proxyClientMaxBodySize: "21mb",
+  },
   turbopack: {
     rules: {
       "*.css": {

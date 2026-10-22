@@ -9,8 +9,10 @@ import { Container } from "@/components/ui/Container";
 import { ArrowIcon, WhatsAppIcon } from "@/components/ui/icons";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
+import { JsonLd } from "@/components/seo/JsonLd";
 import type { Download } from "@/content/types";
 import { getCategory, getProduct, getProducts, getRelatedProducts, getSettings } from "@/lib/content";
+import { breadcrumbLd, pageMetadata } from "@/lib/seo";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
 
@@ -21,10 +23,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/grades/[slug]">): Promise<Metadata> {
   const product = await getProduct((await params).slug);
   if (!product) return {};
-  return {
+  return pageMetadata(`/grades/${product.slug}/`, {
     title: `${product.name} Steel`,
     description: `${product.name} (${product.equivalents.join(", ")}): ${product.tagline.toLowerCase()}. Composition, hardness, heat treatment and applications. Request a quote from Quality Steel and Metals.`,
-  };
+  });
 }
 
 export default async function GradePage({ params }: PageProps<"/grades/[slug]">) {
@@ -37,6 +39,13 @@ export default async function GradePage({ params }: PageProps<"/grades/[slug]">)
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbLd([
+          { name: "Products", path: "/products/" },
+          { name: category.name, path: `/products/${category.slug}/` },
+          { name: product.name, path: `/grades/${product.slug}/` },
+        ])}
+      />
       <PageHero
         huge
         title={product.name}

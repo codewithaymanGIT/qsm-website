@@ -7,13 +7,27 @@ import { ServicesPreview } from "@/components/home/ServicesPreview";
 import { Snapshot } from "@/components/home/Snapshot";
 import { TrustedBy } from "@/components/home/TrustedBy";
 import { WhyChooseUs } from "@/components/home/WhyChooseUs";
+import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getGallery, getSettings, getTimeline } from "@/lib/content";
+import { organizationLd, pageMetadata } from "@/lib/seo";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const meta = await pageMetadata("/", {
+    title: "Quality Steel and Metals | Tool Steel, Die Steel & Mould Steel Since 2002",
+    description:
+      "Importer, stockist, distributor and trader of tool steel, die steel, plastic mould steel and special alloy steel since 2002, with cutting, machining and grinding services.",
+  });
+  // The home title already names the company, so skip the "| Quality Steel and Metals" suffix.
+  return { ...meta, title: { absolute: String(meta.title) } };
+}
 
 export default async function Home() {
   const settings = await getSettings();
   return (
     <>
+      <JsonLd data={organizationLd(settings)} />
       <Hero videoSrc={settings.heroVideo} />
       <Snapshot />
       <TrustedBy />

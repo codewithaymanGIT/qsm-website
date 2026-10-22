@@ -49,6 +49,8 @@ export type GalleryItem = {
   aspect: "portrait" | "landscape" | "square";
   /** What the photographer should capture for this slot. */
   shot: string;
+  /** The uploaded photo, once there is one. */
+  src?: string | null;
 };
 
 /** A customer shown on the site. Without a logo file, the name is shown as a badge. */

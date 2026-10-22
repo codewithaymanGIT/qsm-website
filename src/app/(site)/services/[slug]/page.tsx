@@ -6,7 +6,9 @@ import { Container } from "@/components/ui/Container";
 import { ImageSlot } from "@/components/ui/ImageSlot";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getService, getServices, getSettings } from "@/lib/content";
+import { breadcrumbLd, pageMetadata } from "@/lib/seo";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { serviceShots } from "@/lib/service-shots";
 
@@ -17,7 +19,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps<"/services/[slug]">): Promise<Metadata> {
   const service = await getService((await params).slug);
-  return service ? { title: service.name, description: service.summary } : {};
+  return service ? pageMetadata(`/services/${service.slug}/`, { title: service.name, description: service.summary }) : {};
 }
 
 export default async function ServicePage({ params }: PageProps<"/services/[slug]">) {
@@ -27,6 +29,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
 
   return (
     <>
+      <JsonLd data={breadcrumbLd([{ name: "Services", path: "/services/" }, { name: service.name, path: `/services/${service.slug}/` }])} />
       <PageHero title={service.name} intro={service.summary} crumbs={[{ href: "/services/", label: "Services" }]} />
 
       <section aria-label="Photos" className="pt-20 lg:pt-28">

@@ -1,15 +1,17 @@
-// Creates the admin test users in the throwaway test database before browser tests.
+// Resets the throwaway test database and creates the admin test users before browser tests.
+import { execFileSync } from "node:child_process";
 import { Client } from "pg";
 import { hashPassword } from "../../src/lib/server/password";
 
 export const E2E_DB = process.env.E2E_DATABASE_URL ?? "postgresql://qsm:qsm_dev_password@127.0.0.1:5432/qsm_test";
 export const USERS = {
   admin: { email: "admin@example.com", password: "admin-test-password-1", role: "ADMIN", name: "Test Admin" },
+  editor: { email: "editor@example.com", password: "editor-test-password-1", role: "EDITOR", name: "Test Editor" },
   sales: { email: "sales@example.com", password: "sales-test-password-1", role: "SALES", name: "Test Sales" },
 } as const;
 
 export default async function globalSetup() {
-  if (!new URL(E2E_DB).pathname.endsWith("_test")) throw new Error("E2E must use a *_test database");
+  execFileSync("npx", ["tsx", "tests/setup/reset-db.ts", E2E_DB], { stdio: "pipe" });
   const client = new Client({ connectionString: E2E_DB });
   await client.connect();
   try {

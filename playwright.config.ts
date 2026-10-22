@@ -14,6 +14,7 @@ export default defineConfig({
     env: {
       DATABASE_URL: process.env.E2E_DATABASE_URL ?? "postgresql://qsm:qsm_dev_password@127.0.0.1:5432/qsm_test",
       UPLOAD_DIR: "storage/e2e-uploads",
+      MEDIA_DIR: "storage/e2e-media",
       SMTP_URL: "json://",
       LEAD_NOTIFY_TO: "sales@example.com",
     },

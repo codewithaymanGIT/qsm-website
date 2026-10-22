@@ -7,7 +7,9 @@ import { Container } from "@/components/ui/Container";
 import { ArrowIcon, WhatsAppIcon } from "@/components/ui/icons";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getCategories, getCategory, getProductsByCategory, getSettings } from "@/lib/content";
+import { breadcrumbLd, pageMetadata } from "@/lib/seo";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
 
@@ -18,7 +20,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/products/[category]">): Promise<Metadata> {
   const category = await getCategory((await params).category);
   if (!category) return {};
-  return { title: category.name, description: category.shortDescription };
+  return pageMetadata(`/products/${category.slug}/`, { title: category.name, description: category.shortDescription });
 }
 
 export default async function CategoryPage({ params }: PageProps<"/products/[category]">) {
@@ -30,6 +32,7 @@ export default async function CategoryPage({ params }: PageProps<"/products/[cat
 
   return (
     <>
+      <JsonLd data={breadcrumbLd([{ name: "Products", path: "/products/" }, { name: category.name, path: `/products/${category.slug}/` }])} />
       <PageHero title={category.name} intro={category.shortDescription} crumbs={[{ href: "/products/", label: "Products" }]} />
 
       <section aria-label="Grades" className="py-24 lg:py-32">

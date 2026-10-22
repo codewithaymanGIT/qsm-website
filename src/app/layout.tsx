@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Inter_Tight } from "next/font/google";
+import { siteUrl } from "@/lib/seo";
 import "./globals.css";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
@@ -11,6 +12,7 @@ const interTight = Inter_Tight({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl()),
   title: {
     default: "Quality Steel and Metals | Tool Steel, Die Steel & Mould Steel Since 2002",
     template: "%s | Quality Steel and Metals",
@@ -18,6 +20,7 @@ export const metadata: Metadata = {
   description:
     "Importer, stockist, distributor and trader of tool steel, die steel, plastic mould steel and special alloy steel since 2002, with cutting, machining and grinding services.",
   openGraph: { type: "website", siteName: "Quality Steel and Metals", locale: "en_IN" },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = { themeColor: "#0A1A33" };

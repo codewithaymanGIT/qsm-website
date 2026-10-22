@@ -48,14 +48,13 @@ export const gallery: GalleryItem[] = [
   { id: "g8", label: "Team at work", aspect: "portrait", shot: "Team member measuring a block with a vernier" },
 ];
 
-// Customers confirmed by the owner. Official logos rendered from Wikimedia Commons into public/clients/;
-// Sandvik Coromant's logo is still to be added (shown as a name badge until then).
+// Customers confirmed by the owner. Logos in public/clients/ (Wikimedia Commons renders; Sandvik supplied by the client).
 export const partners: PartnerLogo[] = [
   { name: "Maruti Suzuki", src: "/clients/maruti-suzuki.png" },
   { name: "Tata", src: "/clients/tata.png" },
   { name: "Mahindra", src: "/clients/mahindra.png" },
   { name: "Bhilai Steel Plant (SAIL)", src: "/clients/sail.png" },
-  { name: "Sandvik Coromant", src: null },
+  { name: "Sandvik Coromant", src: "/clients/sandvik.png" },
 ].map((c, i) => ({ id: `c${i + 1}`, ...c }));
 
 // Shown on About only once real files are uploaded. Never placeholders.

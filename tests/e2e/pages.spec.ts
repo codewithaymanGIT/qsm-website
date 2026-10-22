@@ -101,13 +101,13 @@ test("customers appear on the homepage and their own page", async ({ page }) => 
   await page.waitForLoadState("networkidle");
   const band = page.getByRole("region", { name: "Trusted by" });
   await band.scrollIntoViewIfNeeded();
-  for (const name of ["Maruti Suzuki", "Tata", "Mahindra", "Bhilai Steel Plant (SAIL)"]) {
+  for (const name of ["Maruti Suzuki", "Tata", "Mahindra", "Bhilai Steel Plant (SAIL)", "Sandvik Coromant"]) {
     const logo = band.getByRole("img", { name, exact: true }).first();
     await expect(logo).toBeAttached();
-    // The logo file actually loads (not a broken image).
-    expect(await logo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+    // The logo file is served (images load lazily, so check the file rather than the paint).
+    const src = await logo.getAttribute("src");
+    expect((await page.request.get(src!)).headers()["content-type"]).toBe("image/png");
   }
-  await expect(band.getByText("Sandvik Coromant").first()).toBeAttached();
   await page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Clients" }).click();
   await expect(page.locator("h1").filter({ visible: true })).toHaveText("Companies we have supplied.");
   await expect(page.locator('meta[name="robots"]')).toHaveCount(0);

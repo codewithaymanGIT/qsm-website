@@ -106,7 +106,7 @@ describe("content (database-backed)", () => {
     expect(machining?.description.join(" ")).toMatch(/in-house/);
   });
 
-  it("ships official logos for four customers", async () => {
+  it("ships official logos for all five customers", async () => {
     const byName = Object.fromEntries((await getPartners()).map((p) => [p.name, p.src]));
     expect(byName["Tata"]).toBe("/clients/tata.png");
     expect(byName["Bhilai Steel Plant (SAIL)"]).toBe("/clients/sail.png");
@@ -121,7 +121,7 @@ describe("content (database-backed)", () => {
     const byName = Object.fromEntries((await getPartners()).map((p) => [p.name, p.src]));
     expect(byName["Tata"]).toBe("/clients/tata.png");
     expect(byName["Maruti Suzuki"]).toBe("/files/abc123.png");
-    expect(byName["Sandvik Coromant"]).toBeNull();
+    expect(byName["Sandvik Coromant"]).toBe("/clients/sandvik.png");
     await db.partnerLogo.update({ where: { id: maruti.id }, data: { imageKey: "/clients/maruti-suzuki.png" } });
   });
 });

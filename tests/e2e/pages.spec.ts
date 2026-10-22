@@ -126,3 +126,15 @@ test("contact page shows the office address and never the warehouse", async ({ p
   await expect(page.getByText("Sanghvi Steel Compound").first()).toBeVisible();
   await expect(page.locator("body")).not.toContainText(/nighoje|chakan|uno minda/i);
 });
+
+test("the clients grid centres an incomplete last row", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/clients-partners/");
+  const tiles = page.locator("main ul li");
+  const boxes = await tiles.evaluateAll((els) => els.map((e) => e.getBoundingClientRect()).map((r) => ({ x: r.x, y: r.y, w: r.width })));
+  const rows = [...new Set(boxes.map((b) => Math.round(b.y)))];
+  const last = boxes.filter((b) => Math.round(b.y) === rows[rows.length - 1]);
+  const first = boxes.filter((b) => Math.round(b.y) === rows[0]);
+  const centre = (row: typeof boxes) => (Math.min(...row.map((b) => b.x)) + Math.max(...row.map((b) => b.x + b.w))) / 2;
+  expect(Math.abs(centre(last) - centre(first))).toBeLessThan(2);
+});

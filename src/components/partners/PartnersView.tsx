@@ -18,9 +18,10 @@ export function PartnersView({ partners }: { partners: PartnerLogo[] }) {
       <section aria-label="Customer logos" className="py-20 lg:py-24">
         <CustomerMarquee customers={partners} />
         <Container className="mt-16">
-          <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Wrapping row with the last row centred: any number of logos fills without an awkward gap. */}
+          <ul className="flex flex-wrap justify-center gap-5">
             {partners.map((p) => (
-              <li key={p.id} className="[&>div]:w-full">
+              <li key={p.id} className="w-full sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2.5rem)/3)] [&>div]:w-full">
                 <CustomerBadge customer={p} />
               </li>
             ))}

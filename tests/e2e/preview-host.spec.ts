@@ -92,3 +92,16 @@ test("preview navigates between pages under host restrictions", async ({ page })
   await expect(page.locator("h1")).toHaveText("H13");
   expect(parseFloat(await page.locator("h1").evaluate((el) => getComputedStyle(el).fontSize))).toBeGreaterThan(60);
 });
+
+test("preview quote form validates using code loaded on demand", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.route("https://preview.test/**", (route) => serveFile(route));
+  await page.goto("https://preview.test/artifact/abc123/quote/index.html?grade=h13");
+  await page.waitForLoadState("networkidle");
+  await expect(page.getByLabel("Steel grade")).toHaveValue("h13");
+  await page.getByRole("button", { name: "Send enquiry" }).click();
+  await expect(page.getByText("Enter your name.")).toBeVisible();
+  // Same expected preview-only noise as above (blocked original asset requests, hydration notice).
+  expect(errors.filter((e) => !/#418|^Event$/.test(e))).toEqual([]);
+});

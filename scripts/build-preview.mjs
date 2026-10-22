@@ -44,7 +44,8 @@ function inlineCss(href) {
 const CHUNK_HEADER = '"object"==typeof document?document.currentScript:void 0';
 const ASSET_PREFIX = "let e=document.currentScript;if(!(e instanceof HTMLScriptElement))";
 
-function inlineScript(src) {
+function inlineScript(src, inlined) {
+  inlined?.add(src);
   let js = read(src).toString("utf8");
   js = js.replaceAll(CHUNK_HEADER, `{getAttribute:()=>${JSON.stringify(src)}}`);
   js = js.replaceAll(ASSET_PREFIX, `let e={src:location.origin+${JSON.stringify(src)}};if(!1)`);
@@ -68,21 +69,37 @@ function navScript(prefix) {
 fs.rmSync(dest, { recursive: true, force: true });
 fs.mkdirSync(dest, { recursive: true });
 
+// Code loaded on demand (menu animation, form validation) is requested by path
+// at runtime; embed every chunk the page can reach so those requests resolve.
+function inlineLazyChunks(html, inlined) {
+  let extra = "";
+  for (;;) {
+    const wanted = [...new Set((html + extra).match(/static\/chunks\/[\w.-]+\.js/g) ?? [])]
+      .map((p) => `/_next/${p}`)
+      .filter((src) => !inlined.has(src));
+    // Function replacer: library code contains "$'" style sequences that a string replacement would expand.
+    if (wanted.length === 0) return html.replace("</body>", () => `${extra}</body>`);
+    for (const src of wanted) extra += inlineScript(src, inlined);
+  }
+}
+
 for (const page of pages) {
+  const inlined = new Set();
   const prefix = "../".repeat(page.split("/").length - 1);
   let html = read(page).toString("utf8");
   html = html
-    .replace(/<head>/, `<head>${navScript(prefix)}`)
+    .replace(/<head>/, () => `<head>${navScript(prefix)}`)
     .replace(/href="(\/(?!\/|_next\/|icon\.)[^"#]*)"/g, (_, href) => `href="${toFile(href, prefix)}"`)
     .replace(/<link rel="preload"[^>]*as="font"[^>]*\/>/g, "")
     .replace(/<link rel="stylesheet" href="([^"]+)"[^>]*\/>/g, (_, href) => inlineCss(href))
-    .replace(/<link rel="preload" as="script"[^>]*href="([^"]+)"[^>]*\/>/g, (_, src) => inlineScript(src))
+    .replace(/<link rel="preload" as="script"[^>]*href="([^"]+)"[^>]*\/>/g, (_, src) => inlineScript(src, inlined))
     .replace(/<script src="[^"]+" noModule=""><\/script>/g, "")
-    .replace(/<script src="([^"]+)" async=""><\/script>/g, (_, src) => inlineScript(src))
+    .replace(/<script src="([^"]+)" async=""><\/script>/g, (_, src) => inlineScript(src, inlined))
     .replace(/<link rel="icon" href="[^"]+"[^>]*\/>/, () => {
       const svg = read("icon.svg").toString("base64");
       return `<link rel="icon" href="data:image/svg+xml;base64,${svg}" type="image/svg+xml"/>`;
     });
+  html = inlineLazyChunks(html, inlined);
   if (!html.includes("getAttribute:()=>")) throw new Error(`${page}: chunk header patch did not apply`);
   const leftovers = html.match(/(src|href)="\/_next[^"]*"/g);
   if (leftovers) throw new Error(`${page}: unresolved assets ${leftovers.join(", ")}`);

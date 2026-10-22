@@ -11,6 +11,8 @@ const homeLabels: Record<string, string> = { "other-steel-grades": "Specialized 
 
 export function CategoryCards({ showHeading = true, homeLabelsOn = true }: { showHeading?: boolean; homeLabelsOn?: boolean }) {
   const categories = getCategories();
+  // Cards sit directly under the page title when the section heading is hidden.
+  const CardHeading = showHeading ? "h3" : "h2";
   return (
     <section className="py-24 lg:py-36">
       <Container>
@@ -36,7 +38,7 @@ export function CategoryCards({ showHeading = true, homeLabelsOn = true }: { sho
                     </div>
                   </div>
                   <div className="flex flex-col p-7 sm:p-8">
-                    <h3 className="text-h3 font-semibold">{(homeLabelsOn && homeLabels[c.slug]) || c.name}</h3>
+                    <CardHeading className="text-h3 font-semibold">{(homeLabelsOn && homeLabels[c.slug]) || c.name}</CardHeading>
                     <p className="mt-4 leading-relaxed text-mist">{c.shortDescription}</p>
                     <div className="mt-auto flex items-end justify-between gap-4 pt-8">
                       <p className="text-sm text-surface/60">

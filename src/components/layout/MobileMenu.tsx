@@ -41,7 +41,7 @@ export function MobileMenu({ open, onClose, links, phone, whatsappUrl }: MobileM
           transition={{ duration: 0.3 }}
         >
           <div className="flex h-18 items-center justify-between px-5 sm:px-8">
-            <Link href="/" onClick={onClose} aria-label="Quality Steel and Metals, home">
+            <Link href="/" onClick={onClose}>
               <Logo />
             </Link>
             <button

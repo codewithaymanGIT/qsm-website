@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { WhatsAppIcon } from "@/components/ui/icons";
-import { type QuoteInput, quoteSchema } from "@/lib/quote-schema";
+import type { QuoteInput } from "@/lib/quote-schema";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { FileField, type PickedFile } from "./FileField";
 
@@ -42,8 +42,10 @@ export function QuoteForm({ grades, whatsapp, defaultGrade, service, title = "Se
   const set = (key: keyof QuoteInput) => (e: { target: { value: string } }) =>
     setValues((v) => ({ ...v, [key]: e.target.value }));
 
-  function submit(e: FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
+    // Loaded on submit so the validation library never weighs down page load.
+    const { quoteSchema } = await import("@/lib/quote-schema");
     const result = quoteSchema.safeParse(values);
     if (!result.success) {
       const next: Errors = {};
@@ -87,7 +89,7 @@ export function QuoteForm({ grades, whatsapp, defaultGrade, service, title = "Se
     <form noValidate onSubmit={submit} className="border border-white/10 bg-ink/60 p-6 sm:p-10">
       <h2 className="font-display text-2xl font-semibold">{title}</h2>
       {service && <p className="mt-2 text-mist">Service: {service}</p>}
-      <div className="mt-8 grid gap-5 md:grid-cols-2">
+      <div className="mt-8 grid gap-5 md:grid-cols-2 [&>*]:min-w-0">
         <Field id="q-name" label="Your name" error={errors.name}>
           <input id="q-name" autoComplete="name" value={values.name} onChange={set("name")} className={field} aria-invalid={!!errors.name} aria-describedby="q-name-err" />
         </Field>

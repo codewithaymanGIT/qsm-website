@@ -1,7 +1,3 @@
-"use client";
-
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { ArrowIcon } from "@/components/ui/icons";
 
@@ -32,15 +28,8 @@ function Plate({ gold, className }: { gold?: boolean; className: string }) {
 }
 
 export function Hero({ videoSrc }: { videoSrc: string | null }) {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const yTop = useTransform(scrollYProgress, [0, 1], ["0%", "-60%"]);
-  const yMid = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
-  const yLow = useTransform(scrollYProgress, [0, 1], ["0%", "-8%"]);
-  const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-
   return (
-    <section ref={ref} className="relative isolate flex min-h-[100svh] items-end overflow-hidden">
+    <section className="relative isolate flex min-h-[100svh] items-end overflow-hidden">
       <div className="steel-texture grain absolute inset-0 -z-20" />
       {videoSrc && (
         <video
@@ -57,30 +46,29 @@ export function Hero({ videoSrc }: { videoSrc: string | null }) {
       {/* Stacked plates: the logo motif at architectural scale. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 [perspective:1400px]">
         <div className="absolute top-[12%] right-[-30%] h-[70%] w-[95%] [transform:rotateX(14deg)_rotateY(-22deg)_rotateZ(-6deg)] sm:right-[-18%] lg:top-[10%] lg:right-[-8%] lg:w-[62%]">
-          <motion.div style={{ y: yLow }} className="absolute inset-0">
+          <div className="parallax-low absolute inset-0">
             <div className="hero-plate absolute inset-0" style={{ opacity: 0.55, animationDelay: "0.1s" }}>
               <Plate className="top-[62%] left-[24%] h-[17%] w-[76%] animate-[drift_14s_ease-in-out_infinite]" />
             </div>
-          </motion.div>
-          <motion.div style={{ y: yMid }} className="absolute inset-0">
+          </div>
+          <div className="parallax-mid absolute inset-0">
             <div className="hero-plate absolute inset-0" style={{ opacity: 0.9, animationDelay: "0.25s" }}>
               <Plate className="top-[38%] left-[12%] h-[17%] w-[76%] animate-[drift_12s_ease-in-out_-3s_infinite]" />
             </div>
-          </motion.div>
-          <motion.div style={{ y: yTop }} className="absolute inset-0">
+          </div>
+          <div className="parallax-top absolute inset-0">
             <div className="hero-plate absolute inset-0" style={{ opacity: 1, animationDelay: "0.4s" }}>
               <Plate gold className="top-[14%] left-0 h-[17%] w-[76%] animate-[drift_10s_ease-in-out_-6s_infinite]" />
             </div>
-          </motion.div>
+          </div>
         </div>
         {/* Slow light sweep across the scene. */}
         <div className="absolute inset-y-0 -left-1/2 w-1/2 animate-[sweep_9s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/10 lg:bg-gradient-to-r lg:from-ink lg:via-ink/75 lg:to-transparent" />
       </div>
 
-      <motion.div
-        style={{ opacity: fade }}
-        className="mx-auto w-full max-w-[1680px] px-5 pt-32 pb-16 sm:px-8 sm:pb-20 lg:px-12 lg:pb-24"
+      <div
+        className="hero-content mx-auto w-full max-w-[1680px] px-5 pt-32 pb-16 sm:px-8 sm:pb-20 lg:px-12 lg:pb-24"
       >
         <p
           className="hero-fade mb-8 flex items-center gap-4 text-[15px] text-surface/70"
@@ -113,7 +101,7 @@ export function Hero({ videoSrc }: { videoSrc: string | null }) {
             </Button>
           </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

@@ -27,7 +27,7 @@ export function FileField({ label, hint, accept, value, onChange }: Props) {
   }
 
   return (
-    <div>
+    <div className="min-w-0">
       <label htmlFor={id} className="mb-2 block text-sm text-surface/80">
         {label}
       </label>
@@ -44,7 +44,7 @@ export function FileField({ label, hint, accept, value, onChange }: Props) {
           aria-describedby={`${id}-hint`}
           aria-invalid={value.error ? true : undefined}
           onChange={(e) => pick(e.target.files?.[0])}
-          className="min-w-0 flex-1 text-sm text-mist file:mr-4 file:min-h-10 file:cursor-pointer file:border-0 file:bg-steel file:px-4 file:text-surface hover:file:bg-[#333]"
+          className="w-full min-w-0 flex-1 text-sm text-mist file:mr-4 file:min-h-10 file:cursor-pointer file:border-0 file:bg-steel file:px-4 file:text-surface hover:file:bg-[#333]"
         />
         {value.file && (
           <button

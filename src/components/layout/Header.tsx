@@ -6,13 +6,18 @@ import { useEffect, useState } from "react";
 import { Logo } from "@/components/brand/Logo";
 import { MenuIcon, PhoneIcon } from "@/components/ui/icons";
 import type { NavLink } from "@/lib/nav";
-import { MobileMenu } from "./MobileMenu";
+import dynamic from "next/dynamic";
+
+// Framer Motion powers the menu's transitions; it loads only when the menu is first opened.
+const MobileMenu = dynamic(() => import("./MobileMenu").then((m) => m.MobileMenu), { ssr: false });
 
 type HeaderProps = { links: NavLink[]; phone: string; whatsappUrl: string };
 
 export function Header({ links, phone, whatsappUrl }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  // Mounted on first use and kept, so the closing animation can play.
+  const [menuLoaded, setMenuLoaded] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -30,7 +35,7 @@ export function Header({ links, phone, whatsappUrl }: HeaderProps) {
         }`}
       >
         <div className="mx-auto flex h-18 max-w-[1680px] items-center justify-between px-5 sm:px-8 lg:h-20 lg:px-12">
-          <Link href="/" aria-label="Quality Steel and Metals, home">
+          <Link href="/">
             <Logo />
           </Link>
 
@@ -76,7 +81,10 @@ export function Header({ links, phone, whatsappUrl }: HeaderProps) {
             </Link>
             <button
               type="button"
-              onClick={() => setOpen(true)}
+              onClick={() => {
+                setMenuLoaded(true);
+                setOpen(true);
+              }}
               aria-label="Open menu"
               aria-expanded={open}
               className="inline-flex h-11 w-11 items-center justify-center text-surface lg:hidden"
@@ -86,7 +94,9 @@ export function Header({ links, phone, whatsappUrl }: HeaderProps) {
           </div>
         </div>
       </header>
-      <MobileMenu open={open} onClose={() => setOpen(false)} links={links} phone={phone} whatsappUrl={whatsappUrl} />
+      {menuLoaded && (
+        <MobileMenu open={open} onClose={() => setOpen(false)} links={links} phone={phone} whatsappUrl={whatsappUrl} />
+      )}
     </>
   );
 }

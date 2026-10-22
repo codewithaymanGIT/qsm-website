@@ -98,10 +98,16 @@ test("contact page shows Mohit Agrawal and never a warehouse address", async ({ 
 
 test("customers appear on the homepage and their own page", async ({ page }) => {
   await page.goto("/");
+  await page.waitForLoadState("networkidle");
   const band = page.getByRole("region", { name: "Trusted by" });
-  for (const name of ["Maruti Suzuki", "Tata", "Mahindra", "Bhilai Steel Plant", "Sandvik Coromant"]) {
-    await expect(band.getByText(name).first()).toBeAttached();
+  await band.scrollIntoViewIfNeeded();
+  for (const name of ["Maruti Suzuki", "Tata", "Mahindra", "Bhilai Steel Plant (SAIL)"]) {
+    const logo = band.getByRole("img", { name, exact: true }).first();
+    await expect(logo).toBeAttached();
+    // The logo file actually loads (not a broken image).
+    expect(await logo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
   }
+  await expect(band.getByText("Sandvik Coromant").first()).toBeAttached();
   await page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Clients" }).click();
   await expect(page.locator("h1").filter({ visible: true })).toHaveText("Companies we have supplied.");
   await expect(page.locator('meta[name="robots"]')).toHaveCount(0);

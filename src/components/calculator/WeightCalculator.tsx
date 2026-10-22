@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useId, useState } from "react";
-import { densityFor, describeSize, pieceWeightKg, type Shape, type Size } from "@/lib/weight";
+import { describeSize, pieceWeightKg, type Shape, type Size } from "@/lib/weight";
 
 type Grade = { slug: string; name: string };
 
@@ -48,13 +48,11 @@ export function WeightCalculator({ grades, defaultGrade = "" }: { grades: Grade[
   const [pieces, setPieces] = useState("1");
 
   const spec = SHAPES.find((s) => s.id === shape)!;
-  const density = densityFor(grade);
   const num = (k: string) => Number(dims[k]);
   const size = { shape, length: num("length"), ...Object.fromEntries(spec.fields.map((f) => [f.key, num(f.key)])) } as Size;
-  const each = pieceWeightKg(size, density);
+  const each = pieceWeightKg(size);
   const count = Math.max(1, Math.floor(Number(pieces) || 1));
   const total = each === null ? null : each * count;
-  const gradeName = grades.find((g) => g.slug === grade)?.name;
 
   const quoteHref =
     total === null
@@ -73,10 +71,10 @@ export function WeightCalculator({ grades, defaultGrade = "" }: { grades: Grade[
             Steel grade
           </label>
           <select id={`${uid}-grade`} value={grade} onChange={(e) => setGrade(e.target.value)} className={input}>
-            <option value="">General steel (7.85 g/cm³)</option>
+            <option value="">Any grade</option>
             {grades.map((g) => (
               <option key={g.slug} value={g.slug}>
-                {g.name} ({densityFor(g.slug).toFixed(2)} g/cm³)
+                {g.name}
               </option>
             ))}
           </select>
@@ -140,10 +138,7 @@ export function WeightCalculator({ grades, defaultGrade = "" }: { grades: Grade[
         </p>
         <p className="mt-8 text-sm text-mist">Total for {count} {count === 1 ? "piece" : "pieces"}</p>
         <p className="mt-1 font-display text-3xl font-semibold text-accent tabular-nums">{total === null ? "—" : kg(total)}</p>
-        <p className="mt-8 text-sm leading-relaxed text-mist">
-          {gradeName ? `${gradeName}: ` : ""}density {density.toFixed(2)} g/cm³. Approximate theoretical weight; actual
-          weight varies with size tolerance and machining allowance.
-        </p>
+        <p className="mt-8 text-sm leading-relaxed text-mist">Approximate weight. Final weight is confirmed at dispatch.</p>
         {quoteHref ? (
           <Link href={quoteHref} className="mt-8 inline-flex min-h-12 w-full items-center justify-center bg-accent px-6 font-medium text-ink transition-colors hover:bg-[#79B6EA]">
             Request a quote for this

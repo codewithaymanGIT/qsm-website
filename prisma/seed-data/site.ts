@@ -48,10 +48,15 @@ export const gallery: GalleryItem[] = [
   { id: "g8", label: "Team at work", aspect: "portrait", shot: "Team member measuring a block with a vernier" },
 ];
 
-// Customers confirmed by the owner. Logo files are uploaded in the admin panel.
-export const partners: PartnerLogo[] = ["Maruti Suzuki", "Tata", "Mahindra", "Bhilai Steel Plant (SAIL)", "Sandvik Coromant"].map(
-  (name, i) => ({ id: `c${i + 1}`, name, src: null }),
-);
+// Customers confirmed by the owner. Official logos rendered from Wikimedia Commons into public/clients/;
+// Sandvik Coromant's logo is still to be added (shown as a name badge until then).
+export const partners: PartnerLogo[] = [
+  { name: "Maruti Suzuki", src: "/clients/maruti-suzuki.png" },
+  { name: "Tata", src: "/clients/tata.png" },
+  { name: "Mahindra", src: "/clients/mahindra.png" },
+  { name: "Bhilai Steel Plant (SAIL)", src: "/clients/sail.png" },
+  { name: "Sandvik Coromant", src: null },
+].map((c, i) => ({ id: `c${i + 1}`, ...c }));
 
 // Shown on About only once real files are uploaded. Never placeholders.
 export const certificates: Download[] = [];

@@ -1,4 +1,4 @@
-// Steel weight from shape and size. All lengths in mm, density in g/cm³, result in kg.
+// Steel weight from shape and size. All lengths in mm, result in kg.
 
 export type Size =
   | { shape: "round"; diameter: number; length: number }
@@ -9,22 +9,8 @@ export type Size =
 
 export type Shape = Size["shape"];
 
-export const DEFAULT_DENSITY = 7.85;
-
-/** Typical densities (g/cm³). High-chromium cold work grades are lighter than plain steel. */
-const DENSITY: Record<string, number> = {
-  p20: 7.85,
-  "p20-ni": 7.85,
-  h13: 7.8,
-  h11: 7.8,
-  skd61: 7.8,
-  d2: 7.7,
-  skd11: 7.7,
-  hchcr: 7.7,
-  ohns: 7.81,
-};
-
-export const densityFor = (gradeSlug: string) => DENSITY[gradeSlug] ?? DEFAULT_DENSITY;
+/** Company standard for all steels (g/cm³), set by the owner. */
+export const DENSITY = 8;
 
 const positive = (...n: number[]) => n.every((v) => Number.isFinite(v) && v > 0);
 
@@ -44,11 +30,11 @@ function area(s: Size): number | null {
   }
 }
 
-export function pieceWeightKg(size: Size, density: number): number | null {
+export function pieceWeightKg(size: Size): number | null {
   const a = area(size);
-  if (a === null || !positive(size.length, density)) return null;
+  if (a === null || !positive(size.length)) return null;
   // mm³ x g/cm³ = 1e-3 g = 1e-6 kg
-  return a * size.length * density * 1e-6;
+  return a * size.length * DENSITY * 1e-6;
 }
 
 /** The size written the way buyers quote it, for the enquiry's Dimensions field. */

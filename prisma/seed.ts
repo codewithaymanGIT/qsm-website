@@ -30,7 +30,7 @@ export async function seed(db: PrismaClient) {
     });
   }
   if ((await db.partnerLogo.count()) === 0) {
-    await db.partnerLogo.createMany({ data: partners.map((p, i) => ({ name: p.name, order: i })) });
+    await db.partnerLogo.createMany({ data: partners.map((p, i) => ({ name: p.name, imageKey: p.src, order: i })) });
   }
   for (const [key, value] of Object.entries({ contact: settings, timeline })) {
     await db.setting.upsert({ where: { key }, update: {}, create: { key, value } });

@@ -106,6 +106,12 @@ describe("content (database-backed)", () => {
     expect(machining?.description.join(" ")).toMatch(/in-house/);
   });
 
+  it("ships official logos for four customers", async () => {
+    const byName = Object.fromEntries((await getPartners()).map((p) => [p.name, p.src]));
+    expect(byName["Tata"]).toBe("/clients/tata.png");
+    expect(byName["Bhilai Steel Plant (SAIL)"]).toBe("/clients/sail.png");
+  });
+
   it("serves a customer logo from a project file or an uploaded file", async () => {
     const { db } = await import("@/lib/server/db");
     const tata = await db.partnerLogo.findFirstOrThrow({ where: { name: "Tata" } });
@@ -115,7 +121,7 @@ describe("content (database-backed)", () => {
     const byName = Object.fromEntries((await getPartners()).map((p) => [p.name, p.src]));
     expect(byName["Tata"]).toBe("/clients/tata.png");
     expect(byName["Maruti Suzuki"]).toBe("/files/abc123.png");
-    expect(byName["Mahindra"]).toBeNull();
-    await db.partnerLogo.updateMany({ data: { imageKey: null } });
+    expect(byName["Sandvik Coromant"]).toBeNull();
+    await db.partnerLogo.update({ where: { id: maruti.id }, data: { imageKey: "/clients/maruti-suzuki.png" } });
   });
 });

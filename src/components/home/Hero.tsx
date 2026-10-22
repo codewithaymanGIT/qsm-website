@@ -5,8 +5,6 @@ import { useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { ArrowIcon } from "@/components/ui/icons";
 
-const ease = [0.16, 1, 0.3, 1] as const;
-
 const headline = ["Specialized Tool Steel", "& Industrial Metal", "Solutions Since 2002"];
 
 /** One brushed-steel plate. `gold` marks the top plate of the logo stack. */
@@ -60,34 +58,19 @@ export function Hero({ videoSrc }: { videoSrc: string | null }) {
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 [perspective:1400px]">
         <div className="absolute top-[12%] right-[-30%] h-[70%] w-[95%] [transform:rotateX(14deg)_rotateY(-22deg)_rotateZ(-6deg)] sm:right-[-18%] lg:top-[10%] lg:right-[-8%] lg:w-[62%]">
           <motion.div style={{ y: yLow }} className="absolute inset-0">
-            <motion.div
-              initial={{ opacity: 0, x: 120 }}
-              animate={{ opacity: 0.55, x: 0 }}
-              transition={{ duration: 1.6, delay: 0.1, ease }}
-              className="absolute inset-0"
-            >
+            <div className="hero-plate absolute inset-0" style={{ opacity: 0.55, animationDelay: "0.1s" }}>
               <Plate className="top-[62%] left-[24%] h-[17%] w-[76%] animate-[drift_14s_ease-in-out_infinite]" />
-            </motion.div>
+            </div>
           </motion.div>
           <motion.div style={{ y: yMid }} className="absolute inset-0">
-            <motion.div
-              initial={{ opacity: 0, x: 160 }}
-              animate={{ opacity: 0.9, x: 0 }}
-              transition={{ duration: 1.6, delay: 0.25, ease }}
-              className="absolute inset-0"
-            >
+            <div className="hero-plate absolute inset-0" style={{ opacity: 0.9, animationDelay: "0.25s" }}>
               <Plate className="top-[38%] left-[12%] h-[17%] w-[76%] animate-[drift_12s_ease-in-out_-3s_infinite]" />
-            </motion.div>
+            </div>
           </motion.div>
           <motion.div style={{ y: yTop }} className="absolute inset-0">
-            <motion.div
-              initial={{ opacity: 0, x: 200 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.6, delay: 0.4, ease }}
-              className="absolute inset-0"
-            >
+            <div className="hero-plate absolute inset-0" style={{ opacity: 1, animationDelay: "0.4s" }}>
               <Plate gold className="top-[14%] left-0 h-[17%] w-[76%] animate-[drift_10s_ease-in-out_-6s_infinite]" />
-            </motion.div>
+            </div>
           </motion.div>
         </div>
         {/* Slow light sweep across the scene. */}
@@ -99,34 +82,25 @@ export function Hero({ videoSrc }: { videoSrc: string | null }) {
         style={{ opacity: fade }}
         className="mx-auto w-full max-w-[1680px] px-5 pt-32 pb-16 sm:px-8 sm:pb-20 lg:px-12 lg:pb-24"
       >
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="mb-8 flex items-center gap-4 text-[15px] text-surface/70"
+        <p
+          className="hero-fade mb-8 flex items-center gap-4 text-[15px] text-surface/70"
+          style={{ animationDelay: "0.2s" }}
         >
           <span className="h-px w-10 bg-gold" />
           Importer, stockist, distributor and trader
-        </motion.p>
+        </p>
         <h1 className="text-display max-w-[14ch] font-semibold sm:max-w-none">
           {headline.map((line, i) => (
             <span key={line} className="block overflow-hidden pb-[0.06em]">
-              <motion.span
-                className="block"
-                initial={{ y: "105%" }}
-                animate={{ y: 0 }}
-                transition={{ duration: 1.1, delay: 0.35 + i * 0.12, ease }}
-              >
+              <span className="hero-rise block" style={{ animationDelay: `${0.35 + i * 0.12}s` }}>
                 {line}
-              </motion.span>
+              </span>
             </span>
           ))}
         </h1>
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.95, ease }}
-          className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
+        <div
+          className="hero-fade mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
+          style={{ animationDelay: "0.95s" }}
         >
           <p className="max-w-xl text-lg leading-relaxed text-surface/70">
             Tool steel, die steel, plastic mould steel and special alloy steel, cut and finished to your size.
@@ -138,7 +112,7 @@ export function Hero({ videoSrc }: { videoSrc: string | null }) {
               <ArrowIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Button>
           </div>
-        </motion.div>
+        </div>
       </motion.div>
     </section>
   );

@@ -22,10 +22,10 @@ export function CategoryCards() {
           />
         </Reveal>
         <ul className="mt-16 grid gap-5 lg:mt-20 xl:grid-cols-2">
-          {categories.map((c, i) => {
+          {categories.map((c) => {
             const grades = getProductsByCategory(c.slug);
             return (
-              <Reveal as="li" key={c.slug} delay={(i % 2) * 0.08}>
+              <Reveal as="li" key={c.slug}>
                 <Link
                   href={`/products/${c.slug}/`}
                   className="group grid h-full grid-cols-1 overflow-hidden border border-white/8 bg-graphite transition-colors duration-500 hover:border-gold/50 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)]"

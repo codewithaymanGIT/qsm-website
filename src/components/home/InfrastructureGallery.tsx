@@ -18,8 +18,8 @@ export function InfrastructureGallery({ items }: { items: GalleryItem[] }) {
           />
         </Reveal>
         <div className="mt-16 columns-1 gap-5 sm:columns-2 lg:mt-20 lg:columns-3">
-          {items.map((g, i) => (
-            <Reveal key={g.id} delay={(i % 3) * 0.06} className="mb-5 break-inside-avoid">
+          {items.map((g) => (
+            <Reveal key={g.id} className="mb-5 break-inside-avoid">
               <figure className={`group relative overflow-hidden ${aspect[g.aspect]}`}>
                 <div className="absolute inset-0 transition-transform duration-[1.4s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]">
                   <ImageSlot label={g.label} shot={g.shot} className="h-full w-full" />

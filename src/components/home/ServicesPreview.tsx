@@ -30,8 +30,8 @@ export function ServicesPreview() {
           </Reveal>
         </div>
         <ul className="mt-16 grid gap-x-5 gap-y-12 sm:grid-cols-2 lg:mt-20 xl:grid-cols-4">
-          {getServices().map((s, i) => (
-            <Reveal as="li" key={s.slug} delay={i * 0.08}>
+          {getServices().map((s) => (
+            <Reveal as="li" key={s.slug}>
               <Link href={`/services/${s.slug}/`} className="group block">
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <div className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]">

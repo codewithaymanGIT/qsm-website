@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import type { TimelineEntry } from "@/content/types";
@@ -16,7 +13,7 @@ export function FounderTimeline({ entries }: { entries: TimelineEntry[] }) {
               It started with Rs&nbsp;500.
             </h2>
           </Reveal>
-          <Reveal delay={0.1} className="self-end">
+          <Reveal className="self-end">
             <p className="max-w-xl text-lg leading-relaxed text-surface/75">
               In 2002, Hemant Agrawal started Quality Steel and Metals with Rs 500 and a simple idea: give toolmakers
               the steel they ask for, explain it honestly and deliver when promised. Every relationship since has
@@ -26,13 +23,10 @@ export function FounderTimeline({ entries }: { entries: TimelineEntry[] }) {
         </div>
 
         <div className="relative mt-20 lg:mt-28">
-          <motion.div
+          <div
             aria-hidden="true"
+            data-draw=""
             className="absolute top-[11px] left-0 hidden h-px w-full origin-left bg-gold/70 md:block"
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true, margin: "-15% 0px" }}
-            transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
           />
           <div
             aria-hidden="true"
@@ -40,7 +34,7 @@ export function FounderTimeline({ entries }: { entries: TimelineEntry[] }) {
           />
           <ol className="grid gap-14 md:grid-cols-2 md:gap-10">
             {entries.map((e, i) => (
-              <Reveal as="li" key={e.year} delay={0.2 + i * 0.25} className="relative pl-12 md:pl-0">
+              <Reveal as="li" key={e.year} className="relative pl-12 md:pl-0">
                 <span
                   aria-hidden="true"
                   className={`absolute top-0 left-0 block h-[23px] w-[23px] border-2 border-gold ${

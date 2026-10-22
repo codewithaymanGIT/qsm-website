@@ -18,7 +18,7 @@ export function EnquiryBanner({ whatsappUrl }: { whatsappUrl: string }) {
             Looking For The Right Steel Grade?
           </h2>
         </Reveal>
-        <Reveal delay={0.1}>
+        <Reveal>
           <p className="mt-8 max-w-xl text-lg leading-relaxed text-surface/70">
             Tell us the grade, size and quantity. If you are not sure which grade fits, describe the job and we will
             suggest one.

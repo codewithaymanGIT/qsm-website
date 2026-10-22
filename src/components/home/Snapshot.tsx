@@ -20,7 +20,7 @@ export function Snapshot() {
         </Reveal>
         <ul className="grid grid-cols-1 gap-px bg-white/8 sm:grid-cols-2 xl:grid-cols-4">
           {roles.map((r, i) => (
-            <Reveal as="li" key={r.name} delay={i * 0.08} className="bg-graphite p-6 sm:p-7">
+            <Reveal as="li" key={r.name} className="bg-graphite p-6 sm:p-7">
               <span aria-hidden="true" className="mb-6 block h-1.5 w-10 bg-gold/80" style={{ marginLeft: i * 6 }} />
               <h2 className="font-display text-2xl font-semibold">{r.name}</h2>
               <p className="mt-3 leading-relaxed text-mist">{r.line}</p>

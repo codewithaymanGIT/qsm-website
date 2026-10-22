@@ -33,16 +33,16 @@ const sourcing = [
   },
 ];
 
-export default function AboutPage() {
-  const certificates = getCertificates();
-  const brochure = getBrochure();
+export default async function AboutPage() {
+  const certificates = await getCertificates();
+  const brochure = await getBrochure();
   return (
     <>
       <PageHero
         title="Steel, supplied honestly since 2002."
         intro="Quality Steel and Metals is an importer, stockist, distributor and trader of tool steel, die steel, plastic mould steel and special alloy steel."
       />
-      <FounderTimeline entries={getTimeline()} />
+      <FounderTimeline entries={await getTimeline()} />
       <Snapshot />
 
       <section aria-labelledby="sourcing" className="bg-surface py-24 text-ink lg:py-32">
@@ -62,12 +62,12 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      <InfrastructureGallery items={getGallery()} />
+      <InfrastructureGallery items={await getGallery()} />
 
       {certificates.length > 0 && <FileList id="certificates" title="Certificates" files={certificates} />}
       {brochure && <FileList id="brochure" title="Company brochure" files={[brochure]} />}
 
-      <EnquiryBanner whatsappUrl={buildWhatsAppUrl(getSettings().whatsapp)} />
+      <EnquiryBanner whatsappUrl={buildWhatsAppUrl((await getSettings()).whatsapp)} />
     </>
   );
 }

@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   description: "Call, WhatsApp or email Quality Steel and Metals for tool steel, die steel and mould steel enquiries.",
 };
 
-export default function ContactPage() {
-  const s = getSettings();
+export default async function ContactPage() {
+  const s = await getSettings();
   const addressKnown = !s.officeAddress.startsWith("[");
   return (
     <>

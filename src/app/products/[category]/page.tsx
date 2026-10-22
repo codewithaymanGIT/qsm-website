@@ -10,24 +10,23 @@ import { Reveal } from "@/components/ui/Reveal";
 import { getCategories, getCategory, getProductsByCategory, getSettings } from "@/lib/content";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
-export const dynamicParams = false;
 
-export function generateStaticParams() {
-  return getCategories().map((c) => ({ category: c.slug }));
+export async function generateStaticParams() {
+  return (await getCategories()).map((c) => ({ category: c.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/products/[category]">): Promise<Metadata> {
-  const category = getCategory((await params).category);
+  const category = await getCategory((await params).category);
   if (!category) return {};
   return { title: category.name, description: category.shortDescription };
 }
 
 export default async function CategoryPage({ params }: PageProps<"/products/[category]">) {
-  const category = getCategory((await params).category);
+  const category = await getCategory((await params).category);
   if (!category) notFound();
-  const grades = getProductsByCategory(category.slug);
-  const whatsappUrl = buildWhatsAppUrl(getSettings().whatsapp);
-  const others = getCategories().filter((c) => c.slug !== category.slug);
+  const grades = await getProductsByCategory(category.slug);
+  const whatsappUrl = buildWhatsAppUrl((await getSettings()).whatsapp);
+  const others = (await getCategories()).filter((c) => c.slug !== category.slug);
 
   return (
     <>

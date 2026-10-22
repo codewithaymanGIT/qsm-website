@@ -1,11 +1,12 @@
 import type { NextConfig } from "next";
 
-// Phase 1 is a static export for client review. Phase 2 (database, admin,
-// uploads) removes `output: "export"` and re-enables server features.
+// Runs as a Node server (Docker-friendly standalone output). Pages are prerendered
+// from the database at build time and refreshed on demand via cache tags.
 const nextConfig: NextConfig = {
-  output: "export",
+  output: "standalone",
   trailingSlash: true,
-  images: { unoptimized: true },
+  cacheComponents: true,
+  partialPrefetching: true,
   turbopack: {
     rules: {
       "*.css": {

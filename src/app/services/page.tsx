@@ -15,14 +15,14 @@ export const metadata: Metadata = {
   description: "Bandsaw cutting, precision machining, surface grinding and custom cutting of tool and die steel to your size.",
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
   return (
     <>
       <PageHero title="Cut, machined and ground to size." intro="Buy the size you need. We process material before dispatch so it reaches your toolroom ready for the next operation." />
       <section className="py-20 lg:py-28">
         <Container>
           <ul className="grid gap-16 lg:gap-24">
-            {getServices().map((s, i) => (
+            {(await getServices()).map((s, i) => (
               <Reveal as="li" key={s.slug}>
                 <Link href={`/services/${s.slug}/`} className="group grid items-center gap-8 md:grid-cols-2 md:gap-14">
                   <div className={`relative aspect-[4/3] overflow-hidden ${i % 2 ? "md:order-2" : ""}`}>
@@ -43,7 +43,7 @@ export default function ServicesPage() {
           </ul>
         </Container>
       </section>
-      <EnquiryBanner whatsappUrl={buildWhatsAppUrl(getSettings().whatsapp)} />
+      <EnquiryBanner whatsappUrl={buildWhatsAppUrl((await getSettings()).whatsapp)} />
     </>
   );
 }

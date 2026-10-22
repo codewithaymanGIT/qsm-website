@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getServices } from "@/lib/content";
 import { serviceShots } from "@/lib/service-shots";
 
-export function ServicesPreview() {
+export async function ServicesPreview() {
   return (
     <section className="py-24 lg:py-36">
       <Container>
@@ -24,7 +24,7 @@ export function ServicesPreview() {
           </Reveal>
         </div>
         <ul className="mt-16 grid gap-x-5 gap-y-12 sm:grid-cols-2 lg:mt-20 xl:grid-cols-4">
-          {getServices().map((s) => (
+          {(await getServices()).map((s) => (
             <Reveal as="li" key={s.slug}>
               <Link href={`/services/${s.slug}/`} className="group block">
                 <div className="relative aspect-[4/5] overflow-hidden">

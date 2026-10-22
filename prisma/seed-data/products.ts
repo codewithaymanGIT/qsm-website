@@ -1,4 +1,4 @@
-import type { Product } from "./types";
+import type { Product } from "../../src/content/types";
 
 // Composition values are typical ranges (wt %) from published AISI/DIN/JIS
 // standards. They must be checked by the company before launch.

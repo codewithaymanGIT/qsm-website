@@ -9,8 +9,8 @@ import { WhyChooseUs } from "@/components/home/WhyChooseUs";
 import { getGallery, getSettings, getTimeline } from "@/lib/content";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
-export default function Home() {
-  const settings = getSettings();
+export default async function Home() {
+  const settings = await getSettings();
   return (
     <>
       <Hero videoSrc={settings.heroVideo} />
@@ -18,8 +18,8 @@ export default function Home() {
       <CategoryCards />
       <WhyChooseUs />
       <ServicesPreview />
-      <FounderTimeline entries={getTimeline()} />
-      <InfrastructureGallery items={getGallery()} />
+      <FounderTimeline entries={await getTimeline()} />
+      <InfrastructureGallery items={await getGallery()} />
       <EnquiryBanner whatsappUrl={buildWhatsAppUrl(settings.whatsapp)} />
     </>
   );

@@ -13,14 +13,13 @@ import type { Download } from "@/content/types";
 import { getCategory, getProduct, getProducts, getRelatedProducts, getSettings } from "@/lib/content";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
-export const dynamicParams = false;
 
-export function generateStaticParams() {
-  return getProducts().map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  return (await getProducts()).map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/grades/[slug]">): Promise<Metadata> {
-  const product = getProduct((await params).slug);
+  const product = await getProduct((await params).slug);
   if (!product) return {};
   return {
     title: `${product.name} Steel`,
@@ -29,12 +28,12 @@ export async function generateMetadata({ params }: PageProps<"/grades/[slug]">):
 }
 
 export default async function GradePage({ params }: PageProps<"/grades/[slug]">) {
-  const product = getProduct((await params).slug);
+  const product = await getProduct((await params).slug);
   if (!product) notFound();
-  const category = getCategory(product.categorySlug)!;
-  const whatsappUrl = buildWhatsAppUrl(getSettings().whatsapp, product.name);
+  const category = (await getCategory(product.categorySlug))!;
+  const whatsappUrl = buildWhatsAppUrl((await getSettings()).whatsapp, product.name);
   const quoteHref = `/quote/?grade=${product.slug}`;
-  const related = getRelatedProducts(product.slug);
+  const related = await getRelatedProducts(product.slug);
 
   return (
     <>

@@ -1,0 +1,215 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  SALES
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUOTED
+  WON
+  LOST
+  SPAM
+}
+
+enum DownloadKind {
+  DATASHEET
+  MATERIAL_CERTIFICATE
+  BROCHURE
+}
+
+enum UploadKind {
+  DRAWING
+  CAD
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         Role      @default(EDITOR)
+  active       Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Category {
+  id               String    @id @default(cuid())
+  slug             String    @unique
+  name             String
+  shortDescription String
+  order            Int       @default(0)
+  imageKey         String?
+  products         Product[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+/// composition, mechanical and heatTreatment are JSON arrays with fixed shapes
+/// (see src/content/types.ts); they are validated at the application boundary.
+model Product {
+  id            String     @id @default(cuid())
+  slug          String     @unique
+  name          String
+  category      Category   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  categoryId    String
+  tagline       String
+  equivalents   String[]
+  overview      String
+  applications  String[]
+  industries    String[]
+  composition   Json
+  mechanical    Json
+  heatTreatment Json
+  hardness      String
+  forms         String[]
+  order         Int        @default(0)
+  published     Boolean    @default(true)
+  imageKey      String?
+  downloads     Download[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([categoryId])
+}
+
+model Service {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  summary      String
+  description  String[]
+  capabilities String[]
+  order        Int      @default(0)
+  published    Boolean  @default(true)
+  imageKeys    String[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+/// Datasheets and material certificates (per product) and the company brochure.
+model Download {
+  id        String       @id @default(cuid())
+  kind      DownloadKind
+  title     String
+  fileKey   String       @unique
+  fileName  String
+  mimeType  String
+  sizeBytes Int
+  product   Product?     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String?
+  published Boolean      @default(true)
+  createdAt DateTime     @default(now())
+
+  @@index([productId])
+}
+
+/// Company certificates shown on the About page once uploaded.
+model Certificate {
+  id         String    @id @default(cuid())
+  title      String
+  issuer     String?
+  validUntil DateTime?
+  fileKey    String    @unique
+  fileName   String
+  mimeType   String
+  sizeBytes  Int
+  order      Int       @default(0)
+  published  Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+}
+
+model GalleryItem {
+  id        String   @id @default(cuid())
+  label     String
+  shot      String
+  aspect    String   @default("landscape")
+  imageKey  String?
+  order     Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model PartnerLogo {
+  id        String   @id @default(cuid())
+  name      String
+  imageKey  String
+  website   String?
+  order     Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Lead {
+  id          String     @id @default(cuid())
+  reference   String     @unique
+  name        String
+  company     String?
+  phone       String
+  email       String
+  gradeSlug   String?
+  gradeName   String?
+  service     String?
+  dimensions  String?
+  quantity    String?
+  message     String?
+  pagePath    String?
+  status      LeadStatus @default(NEW)
+  notes       String?
+  ipHash      String?
+  userAgent   String?
+  emailSentAt DateTime?
+  emailError  String?
+  uploads     Upload[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([createdAt])
+  @@index([status])
+  @@index([ipHash, createdAt])
+}
+
+/// Files attached to enquiries. Stored privately under UPLOAD_DIR by storedName.
+model Upload {
+  id           String     @id @default(cuid())
+  lead         Lead?      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  leadId       String?
+  kind         UploadKind
+  originalName String
+  storedName   String     @unique
+  mimeType     String
+  sizeBytes    Int
+  sha256       String
+  createdAt    DateTime   @default(now())
+
+  @@index([leadId])
+}
+
+/// Site-wide settings as key/value JSON (contact details, timeline, brochure).
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model SeoEntry {
+  id          String   @id @default(cuid())
+  path        String   @unique
+  title       String?
+  description String?
+  ogImageKey  String?
+  noindex     Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+}

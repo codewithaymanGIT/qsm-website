@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     "Plastic mould steel, hot work and cold work tool steel, high speed steel, EN series, alloy steel and mould base plates. Browse grades and technical data.",
 };
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
   return (
     <>
       <PageHero
@@ -21,7 +21,7 @@ export default function ProductsPage() {
       <div className="pt-16 lg:pt-20">
         <CategoryCards showHeading={false} homeLabelsOn={false} />
       </div>
-      <EnquiryBanner whatsappUrl={buildWhatsAppUrl(getSettings().whatsapp)} />
+      <EnquiryBanner whatsappUrl={buildWhatsAppUrl((await getSettings()).whatsapp)} />
     </>
   );
 }

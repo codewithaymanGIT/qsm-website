@@ -4,13 +4,13 @@ import { ImageSlot } from "@/components/ui/ImageSlot";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ArrowIcon } from "@/components/ui/icons";
-import { getCategories, getProductsByCategory } from "@/lib/content";
+import { getCategories, getProducts } from "@/lib/content";
 
 // The homepage brief labels the last category "Specialized Steels".
 const homeLabels: Record<string, string> = { "other-steel-grades": "Specialized Steels" };
 
-export function CategoryCards({ showHeading = true, homeLabelsOn = true }: { showHeading?: boolean; homeLabelsOn?: boolean }) {
-  const categories = getCategories();
+export async function CategoryCards({ showHeading = true, homeLabelsOn = true }: { showHeading?: boolean; homeLabelsOn?: boolean }) {
+  const [categories, products] = await Promise.all([getCategories(), getProducts()]);
   // Cards sit directly under the page title when the section heading is hidden.
   const CardHeading = showHeading ? "h3" : "h2";
   return (
@@ -25,7 +25,7 @@ export function CategoryCards({ showHeading = true, homeLabelsOn = true }: { sho
         </Reveal>}
         <ul className={`grid gap-5 xl:grid-cols-2 ${showHeading ? "mt-16 lg:mt-20" : ""}`}>
           {categories.map((c) => {
-            const grades = getProductsByCategory(c.slug);
+            const grades = products.filter((p) => p.categorySlug === c.slug);
             return (
               <Reveal as="li" key={c.slug}>
                 <Link

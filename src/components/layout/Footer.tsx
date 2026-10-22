@@ -1,11 +1,19 @@
+import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 import { getCategories, getServices, getSettings } from "@/lib/content";
 import { getNavLinks } from "@/lib/nav";
 
-export function Footer() {
-  const s = getSettings();
-  const year = new Date().getFullYear();
+/** Cached for a day so pages stay prerendered yet the year rolls over on its own. */
+async function currentYear() {
+  "use cache";
+  cacheLife("days");
+  return new Date().getFullYear();
+}
+
+export async function Footer() {
+  const s = await getSettings();
+  const year = await currentYear();
   return (
     <footer className="border-t border-white/8 bg-ink pb-24 lg:pb-0">
       <div className="mx-auto grid max-w-[1680px] gap-14 px-5 py-20 sm:px-8 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-12">
@@ -16,12 +24,12 @@ export function Footer() {
             alloy steel since 2002.
           </p>
         </div>
-        <FooterList title="Products" items={getCategories().map((c) => ({ href: `/products/${c.slug}/`, label: c.name }))} />
+        <FooterList title="Products" items={(await getCategories()).map((c) => ({ href: `/products/${c.slug}/`, label: c.name }))} />
         <FooterList
           title="Company"
           items={[
-            ...getNavLinks(),
-            ...getServices().map((sv) => ({ href: `/services/${sv.slug}/`, label: sv.name })),
+            ...(await getNavLinks()),
+            ...(await getServices()).map((sv) => ({ href: `/services/${sv.slug}/`, label: sv.name })),
           ]}
         />
         <div>

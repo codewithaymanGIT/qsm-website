@@ -30,10 +30,10 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#0A0A0A" };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const settings = getSettings();
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const settings = await getSettings();
   const whatsappUrl = buildWhatsAppUrl(settings.whatsapp);
-  const gradeNames = Object.fromEntries(getProducts().map((p) => [p.slug, p.name]));
+  const gradeNames = Object.fromEntries((await getProducts()).map((p) => [p.slug, p.name]));
   return (
     <html lang="en" className={`${inter.variable} ${interTight.variable} antialiased`}>
       <body className="min-h-screen bg-ink text-surface">
@@ -44,7 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <SmoothScroll />
-        <Header links={getNavLinks()} phone={settings.phone} whatsappUrl={whatsappUrl} />
+        <Header links={await getNavLinks()} phone={settings.phone} whatsappUrl={whatsappUrl} />
         <main id="main">{children}</main>
         <Footer />
         <MobileActionBar phone={settings.phone} whatsapp={settings.whatsapp} gradeNames={gradeNames} />

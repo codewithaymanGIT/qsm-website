@@ -1,4 +1,4 @@
-import type { Download, GalleryItem, PartnerLogo, Settings, TimelineEntry } from "./types";
+import type { Download, GalleryItem, PartnerLogo, Settings, TimelineEntry } from "../../src/content/types";
 
 // Unknown details stay as visible tokens until the company supplies them.
 export const settings: Settings = {

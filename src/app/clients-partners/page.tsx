@@ -5,8 +5,8 @@ import { getPartners } from "@/lib/content";
 
 // Hidden from menus, search engines and visitors until real logos exist.
 // Static export cannot return a real 404 here; Phase 2 calls notFound() instead.
-export function generateMetadata(): Metadata {
-  const empty = getPartners().length === 0;
+export async function generateMetadata(): Promise<Metadata> {
+  const empty = (await getPartners()).length === 0;
   return {
     title: "Clients & Partners",
     description: "Companies Quality Steel and Metals supplies and works with.",
@@ -14,10 +14,10 @@ export function generateMetadata(): Metadata {
   };
 }
 
-export default function ClientsPartnersPage() {
+export default async function ClientsPartnersPage() {
   return (
     <Suspense>
-      <PartnersView partners={getPartners()} />
+      <PartnersView partners={await getPartners()} />
     </Suspense>
   );
 }

@@ -10,8 +10,8 @@ export const metadata: Metadata = {
   description: "Send the grade, size and quantity you need, with drawings or CAD files. Quality Steel and Metals will reply with a quotation.",
 };
 
-export default function QuotePage() {
-  const s = getSettings();
+export default async function QuotePage() {
+  const s = await getSettings();
   return (
     <>
       <PageHero title="Request a quote." intro="Tell us the grade, size and quantity. Attach a drawing or CAD file if you have one." />

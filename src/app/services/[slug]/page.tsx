@@ -10,21 +10,20 @@ import { getService, getServices, getSettings } from "@/lib/content";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { serviceShots } from "@/lib/service-shots";
 
-export const dynamicParams = false;
 
-export function generateStaticParams() {
-  return getServices().map((s) => ({ slug: s.slug }));
+export async function generateStaticParams() {
+  return (await getServices()).map((s) => ({ slug: s.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps<"/services/[slug]">): Promise<Metadata> {
-  const service = getService((await params).slug);
+  const service = await getService((await params).slug);
   return service ? { title: service.name, description: service.summary } : {};
 }
 
 export default async function ServicePage({ params }: PageProps<"/services/[slug]">) {
-  const service = getService((await params).slug);
+  const service = await getService((await params).slug);
   if (!service) notFound();
-  const whatsappUrl = buildWhatsAppUrl(getSettings().whatsapp);
+  const whatsappUrl = buildWhatsAppUrl((await getSettings()).whatsapp);
 
   return (
     <>

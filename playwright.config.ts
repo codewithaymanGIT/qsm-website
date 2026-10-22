@@ -3,6 +3,7 @@ import { defineConfig, devices } from "@playwright/test";
 // Tests run against the production server (run `npm run build` first).
 export default defineConfig({
   testDir: "tests/e2e",
+  globalSetup: "./tests/e2e/global-setup.ts",
   use: { baseURL: "http://127.0.0.1:4173" },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {

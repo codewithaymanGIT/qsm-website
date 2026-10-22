@@ -41,8 +41,31 @@ model User {
   role         Role      @default(EDITOR)
   active       Boolean   @default(true)
   lastLoginAt  DateTime?
+  sessions     Session[]
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+}
+
+/// Admin sessions. Only a SHA-256 hash of the cookie token is stored.
+model Session {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  expiresAt  DateTime
+  lastUsedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+}
+
+/// Failed sign-ins per email+IP (hashed), for brute-force protection.
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  keyHash   String
+  createdAt DateTime @default(now())
+
+  @@index([keyHash, createdAt])
 }
 
 model Category {

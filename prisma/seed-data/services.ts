@@ -16,7 +16,7 @@ export const services: Service[] = [
     name: "Precision Machining",
     summary: "Milled, squared blocks and plates delivered closer to final size.",
     description: [
-      "Blocks and plates are milled and squared to your dimensions, so they arrive ready for your toolroom.",
+      "Blocks and plates are milled and squared in-house to your dimensions, so they arrive ready for your toolroom.",
       "Send a drawing with your enquiry and we will confirm what can be machined before quoting.",
     ],
     capabilities: ["Six-side milling", "Squaring", "Machining to drawing"],
@@ -26,7 +26,7 @@ export const services: Service[] = [
     name: "Surface Grinding",
     summary: "Flat, parallel ground surfaces for plates and blocks.",
     description: [
-      "Surface grinding gives plates and blocks a flat, parallel finish for mould bases, die sets and precision parts.",
+      "In-house surface grinding gives plates and blocks a flat, parallel finish for mould bases, die sets and precision parts.",
       "Share the required thickness and finish with your enquiry and we will advise on what is achievable.",
     ],
     capabilities: ["Plates", "Blocks", "Parallel faces", "Finish to drawing"],

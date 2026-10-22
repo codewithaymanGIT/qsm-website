@@ -51,7 +51,8 @@ export type GalleryItem = {
   shot: string;
 };
 
-export type PartnerLogo = { id: string; name: string; src: string };
+/** A customer shown on the site. Without a logo file, the name is shown as a badge. */
+export type PartnerLogo = { id: string; name: string; src: string | null };
 
 export type TimelineEntry = { year: string; title: string; body: string };
 

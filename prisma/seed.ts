@@ -6,7 +6,7 @@ import { PrismaClient } from "../src/generated/prisma/client";
 import { categories } from "./seed-data/categories";
 import { products } from "./seed-data/products";
 import { services } from "./seed-data/services";
-import { gallery, settings, timeline } from "./seed-data/site";
+import { gallery, partners, settings, timeline } from "./seed-data/site";
 
 export async function seed(db: PrismaClient) {
   for (const c of categories) {
@@ -28,6 +28,9 @@ export async function seed(db: PrismaClient) {
     await db.galleryItem.createMany({
       data: gallery.map(({ id: _id, ...g }, i) => ({ ...g, order: i })),
     });
+  }
+  if ((await db.partnerLogo.count()) === 0) {
+    await db.partnerLogo.createMany({ data: partners.map((p, i) => ({ name: p.name, order: i })) });
   }
   for (const [key, value] of Object.entries({ contact: settings, timeline })) {
     await db.setting.upsert({ where: { key }, update: {}, create: { key, value } });

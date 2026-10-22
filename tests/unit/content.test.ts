@@ -69,8 +69,14 @@ describe("content (database-backed)", () => {
     expect(JSON.stringify(await getTimeline())).not.toMatch(/bhosari/i);
   });
 
-  it("starts with no partner logos and has gallery slots", async () => {
-    expect(await getPartners()).toEqual([]);
+  it("lists the customers the owner confirmed, and has gallery slots", async () => {
+    expect((await getPartners()).map((p) => p.name)).toEqual([
+      "Maruti Suzuki",
+      "Tata",
+      "Mahindra",
+      "Bhilai Steel Plant",
+      "Sandvik Coromant",
+    ]);
     expect((await getGallery()).length).toBeGreaterThanOrEqual(6);
   });
 
@@ -95,8 +101,8 @@ describe("content (database-backed)", () => {
     expect(hchcr?.overview).not.toMatch(/D2/);
   });
 
-  it("does not claim in-house machining or grinding", async () => {
-    const text = JSON.stringify(await getServices());
-    expect(text).not.toMatch(/in-house|we mill|we grind/i);
+  it("states the processing the owner confirmed is done in-house", async () => {
+    const machining = (await getServices()).find((s) => s.slug === "precision-machining");
+    expect(machining?.description.join(" ")).toMatch(/in-house/);
   });
 });

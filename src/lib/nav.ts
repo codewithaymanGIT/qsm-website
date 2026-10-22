@@ -9,7 +9,7 @@ export async function getNavLinks(): Promise<NavLink[]> {
     { href: "/products/", label: "Products" },
     { href: "/services/", label: "Services" },
     { href: "/weight-calculator/", label: "Weight calculator" },
-    ...((await getPartners()).length > 0 ? [{ href: "/clients-partners/", label: "Clients & Partners" }] : []),
+    ...((await getPartners()).length > 0 ? [{ href: "/clients-partners/", label: "Clients" }] : []),
     { href: "/contact/", label: "Contact" },
   ];
 }

@@ -130,7 +130,7 @@ export async function getPartners(): Promise<PartnerLogo[]> {
   "use cache";
   cacheCatalog();
   const rows = await db.partnerLogo.findMany({ where: { published: true }, orderBy: { order: "asc" } });
-  return rows.map((l) => ({ id: l.id, name: l.name, src: fileHref(l.imageKey) }));
+  return rows.map((l) => ({ id: l.id, name: l.name, src: l.imageKey ? fileHref(l.imageKey) : null }));
 }
 
 async function getSetting<T>(key: string, fallback: T): Promise<T> {

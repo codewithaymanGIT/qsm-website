@@ -9,7 +9,7 @@ const reasons = [
   },
   {
     title: "Precision processing",
-    body: "Bandsaw cutting, machining and surface grinding, so material reaches your toolroom closer to finished size.",
+    body: "Bandsaw cutting, machining and surface grinding in-house, so material reaches your toolroom closer to finished size.",
   },
   {
     title: "Reliable supply",

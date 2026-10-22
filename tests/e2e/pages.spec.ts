@@ -96,12 +96,15 @@ test("contact page shows Mohit Agrawal and never a warehouse address", async ({ 
   await expect(page.getByRole("button", { name: "Send enquiry" })).toBeVisible();
 });
 
-test("clients & partners is hidden until logos exist, with a preview switch", async ({ page }) => {
-  await page.goto("/clients-partners/");
-  await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
-  await page.goto("/clients-partners/?preview=1");
-  await expect(page.locator("[data-logo]").first()).toBeVisible();
+test("customers appear on the homepage and their own page", async ({ page }) => {
+  await page.goto("/");
+  const band = page.getByRole("region", { name: "Trusted by" });
+  for (const name of ["Maruti Suzuki", "Tata", "Mahindra", "Bhilai Steel Plant", "Sandvik Coromant"]) {
+    await expect(band.getByText(name).first()).toBeAttached();
+  }
+  await page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Clients" }).click();
+  await expect(page.locator("h1").filter({ visible: true })).toHaveText("Companies we have supplied.");
+  await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
 });
 
 test("call and WhatsApp buttons use the company number", async ({ page }) => {

@@ -48,7 +48,10 @@ export const gallery: GalleryItem[] = [
   { id: "g8", label: "Team at work", aspect: "portrait", shot: "Team member measuring a block with a vernier" },
 ];
 
-export const partners: PartnerLogo[] = [];
+// Customers confirmed by the owner. Logo files are uploaded in the admin panel.
+export const partners: PartnerLogo[] = ["Maruti Suzuki", "Tata", "Mahindra", "Bhilai Steel Plant", "Sandvik Coromant"].map(
+  (name, i) => ({ id: `c${i + 1}`, name, src: null }),
+);
 
 // Shown on About only once real files are uploaded. Never placeholders.
 export const certificates: Download[] = [];

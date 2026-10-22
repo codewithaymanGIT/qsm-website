@@ -5,6 +5,7 @@ import { Hero } from "@/components/home/Hero";
 import { InfrastructureGallery } from "@/components/home/InfrastructureGallery";
 import { ServicesPreview } from "@/components/home/ServicesPreview";
 import { Snapshot } from "@/components/home/Snapshot";
+import { TrustedBy } from "@/components/home/TrustedBy";
 import { WhyChooseUs } from "@/components/home/WhyChooseUs";
 import { getGallery, getSettings, getTimeline } from "@/lib/content";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
@@ -15,6 +16,7 @@ export default async function Home() {
     <>
       <Hero videoSrc={settings.heroVideo} />
       <Snapshot />
+      <TrustedBy />
       <CategoryCards />
       <WhyChooseUs />
       <ServicesPreview />

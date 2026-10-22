@@ -1,51 +1,31 @@
-"use client";
-
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import type { PartnerLogo } from "@/content/types";
+import { CustomerBadge, CustomerMarquee } from "@/components/customers/CustomerBadge";
 import { Container } from "@/components/ui/Container";
-
-// Neutral shapes for previewing the layout. Never real company names.
-const samples: PartnerLogo[] = Array.from({ length: 8 }, (_, i) => ({ id: `s${i}`, name: `Sample logo ${i + 1}`, src: "" }));
+import type { PartnerLogo } from "@/content/types";
 
 export function PartnersView({ partners }: { partners: PartnerLogo[] }) {
-  const preview = useSearchParams().get("preview") === "1";
-  const logos = partners.length > 0 ? partners : preview ? samples : [];
-  if (logos.length === 0) return <NotFoundBlock />;
-
+  if (partners.length === 0) return <NotFoundBlock />;
   return (
     <>
       <section className="steel-texture grain relative border-b border-white/8 pt-36 pb-16 lg:pt-44 lg:pb-24">
         <Container>
-          {partners.length === 0 && (
-            <p className="mb-6 inline-block border border-gold/50 px-3 py-1.5 text-sm text-gold">Layout preview with sample shapes</p>
-          )}
-          <h1 className="text-display max-w-[16ch] font-semibold">Clients &amp; partners.</h1>
-          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-surface/70">Companies we are proud to supply and work with.</p>
+          <h1 className="text-display max-w-[16ch] font-semibold">Companies we have supplied.</h1>
+          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-surface/70">
+            Manufacturers and steel makers who rely on us for tool steel, die steel and processing.
+          </p>
         </Container>
       </section>
-      <section aria-label="Logos" className="overflow-hidden py-20 lg:py-28">
-        <div className="flex w-max animate-[marquee_40s_linear_infinite] gap-5 hover:[animation-play-state:paused]">
-          {[...logos, ...logos].map((l, i) => (
-            <div
-              key={`${l.id}-${i}`}
-              data-logo=""
-              aria-hidden={i >= logos.length ? true : undefined}
-              className="flex h-32 w-60 shrink-0 items-center justify-center border border-white/10 bg-graphite px-8"
-            >
-              {l.src ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={l.src} alt={l.name} className="max-h-16 w-auto opacity-80 grayscale" loading="lazy" />
-              ) : (
-                <span className="flex items-center gap-3 text-surface/40">
-                  <span className="h-8 w-8 bg-white/15" />
-                  <span className="h-3 w-24 bg-white/15" />
-                  <span className="sr-only">{l.name}</span>
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
+      <section aria-label="Customer logos" className="py-20 lg:py-24">
+        <CustomerMarquee customers={partners} />
+        <Container className="mt-16">
+          <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {partners.map((p) => (
+              <li key={p.id} className="[&>div]:w-full">
+                <CustomerBadge customer={p} />
+              </li>
+            ))}
+          </ul>
+        </Container>
       </section>
     </>
   );

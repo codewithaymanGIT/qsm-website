@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Enquiry } from "@/components/forms/Enquiry";
 import { GradeEnquiry } from "@/components/product/GradeEnquiry";
 import { TechnicalData } from "@/components/product/TechnicalData";
 import { Button } from "@/components/ui/Button";
@@ -142,7 +143,9 @@ export default async function GradePage({ params }: PageProps<"/grades/[slug]">)
         </Container>
       </section>
 
-      <GradeEnquiry title={`Request a quote for ${product.name}`} whatsappUrl={whatsappUrl} quoteHref={quoteHref} />
+      <GradeEnquiry title={`Request a quote for ${product.name}`} whatsappUrl={whatsappUrl} quoteHref={quoteHref}>
+        <Enquiry defaultGrade={product.slug} title={`Enquire about ${product.name}`} />
+      </GradeEnquiry>
     </>
   );
 }

@@ -65,6 +65,12 @@
   }
 }
 
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @keyframes sweep {
   0% {
     transform: translateX(0);

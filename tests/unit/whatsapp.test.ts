@@ -24,3 +24,11 @@ describe("whatsapp", () => {
     expect(buildWhatsAppUrl("[WHATSAPP]", "H13").startsWith("https://wa.me/?text=")).toBe(true);
   });
 });
+
+describe("whatsapp details", () => {
+  it("fills dimensions and quantity when known", () => {
+    expect(whatsappMessage("D2", { dimensions: "Flat 50 x 200 x 300", quantity: "2 pcs" })).toBe(
+      "Hello, I would like a quotation for D2 Steel.\nDimensions: Flat 50 x 200 x 300\nQuantity: 2 pcs\nPlease contact me.",
+    );
+  });
+});

@@ -4,13 +4,7 @@ import { ImageSlot } from "@/components/ui/ImageSlot";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { getServices } from "@/lib/content";
-
-const shots: Record<string, string> = {
-  "bandsaw-cutting": "Bandsaw blade entering a round bar",
-  "precision-machining": "Milling cutter squaring a block",
-  "surface-grinding": "Grinding wheel passing over a plate",
-  "custom-cutting": "Drawing beside a part cut to shape",
-};
+import { serviceShots } from "@/lib/service-shots";
 
 export function ServicesPreview() {
   return (
@@ -35,7 +29,7 @@ export function ServicesPreview() {
               <Link href={`/services/${s.slug}/`} className="group block">
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <div className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]">
-                    <ImageSlot label={s.name} shot={shots[s.slug]} className="h-full w-full" />
+                    <ImageSlot label={s.name} shot={serviceShots[s.slug]} className="h-full w-full" />
                   </div>
                 </div>
                 <h3 className="mt-6 font-display text-2xl font-semibold transition-colors group-hover:text-gold">

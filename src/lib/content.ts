@@ -3,7 +3,7 @@
 import { categories } from "@/content/categories";
 import { products } from "@/content/products";
 import { services } from "@/content/services";
-import { gallery, partners, settings, timeline } from "@/content/site";
+import { brochure, certificates, gallery, partners, settings, timeline } from "@/content/site";
 import type { Category, Product } from "@/content/types";
 
 export const getCategories = (): Category[] =>
@@ -38,3 +38,7 @@ export const getPartners = () => partners;
 export const getTimeline = () => timeline;
 
 export const getSettings = () => settings;
+
+export const getCertificates = () => certificates;
+
+export const getBrochure = () => brochure;

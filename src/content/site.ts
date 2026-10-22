@@ -1,4 +1,4 @@
-import type { GalleryItem, PartnerLogo, Settings, TimelineEntry } from "./types";
+import type { Download, GalleryItem, PartnerLogo, Settings, TimelineEntry } from "./types";
 
 // Unknown details stay as visible tokens until the company supplies them.
 export const settings: Settings = {
@@ -38,3 +38,7 @@ export const gallery: GalleryItem[] = [
 ];
 
 export const partners: PartnerLogo[] = [];
+
+// Shown on About only once real files are uploaded. Never placeholders.
+export const certificates: Download[] = [];
+export const brochure: Download | null = null;

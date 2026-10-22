@@ -2,6 +2,17 @@ import { expect, test } from "@playwright/test";
 import path from "node:path";
 import fs from "node:fs";
 import os from "node:os";
+import { Client } from "pg";
+
+async function queryOne(sql: string, params: unknown[]) {
+  const client = new Client({ connectionString: process.env.E2E_DATABASE_URL ?? "postgresql://qsm:qsm_dev_password@127.0.0.1:5432/qsm_test" });
+  await client.connect();
+  try {
+    return (await client.query(sql, params)).rows[0];
+  } finally {
+    await client.end();
+  }
+}
 
 test.describe("quote form", () => {
   test("shows a clear error for each missing required field", async ({ page }) => {
@@ -27,18 +38,27 @@ test.describe("quote form", () => {
     await expect(page.getByText("Use PDF, DWG, DXF, STEP, JPG, PNG or WEBP files.")).toBeVisible();
   });
 
-  test("a valid enquiry shows the preview notice and a filled WhatsApp link", async ({ page }) => {
+  test("a valid enquiry is saved with a drawing and shows its reference", async ({ page }) => {
+    const pdf = path.join(os.tmpdir(), "e2e-drawing.pdf");
+    fs.writeFileSync(pdf, "%PDF-1.7\n1 0 obj\n");
     await page.goto("/quote/?grade=d2");
+    await page.waitForLoadState("networkidle");
     await page.getByLabel("Your name").fill("Ravi Kumar");
     await page.getByLabel("Phone").fill("+91 98200 00000");
     await page.getByLabel("Email").fill("ravi@example.com");
     await page.getByLabel("Dimensions").fill("Flat 50 x 200 x 300");
     await page.getByLabel("Quantity").fill("2 pcs");
+    await page.getByLabel(/Drawing/).setInputFiles(pdf);
     await page.getByRole("button", { name: "Send enquiry" }).click();
-    await expect(page.getByText("Preview only: enquiries are not sent yet.")).toBeVisible();
-    const href = await page.getByRole("link", { name: /Send on WhatsApp/ }).getAttribute("href");
-    expect(href).toContain(encodeURIComponent("D2 Steel"));
-    expect(href).toContain(encodeURIComponent("Dimensions: Flat 50 x 200 x 300"));
+    const status = page.getByRole("status");
+    await expect(status).toContainText("Enquiry received");
+    const reference = (await status.textContent())?.match(/QSM-\d{4}-\d{4}/)?.[0];
+    expect(reference).toBeTruthy();
+    const lead = await queryOne(
+      `SELECT l."gradeSlug", l.dimensions, count(u.id)::int AS files FROM "Lead" l LEFT JOIN "Upload" u ON u."leadId" = l.id WHERE l.reference = $1 GROUP BY l.id`,
+      [reference],
+    );
+    expect(lead).toEqual({ gradeSlug: "d2", dimensions: "Flat 50 x 200 x 300", files: 1 });
   });
 });
 

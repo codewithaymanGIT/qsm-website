@@ -17,7 +17,17 @@ type Props = {
   title?: string;
 };
 
-type Errors = Partial<Record<keyof QuoteInput, string>>;
+type Errors = Partial<Record<keyof QuoteInput | "drawing" | "cad", string>>;
+
+// The private review link has no server; there the form explains instead of sending.
+const PREVIEW = process.env.NEXT_PUBLIC_PREVIEW === "1";
+
+type Outcome =
+  | { kind: "editing" }
+  | { kind: "sending" }
+  | { kind: "preview" }
+  | { kind: "sent"; reference: string }
+  | { kind: "failed"; message: string };
 
 const empty: QuoteInput = { name: "", company: "", phone: "", email: "", grade: "", dimensions: "", quantity: "", message: "" };
 const noFile: PickedFile = { file: null, error: null };
@@ -37,7 +47,8 @@ export function QuoteForm({ grades, whatsapp, defaultGrade, service, title = "Se
   const [errors, setErrors] = useState<Errors>({});
   const [drawing, setDrawing] = useState<PickedFile>(noFile);
   const [cad, setCad] = useState<PickedFile>(noFile);
-  const [sent, setSent] = useState(false);
+  const [outcome, setOutcome] = useState<Outcome>({ kind: "editing" });
+  const [trap, setTrap] = useState("");
 
   const set = (key: keyof QuoteInput) => (e: { target: { value: string } }) =>
     setValues((v) => ({ ...v, [key]: e.target.value }));
@@ -55,38 +66,76 @@ export function QuoteForm({ grades, whatsapp, defaultGrade, service, title = "Se
     }
     if (drawing.error || cad.error) return;
     setErrors({});
-    setSent(true);
+    if (PREVIEW) return setOutcome({ kind: "preview" });
+
+    setOutcome({ kind: "sending" });
+    const body = new FormData();
+    for (const [k, v] of Object.entries(values)) body.append(k, v ?? "");
+    if (drawing.file) body.append("drawing", drawing.file);
+    if (cad.file) body.append("cad", cad.file);
+    if (service) body.append("service", service);
+    body.append("pagePath", window.location.pathname);
+    body.append("website", trap);
+    try {
+      const res = await fetch("/api/leads", { method: "POST", body });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 201) return setOutcome({ kind: "sent", reference: data.reference });
+      if (res.status === 400 && data.errors) {
+        setErrors(data.errors);
+        return setOutcome({ kind: "editing" });
+      }
+      setOutcome({ kind: "failed", message: data.error ?? "Your enquiry could not be sent." });
+    } catch {
+      setOutcome({ kind: "failed", message: "No connection. Check your internet and try again." });
+    }
   }
 
   const gradeName = grades.find((g) => g.slug === values.grade)?.name;
 
-  if (sent) {
-    const url = buildWhatsAppUrl(whatsapp, gradeName, { dimensions: values.dimensions, quantity: values.quantity });
+  const whatsappUrl = buildWhatsAppUrl(whatsapp, gradeName, { dimensions: values.dimensions, quantity: values.quantity });
+
+  if (outcome.kind === "sent" || outcome.kind === "preview") {
     return (
       <div className="border border-gold/40 bg-graphite p-8 sm:p-10" role="status">
-        <p className="font-display text-2xl font-semibold">Preview only: enquiries are not sent yet.</p>
-        <p className="mt-4 leading-relaxed text-mist">
-          On the live website this enquiry is saved, emailed to the team and tracked until it is answered. For now,
-          send the same details on WhatsApp.
-        </p>
+        {outcome.kind === "sent" ? (
+          <>
+            <p className="font-display text-2xl font-semibold">Enquiry received.</p>
+            <p className="mt-4 leading-relaxed text-mist">
+              Your reference is <span className="font-semibold text-surface select-all">{outcome.reference}</span>. Our
+              team will contact you by phone, WhatsApp or email.
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="font-display text-2xl font-semibold">Preview only: enquiries are not sent yet.</p>
+            <p className="mt-4 leading-relaxed text-mist">
+              On the live website this enquiry is saved, emailed to the team and tracked until it is answered. For now,
+              send the same details on WhatsApp.
+            </p>
+          </>
+        )}
         <a
-          href={url}
+          href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-8 inline-flex min-h-12 items-center gap-2.5 bg-[#1F7A4A] px-6 font-medium text-white hover:bg-[#25915a]"
         >
           <WhatsAppIcon className="h-5 w-5" />
-          Send on WhatsApp
+          {outcome.kind === "sent" ? "Also message us on WhatsApp" : "Send on WhatsApp"}
         </a>
-        <button type="button" onClick={() => setSent(false)} className="mt-4 block min-h-11 text-sm text-mist underline underline-offset-4 hover:text-gold">
-          Edit enquiry
-        </button>
+        {outcome.kind === "preview" && (
+          <button type="button" onClick={() => setOutcome({ kind: "editing" })} className="mt-4 block min-h-11 text-sm text-mist underline underline-offset-4 hover:text-gold">
+            Edit enquiry
+          </button>
+        )}
       </div>
     );
   }
 
+  const sending = outcome.kind === "sending";
+
   return (
-    <form noValidate onSubmit={submit} className="border border-white/10 bg-ink/60 p-6 sm:p-10">
+    <form noValidate onSubmit={submit} className="relative border border-white/10 bg-ink/60 p-6 sm:p-10">
       <h2 className="font-display text-2xl font-semibold">{title}</h2>
       {service && <p className="mt-2 text-mist">Service: {service}</p>}
       <div className="mt-8 grid gap-5 md:grid-cols-2 [&>*]:min-w-0">
@@ -125,11 +174,29 @@ export function QuoteForm({ grades, whatsapp, defaultGrade, service, title = "Se
             <textarea id="q-message" rows={4} value={values.message} onChange={set("message")} className={field} aria-invalid={!!errors.message} aria-describedby="q-message-err" />
           </Field>
         </div>
-        <FileField label="Drawing (PDF, DWG, DXF or image)" hint="Optional. Up to 20 MB." accept=".pdf,.dwg,.dxf,.jpg,.jpeg,.png,.webp" value={drawing} onChange={setDrawing} />
-        <FileField label="CAD file (STEP, DWG or DXF)" hint="Optional. Up to 20 MB." accept=".step,.stp,.dwg,.dxf" value={cad} onChange={setCad} />
+        <FileField label="Drawing (PDF, DWG, DXF or image)" hint="Optional. Up to 20 MB." accept=".pdf,.dwg,.dxf,.jpg,.jpeg,.png,.webp" value={errors.drawing ? { file: null, error: errors.drawing } : drawing} onChange={setDrawing} />
+        <FileField label="CAD file (STEP, DWG or DXF)" hint="Optional. Up to 20 MB." accept=".step,.stp,.dwg,.dxf" value={errors.cad ? { file: null, error: errors.cad } : cad} onChange={setCad} />
+        {/* Spam trap: hidden from people and screen readers; bots tend to fill every field. */}
+        <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+          <label htmlFor="q-website">Website</label>
+          <input id="q-website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
+        </div>
       </div>
-      <button type="submit" className="mt-8 inline-flex min-h-12 w-full items-center justify-center bg-gold px-8 font-medium text-ink transition-colors hover:bg-[#d8b679] sm:w-auto">
-        Send enquiry
+      {outcome.kind === "failed" && (
+        <div role="alert" className="mt-8 border border-red-400/50 bg-red-400/5 p-5">
+          <p className="text-surface">{outcome.message}</p>
+          <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-2 text-[#5BD47E] underline-offset-4 hover:underline">
+            <WhatsAppIcon className="h-5 w-5" />
+            Send the same details on WhatsApp
+          </a>
+        </div>
+      )}
+      <button
+        type="submit"
+        disabled={sending}
+        className="mt-8 inline-flex min-h-12 w-full items-center justify-center bg-gold px-8 font-medium text-ink transition-colors hover:bg-[#d8b679] disabled:cursor-wait disabled:opacity-70 sm:w-auto"
+      >
+        {sending ? "Sending…" : "Send enquiry"}
       </button>
     </form>
   );

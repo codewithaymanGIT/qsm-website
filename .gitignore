@@ -44,3 +44,4 @@ next-env.d.ts
 /storage/
 /src/generated/
 !.env.example
+/storage/

@@ -148,10 +148,12 @@ async function packPage(route, source) {
     return `<link rel="icon" href="data:image/svg+xml;base64,${svg}" type="image/svg+xml"/>`;
   });
   // Site images (customer logos, uploads) are embedded too; the host blocks separate image files.
-  html = await replaceAsync(html, /src="(\/(?!_next\/)[^"]+\.(png|jpe?g|webp))"/g, async (_, src, ext) => {
+  // Replace every occurrence, including React's page data, or a client re-render restores the blocked URL.
+  for (const src of new Set(html.match(/\/(?:clients|files)\/[\w.-]+\.(?:png|jpe?g|webp)/g) ?? [])) {
+    const ext = src.split(".").pop();
     const mime = ext === "png" ? "image/png" : ext === "webp" ? "image/webp" : "image/jpeg";
-    return `src="data:${mime};base64,${(await fetchAsset(src)).toString("base64")}"`;
-  });
+    html = html.replaceAll(src, `data:${mime};base64,${(await fetchAsset(src)).toString("base64")}`);
+  }
   html = html.replace(/href="(\/(?!\/|_next\/|icon)[^"#]*)"/g, (_, href) => `href="${toFile(href, prefix)}"`);
   html = await inlineLazyChunks(html, inlined);
   if (!html.includes("getAttribute:()=>")) throw new Error(`${route}: chunk header patch did not apply`);

@@ -9,9 +9,17 @@ import path from "node:path";
 const root = path.resolve(import.meta.dirname, "..");
 const out = path.join(root, "out");
 const dest = path.join(root, "preview");
-const pages = process.argv.slice(2).length ? process.argv.slice(2) : ["index.html"];
+// Every exported page except the not-found variants.
+function listPages(dir = out, rel = "") {
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((d) => {
+    const r = path.posix.join(rel, d.name);
+    if (d.isDirectory()) return d.name.startsWith("_") || d.name === "404" ? [] : listPages(path.join(dir, d.name), r);
+    return d.name === "index.html" ? [r] : [];
+  });
+}
 
 execSync("npx next build", { cwd: root, stdio: "inherit" });
+const pages = listPages();
 
 const read = (p) => fs.readFileSync(path.join(out, p.replace(/^\//, "").split("?")[0]));
 
@@ -22,6 +30,8 @@ function inlineCss(href) {
   const dir = path.posix.dirname(href);
   const css = read(href)
     .toString("utf8")
+    // Latin subset only: the site is English, and each preview page embeds its fonts.
+    .replace(/@font-face\{[^}]*unicode-range:[^}]*\}/g, (face) => (face.includes("U+0-FF") ? face : ""))
     .replace(/url\((\.\.\/media\/[^)]+\.woff2)\)/g, (_, rel) => {
       const font = read(path.posix.join(dir, rel)).toString("base64");
       return `url(data:font/woff2;base64,${font})`;
@@ -42,12 +52,28 @@ function inlineScript(src) {
   return `<script>${js}</script>`;
 }
 
+// Pages are separate files on the preview host, so internal links become
+// relative file paths, and clicks bypass Next's client router (it would fetch
+// route data the host does not serve).
+function toFile(href, prefix) {
+  const [p, query] = href.split("?");
+  const file = `${prefix}${p.replace(/^\//, "")}${p.endsWith("/") ? "" : "/"}index.html`;
+  return query ? `${file}?${query}` : file;
+}
+
+function navScript(prefix) {
+  return `<script>window.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href]");if(!a||a.target==="_blank"||e.metaKey||e.ctrlKey)return;var h=a.getAttribute("href");if(!h||h[0]==="#"||/^[a-z][a-z0-9+.-]*:|^\\/\\//i.test(h))return;e.preventDefault();e.stopImmediatePropagation();if(h[0]!=="/"){location.href=h;return}var q=h.split("?"),p=q[0].replace(/^\\//,"");location.href=${JSON.stringify(prefix)}+p+(p===""||/\\/$/.test(p)?"":"/")+"index.html"+(q[1]?"?"+q[1]:"")},true);</script>`;
+}
+
 fs.rmSync(dest, { recursive: true, force: true });
 fs.mkdirSync(dest, { recursive: true });
 
 for (const page of pages) {
+  const prefix = "../".repeat(page.split("/").length - 1);
   let html = read(page).toString("utf8");
   html = html
+    .replace(/<head>/, `<head>${navScript(prefix)}`)
+    .replace(/href="(\/(?!\/|_next\/|icon\.)[^"#]*)"/g, (_, href) => `href="${toFile(href, prefix)}"`)
     .replace(/<link rel="preload"[^>]*as="font"[^>]*\/>/g, "")
     .replace(/<link rel="stylesheet" href="([^"]+)"[^>]*\/>/g, (_, href) => inlineCss(href))
     .replace(/<link rel="preload" as="script"[^>]*href="([^"]+)"[^>]*\/>/g, (_, src) => inlineScript(src))

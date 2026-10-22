@@ -1,6 +1,12 @@
-import { WhatsAppIcon } from "@/components/ui/icons";
+"use client";
 
-export function FloatingWhatsApp({ whatsappUrl }: { whatsappUrl: string }) {
+import { WhatsAppIcon } from "@/components/ui/icons";
+import { useWhatsAppUrl } from "@/lib/use-whatsapp-url";
+
+type Props = { whatsapp: string; gradeNames: Record<string, string> };
+
+export function FloatingWhatsApp({ whatsapp, gradeNames }: Props) {
+  const whatsappUrl = useWhatsAppUrl(whatsapp, gradeNames);
   return (
     <a
       href={whatsappUrl}

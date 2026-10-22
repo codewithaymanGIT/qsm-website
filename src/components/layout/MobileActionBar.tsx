@@ -1,10 +1,14 @@
+"use client";
+
 import Link from "next/link";
 import { PhoneIcon, QuoteIcon, WhatsAppIcon } from "@/components/ui/icons";
+import { useWhatsAppUrl } from "@/lib/use-whatsapp-url";
 
-type Props = { phone: string; whatsappUrl: string };
+type Props = { phone: string; whatsapp: string; gradeNames: Record<string, string> };
 
 /** Always-visible contact bar on phones and tablets. */
-export function MobileActionBar({ phone, whatsappUrl }: Props) {
+export function MobileActionBar({ phone, whatsapp, gradeNames }: Props) {
+  const whatsappUrl = useWhatsAppUrl(whatsapp, gradeNames);
   const item = "flex flex-1 flex-col items-center justify-center gap-1 text-[12px] font-medium min-h-14";
   return (
     <div

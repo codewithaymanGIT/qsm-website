@@ -9,19 +9,19 @@ import { getCategories, getProductsByCategory } from "@/lib/content";
 // The homepage brief labels the last category "Specialized Steels".
 const homeLabels: Record<string, string> = { "other-steel-grades": "Specialized Steels" };
 
-export function CategoryCards() {
+export function CategoryCards({ showHeading = true, homeLabelsOn = true }: { showHeading?: boolean; homeLabelsOn?: boolean }) {
   const categories = getCategories();
   return (
     <section className="py-24 lg:py-36">
       <Container>
-        <Reveal>
+        {showHeading && <Reveal>
           <SectionHeading
             kicker="Products"
             title="Steel for the tools that make everything else."
             intro="Eight families of tool, die, mould and alloy steel. Open a category to see the grades we supply and their technical data."
           />
-        </Reveal>
-        <ul className="mt-16 grid gap-5 lg:mt-20 xl:grid-cols-2">
+        </Reveal>}
+        <ul className={`grid gap-5 xl:grid-cols-2 ${showHeading ? "mt-16 lg:mt-20" : ""}`}>
           {categories.map((c) => {
             const grades = getProductsByCategory(c.slug);
             return (
@@ -36,7 +36,7 @@ export function CategoryCards() {
                     </div>
                   </div>
                   <div className="flex flex-col p-7 sm:p-8">
-                    <h3 className="text-h3 font-semibold">{homeLabels[c.slug] ?? c.name}</h3>
+                    <h3 className="text-h3 font-semibold">{(homeLabelsOn && homeLabels[c.slug]) || c.name}</h3>
                     <p className="mt-4 leading-relaxed text-mist">{c.shortDescription}</p>
                     <div className="mt-auto flex items-end justify-between gap-4 pt-8">
                       <p className="text-sm text-surface/60">

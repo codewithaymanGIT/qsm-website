@@ -6,11 +6,14 @@ export function CustomerBadge({ customer, hidden }: { customer: PartnerLogo; hid
     <div
       data-logo=""
       aria-hidden={hidden || undefined}
-      className="flex h-28 w-64 shrink-0 items-center justify-center border border-white/12 bg-graphite px-8 sm:h-32 sm:w-72"
+      className={`flex h-28 w-64 shrink-0 items-center justify-center px-8 sm:h-32 sm:w-72 ${
+        customer.src ? "bg-white shadow-[0_10px_30px_rgb(0_0_0/0.25)]" : "border border-white/12 bg-graphite"
+      }`}
     >
       {customer.src ? (
+        // Full-colour logo on a white tile, so every brand reads correctly on the navy page.
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={customer.src} alt={customer.name} loading="lazy" className="max-h-16 w-auto object-contain opacity-90 grayscale transition hover:grayscale-0" />
+        <img src={customer.src} alt={customer.name} loading="lazy" className="max-h-[68%] max-w-full object-contain" />
       ) : (
         <span className="text-center font-display text-2xl leading-tight font-semibold tracking-tight text-surface/85 sm:text-[1.7rem]">
           {customer.name}

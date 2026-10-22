@@ -49,7 +49,7 @@ export const gallery: GalleryItem[] = [
 ];
 
 // Customers confirmed by the owner. Logo files are uploaded in the admin panel.
-export const partners: PartnerLogo[] = ["Maruti Suzuki", "Tata", "Mahindra", "Bhilai Steel Plant", "Sandvik Coromant"].map(
+export const partners: PartnerLogo[] = ["Maruti Suzuki", "Tata", "Mahindra", "Bhilai Steel Plant (SAIL)", "Sandvik Coromant"].map(
   (name, i) => ({ id: `c${i + 1}`, name, src: null }),
 );
 

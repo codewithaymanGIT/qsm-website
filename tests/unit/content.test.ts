@@ -74,7 +74,7 @@ describe("content (database-backed)", () => {
       "Maruti Suzuki",
       "Tata",
       "Mahindra",
-      "Bhilai Steel Plant",
+      "Bhilai Steel Plant (SAIL)",
       "Sandvik Coromant",
     ]);
     expect((await getGallery()).length).toBeGreaterThanOrEqual(6);
@@ -104,5 +104,18 @@ describe("content (database-backed)", () => {
   it("states the processing the owner confirmed is done in-house", async () => {
     const machining = (await getServices()).find((s) => s.slug === "precision-machining");
     expect(machining?.description.join(" ")).toMatch(/in-house/);
+  });
+
+  it("serves a customer logo from a project file or an uploaded file", async () => {
+    const { db } = await import("@/lib/server/db");
+    const tata = await db.partnerLogo.findFirstOrThrow({ where: { name: "Tata" } });
+    await db.partnerLogo.update({ where: { id: tata.id }, data: { imageKey: "/clients/tata.png" } });
+    const maruti = await db.partnerLogo.findFirstOrThrow({ where: { name: "Maruti Suzuki" } });
+    await db.partnerLogo.update({ where: { id: maruti.id }, data: { imageKey: "abc123.png" } });
+    const byName = Object.fromEntries((await getPartners()).map((p) => [p.name, p.src]));
+    expect(byName["Tata"]).toBe("/clients/tata.png");
+    expect(byName["Maruti Suzuki"]).toBe("/files/abc123.png");
+    expect(byName["Mahindra"]).toBeNull();
+    await db.partnerLogo.updateMany({ data: { imageKey: null } });
   });
 });

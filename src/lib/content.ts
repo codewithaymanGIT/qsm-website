@@ -130,7 +130,9 @@ export async function getPartners(): Promise<PartnerLogo[]> {
   "use cache";
   cacheCatalog();
   const rows = await db.partnerLogo.findMany({ where: { published: true }, orderBy: { order: "asc" } });
-  return rows.map((l) => ({ id: l.id, name: l.name, src: l.imageKey ? fileHref(l.imageKey) : null }));
+  // A key starting with "/" is a logo shipped in public/; anything else is an admin upload.
+  const src = (key: string | null) => (!key ? null : key.startsWith("/") ? key : fileHref(key));
+  return rows.map((l) => ({ id: l.id, name: l.name, src: src(l.imageKey) }));
 }
 
 async function getSetting<T>(key: string, fallback: T): Promise<T> {

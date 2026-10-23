@@ -7,6 +7,7 @@ import { categories } from "./seed-data/categories";
 import { products } from "./seed-data/products";
 import { services } from "./seed-data/services";
 import { gallery, partners, settings, timeline } from "./seed-data/site";
+import { databaseUrl } from "../src/lib/database-url";
 
 export async function seed(db: PrismaClient) {
   for (const c of categories) {
@@ -38,7 +39,7 @@ export async function seed(db: PrismaClient) {
 }
 
 async function main() {
-  const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }) });
+  const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: databaseUrl()! }) });
   try {
     await seed(db);
     console.log("Seed complete");

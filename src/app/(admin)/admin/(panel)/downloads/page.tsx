@@ -59,7 +59,7 @@ async function Downloads() {
           className="mt-5 grid gap-4 md:grid-cols-2"
         >
           <Field idPrefix="brochure" label="Title" name="title" defaultValue={brochure?.title ?? "Company brochure"} />
-          <FileField idPrefix="brochure" label="PDF file" accept={PDF_ACCEPT} required />
+          <FileField idPrefix="brochure" label="PDF file" accept={PDF_ACCEPT} purpose="document" required />
         </ActionForm>
       </section>
 
@@ -93,7 +93,7 @@ async function Downloads() {
           <Field idPrefix="cert" label="Certificate name" name="title" required />
           <Field idPrefix="cert" label="Issued by (optional)" name="issuer" />
           <Field idPrefix="cert" label="Valid until (optional)" name="validUntil" type="date" />
-          <FileField idPrefix="cert" label="PDF file" accept={PDF_ACCEPT} required />
+          <FileField idPrefix="cert" label="PDF file" accept={PDF_ACCEPT} purpose="document" required />
         </ActionForm>
       </section>
     </div>

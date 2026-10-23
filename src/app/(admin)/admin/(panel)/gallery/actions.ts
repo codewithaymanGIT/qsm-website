@@ -8,13 +8,13 @@ const roles = rolesFor("/admin/gallery/");
 
 export async function addGalleryAction(form: FormData) {
   return adminAction(roles, async () => {
-    await addGalleryItem(form, formFile(form, "file"));
+    await addGalleryItem(form, await formFile(form, "file"));
     return "Photo added to the website.";
   });
 }
 
 export async function updateGalleryAction(id: string, form: FormData) {
-  return adminAction(roles, () => updateGalleryItem(id, form, formFile(form, "file")));
+  return adminAction(roles, async () => updateGalleryItem(id, form, await formFile(form, "file")));
 }
 
 export async function deleteGalleryAction(id: string) {

@@ -8,7 +8,7 @@ const roles = rolesFor("/admin/downloads/");
 
 export async function brochureAction(form: FormData) {
   return adminAction(roles, async () => {
-    await replaceBrochure(form, formFile(form, "file"));
+    await replaceBrochure(form, await formFile(form, "file"));
     return "Brochure uploaded.";
   });
 }
@@ -22,7 +22,7 @@ export async function removeBrochureAction() {
 
 export async function addCertificateAction(form: FormData) {
   return adminAction(roles, async () => {
-    await addCertificate(form, formFile(form, "file"));
+    await addCertificate(form, await formFile(form, "file"));
     return "Certificate added.";
   });
 }

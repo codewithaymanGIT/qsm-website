@@ -117,3 +117,9 @@ test("an admin creates a user who can then sign in", async ({ page, browser }) =
   await other.getByRole("button", { name: "Sign in" }).click();
   await expect(other).toHaveURL(/\/admin\/$/);
 });
+
+test("the first-admin setup page is closed once users exist", async ({ page }) => {
+  await page.goto("/admin/setup/");
+  await expect(page.getByText("Setup is complete.")).toBeVisible();
+  await expect(page.getByLabel("Setup token")).toHaveCount(0);
+});

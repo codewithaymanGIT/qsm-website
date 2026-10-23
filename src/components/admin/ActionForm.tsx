@@ -2,6 +2,7 @@
 
 import { useRef, useState, useTransition, type ReactNode } from "react";
 import type { ActionResult } from "@/lib/action-result";
+import { DIRECT_UPLOADS, DirectUploadError, uploadDirect, type UploadPurpose } from "@/lib/direct-upload";
 import { adminButton } from "./ui";
 
 type Props = {
@@ -30,7 +31,19 @@ export function ActionForm({ action, children, submitLabel = "Save", resetOnSucc
       onSubmit={(e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
+        const fileInputs = [...e.currentTarget.querySelectorAll<HTMLInputElement>("input[type=file][name]")];
         start(async () => {
+          if (DIRECT_UPLOADS) {
+            try {
+              for (const input of fileInputs) {
+                const file = input.files?.[0];
+                if (file) data.set(input.name, await uploadDirect(file, (input.dataset.purpose ?? "image") as UploadPurpose));
+              }
+            } catch (err) {
+              setResult({ error: err instanceof DirectUploadError ? err.message : "Upload failed. Try again." });
+              return;
+            }
+          }
           const r = (await action(data)) ?? { ok: "Saved." };
           setResult(r);
           if (r.ok && resetOnSuccess) ref.current?.reset();

@@ -89,7 +89,7 @@ async function EditProduct({ params, searchParams }: Pick<PageProps<"/admin/prod
             <label htmlFor="ds-file" className="mb-1.5 block text-sm text-surface/80">
               PDF file
             </label>
-            <input id="ds-file" name="file" type="file" accept="application/pdf,.pdf" required className={`${adminInput} min-w-0`} />
+            <input id="ds-file" name="file" type="file" accept="application/pdf,.pdf" data-purpose="document" required className={`${adminInput} min-w-0`} />
           </div>
         </ActionForm>
       </section>

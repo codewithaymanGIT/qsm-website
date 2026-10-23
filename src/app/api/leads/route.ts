@@ -1,4 +1,5 @@
 import { MAX_UPLOAD_BYTES } from "@/lib/upload-rules";
+import { incomingFile, sweepIncoming } from "@/lib/server/incoming";
 import { LeadValidationError, RateLimitError, submitLead } from "@/lib/server/leads";
 
 // Two files of up to 20 MB plus form fields.
@@ -23,19 +24,15 @@ export async function POST(request: Request) {
 
   const fields: Record<string, string> = {};
   for (const [key, value] of form.entries()) if (typeof value === "string") fields[key] = value;
-  const file = (key: string) => {
-    const v = form.get(key);
-    return v instanceof File && v.size > 0 ? v : null;
-  };
-
   try {
     const { reference } = await submitLead({
       fields,
-      drawing: file("drawing"),
-      cad: file("cad"),
+      drawing: await incomingFile(form, "drawing"),
+      cad: await incomingFile(form, "cad"),
       ip: request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? request.headers.get("x-real-ip"),
       userAgent: request.headers.get("user-agent"),
     });
+    await sweepIncoming().catch(() => {});
     return json({ reference }, 201);
   } catch (e) {
     if (e instanceof LeadValidationError) return json({ errors: e.errors }, 400);

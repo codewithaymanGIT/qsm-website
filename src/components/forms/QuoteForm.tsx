@@ -6,6 +6,7 @@ import { WhatsAppIcon } from "@/components/ui/icons";
 import type { QuoteInput } from "@/lib/quote-schema";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { FileField, type PickedFile } from "./FileField";
+import { DIRECT_UPLOADS, DirectUploadError, uploadDirect } from "@/lib/direct-upload";
 
 type Props = {
   grades: { slug: string; name: string }[];
@@ -91,12 +92,22 @@ export function QuoteForm({ grades, whatsapp, defaultGrade, defaultDimensions, d
     setOutcome({ kind: "sending" });
     const body = new FormData();
     for (const [k, v] of Object.entries(values)) body.append(k, v ?? "");
-    if (drawing.file) body.append("drawing", drawing.file);
-    if (cad.file) body.append("cad", cad.file);
     if (service) body.append("service", service);
     body.append("pagePath", window.location.pathname);
     body.append("website", trap);
     try {
+      for (const [field, picked] of [["drawing", drawing], ["cad", cad]] as const) {
+        if (!picked.file) continue;
+        if (!DIRECT_UPLOADS) body.append(field, picked.file);
+        else {
+          try {
+            body.append(field, await uploadDirect(picked.file, "enquiry"));
+          } catch (e) {
+            setErrors({ [field]: e instanceof DirectUploadError ? e.message : "Upload failed. Try again." });
+            return setOutcome({ kind: "editing" });
+          }
+        }
+      }
       const res = await fetch("/api/leads", { method: "POST", body });
       const data = await res.json().catch(() => ({}));
       if (res.status === 201) return setOutcome({ kind: "sent", reference: data.reference });

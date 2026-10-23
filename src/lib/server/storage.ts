@@ -1,13 +1,12 @@
 import "server-only";
 import { createHash, randomUUID } from "node:crypto";
-import fs from "node:fs/promises";
-import path from "node:path";
 import { validateUpload } from "@/lib/upload-rules";
 import { sniffFile } from "./file-check";
+import { removeFiles, writeFile } from "./file-store";
+import type { IncomingFile } from "./incoming";
 
-/** Private storage root. Never under public/: files are only served through authenticated routes. */
-// Runtime-configured folder: tell the bundler not to trace (and package) the whole project from it.
-export const uploadDir = () => path.resolve(/*turbopackIgnore: true*/ process.env.UPLOAD_DIR ?? "storage/uploads");
+/** Private storage root (local disk). Never under public/: files are only served through authenticated routes. */
+export { uploadDir } from "./file-store";
 
 export type StoredUpload = {
   kind: "DRAWING" | "CAD";
@@ -26,7 +25,15 @@ function displayName(name: string) {
   return base.replace(/[^\w.\- ()]/g, "_").slice(-150) || "file";
 }
 
-export async function storeUpload(file: File, kind: StoredUpload["kind"]): Promise<StoredUpload> {
+export async function storeUpload(file: IncomingFile, kind: StoredUpload["kind"]): Promise<StoredUpload> {
+  try {
+    return await keepUpload(file, kind);
+  } finally {
+    await file.discard?.();
+  }
+}
+
+async function keepUpload(file: IncomingFile, kind: StoredUpload["kind"]): Promise<StoredUpload> {
   const rule = validateUpload(file.name, file.size);
   if (!rule.ok) throw new UploadRejected(rule.reason);
   const ext = file.name.split(".").pop()!.toLowerCase();
@@ -36,8 +43,7 @@ export async function storeUpload(file: File, kind: StoredUpload["kind"]): Promi
 
   // The stored name comes only from a random id and the allow-listed extension.
   const storedName = `${randomUUID()}.${ext}`;
-  await fs.mkdir(/*turbopackIgnore: true*/ uploadDir(), { recursive: true, mode: 0o750 });
-  await fs.writeFile(path.join(/*turbopackIgnore: true*/ uploadDir(), storedName), bytes, { mode: 0o640, flag: "wx" });
+  await writeFile("uploads", storedName, bytes, sniff.mime);
   return {
     kind,
     originalName: displayName(file.name),
@@ -49,5 +55,5 @@ export async function storeUpload(file: File, kind: StoredUpload["kind"]): Promi
 }
 
 export async function removeStored(names: string[]) {
-  await Promise.all(names.map((n) => fs.rm(path.join(/*turbopackIgnore: true*/ uploadDir(), path.basename(n)), { force: true })));
+  await removeFiles("uploads", names);
 }

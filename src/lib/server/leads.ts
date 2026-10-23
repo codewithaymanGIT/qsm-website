@@ -4,6 +4,7 @@ import { z } from "zod";
 import { quoteSchema } from "@/lib/quote-schema";
 import { db } from "./db";
 import { sendLeadNotification } from "./mail";
+import type { IncomingFile } from "./incoming";
 import { removeStored, storeUpload, type StoredUpload, UploadRejected } from "./storage";
 
 export const RATE_LIMIT = { max: 5, windowMs: 10 * 60 * 1000 };
@@ -22,8 +23,8 @@ export class RateLimitError extends Error {
 
 export type LeadSubmission = {
   fields: Record<string, string>;
-  drawing?: File | null;
-  cad?: File | null;
+  drawing?: IncomingFile | null;
+  cad?: IncomingFile | null;
   ip?: string | null;
   userAgent?: string | null;
 };

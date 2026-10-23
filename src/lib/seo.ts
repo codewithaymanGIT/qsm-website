@@ -6,7 +6,12 @@ import { CATALOG_TAG, getCategories, getPartners, getProducts, getServices } fro
 import { db } from "./server/db";
 
 /** The site's public address, used for canonical links, the sitemap and structured data. */
-export const siteUrl = () => (process.env.SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+// On Vercel, the project's production address is used until a domain is set in SITE_URL.
+export const siteUrl = () =>
+  (
+    process.env.SITE_URL ??
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000")
+  ).replace(/\/$/, "");
 
 type SeoOverride = {
   title: string | null;

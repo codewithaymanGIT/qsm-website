@@ -29,7 +29,7 @@ export async function deleteProductAction(id: string) {
 /** Datasheets only: mill test certificates are confidential and shared on request. */
 export async function uploadDatasheetAction(productId: string, form: FormData) {
   return adminAction(roles, async () => {
-    const file = formFile(form, "file");
+    const file = await formFile(form, "file");
     if (!file) throw new AdminInputError("Choose a PDF to upload.");
     const title = String(form.get("title") ?? "").trim() || "Datasheet";
     const stored = await storeMedia(file, "document");

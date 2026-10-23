@@ -41,7 +41,7 @@ async function Customers() {
           <div className="min-w-0">
             <ActionForm action={updateCustomerAction.bind(null, c.id)} className="grid gap-4 md:grid-cols-2">
               <Field idPrefix={`p${c.id}`} label="Company name" name="name" defaultValue={c.name} required />
-              <FileField idPrefix={`p${c.id}`} label={c.imageKey ? "Replace logo" : "Upload logo"} accept={IMAGE_ACCEPT} />
+              <FileField idPrefix={`p${c.id}`} label={c.imageKey ? "Replace logo" : "Upload logo"} accept={IMAGE_ACCEPT} purpose="image" />
               <Field idPrefix={`p${c.id}`} label="Website (optional)" name="website" defaultValue={c.website} hint="https://…" />
               <div className="flex flex-wrap items-end gap-4">
                 <div className="w-24">
@@ -65,7 +65,7 @@ async function Customers() {
         </h2>
         <ActionForm action={addCustomerAction} submitLabel="Add customer" resetOnSuccess className="grid gap-4 md:grid-cols-3">
           <Field idPrefix="new-customer" label="Company name" name="name" required />
-          <FileField idPrefix="new-customer" label="Logo" accept={IMAGE_ACCEPT} />
+          <FileField idPrefix="new-customer" label="Logo" accept={IMAGE_ACCEPT} purpose="image" />
           <Field idPrefix="new-customer" label="Website (optional)" name="website" hint="https://…" />
         </ActionForm>
       </section>

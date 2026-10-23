@@ -8,6 +8,7 @@ import { CATALOG_TAG } from "@/lib/content";
 import { AdminInputError } from "./admin-content";
 import { requireUser } from "./auth";
 import type { SessionUser } from "./auth-core";
+import { incomingFile } from "./incoming";
 import { MediaRejected } from "./media";
 
 export async function adminAction(
@@ -28,8 +29,5 @@ export async function adminAction(
   }
 }
 
-/** The uploaded file in a form field, or null when the field was left empty. */
-export function formFile(form: FormData, key: string): File | null {
-  const f = form.get(key);
-  return f instanceof File && f.size > 0 ? f : null;
-}
+/** The uploaded file in a form field (or its Blob upload on Vercel), or null when left empty. */
+export const formFile = incomingFile;

@@ -2,12 +2,13 @@
 // Stored outside public/ and served by /files/[key] only while published content uses them.
 import "server-only";
 import { randomUUID } from "node:crypto";
-import fs from "node:fs/promises";
 import path from "node:path";
 import { db } from "./db";
 import { sniffFile } from "./file-check";
+import { removeFiles, writeFile } from "./file-store";
+import type { IncomingFile } from "./incoming";
 
-export const mediaDir = () => path.resolve(/*turbopackIgnore: true*/ process.env.MEDIA_DIR ?? "storage/media");
+export { mediaDir } from "./file-store";
 
 export class MediaRejected extends Error {}
 
@@ -34,7 +35,15 @@ export type StoredMedia = {
   sizeBytes: number;
 };
 
-export async function storeMedia(file: File, kind: MediaKind): Promise<StoredMedia> {
+export async function storeMedia(file: IncomingFile, kind: MediaKind): Promise<StoredMedia> {
+  try {
+    return await keepMedia(file, kind);
+  } finally {
+    await file.discard?.();
+  }
+}
+
+async function keepMedia(file: IncomingFile, kind: MediaKind): Promise<StoredMedia> {
   const rule = RULES[kind];
   const ext = file.name.includes(".") ? file.name.split(".").pop()!.toLowerCase() : "";
   if (!(rule.exts as readonly string[]).includes(ext)) throw new MediaRejected(`Upload a ${rule.label} file.`);
@@ -44,8 +53,7 @@ export async function storeMedia(file: File, kind: MediaKind): Promise<StoredMed
   const sniff = sniffFile(ext, bytes.subarray(0, 4096));
   if (!sniff.ok) throw new MediaRejected(sniff.reason);
   const key = `${randomUUID()}.${ext === "jpeg" ? "jpg" : ext}`;
-  await fs.mkdir(/*turbopackIgnore: true*/ mediaDir(), { recursive: true });
-  await fs.writeFile(path.join(/*turbopackIgnore: true*/ mediaDir(), key), bytes, { mode: 0o644, flag: "wx" });
+  await writeFile("media", key, bytes, sniff.mime);
   return {
     key,
     fileName: path.basename(file.name).slice(-150),
@@ -56,7 +64,7 @@ export async function storeMedia(file: File, kind: MediaKind): Promise<StoredMed
 
 export async function deleteMedia(key: string | null | undefined) {
   if (!key || key.startsWith("/")) return; // "/clients/…" logos ship with the site
-  await fs.rm(path.join(/*turbopackIgnore: true*/ mediaDir(), path.basename(key)), { force: true });
+  await removeFiles("media", [key]);
 }
 
 const KEY = /^[0-9a-f-]{36}\.(jpg|png|webp|pdf)$/;

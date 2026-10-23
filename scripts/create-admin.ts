@@ -5,6 +5,7 @@ import "dotenv/config";
 import { createInterface } from "node:readline/promises";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
+import { databaseUrl } from "../src/lib/database-url";
 import { hashPassword } from "../src/lib/server/password";
 
 async function main() {
@@ -17,7 +18,7 @@ async function main() {
     rl.close();
   }
   if (password.length < 12) throw new Error("Password must be at least 12 characters.");
-  const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }) });
+  const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: databaseUrl()! }) });
   const passwordHash = await hashPassword(password);
   const user = await db.user.upsert({
     where: { email: email.trim().toLowerCase() },

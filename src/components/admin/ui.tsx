@@ -57,13 +57,28 @@ export function Field({
   );
 }
 
-export function FileField({ idPrefix = "f", label, accept, hint, required }: { idPrefix?: string; label: string; accept: string; hint?: string; required?: boolean }) {
+export function FileField({
+  idPrefix = "f",
+  label,
+  accept,
+  hint,
+  required,
+  purpose,
+}: {
+  idPrefix?: string;
+  label: string;
+  accept: string;
+  hint?: string;
+  required?: boolean;
+  /** Which upload rules apply (direct uploads on Vercel). */
+  purpose: "image" | "document";
+}) {
   return (
     <div className="min-w-0">
       <label htmlFor={`${idPrefix}-file`} className="mb-1.5 block text-sm text-surface/80">
         {label}
       </label>
-      <input id={`${idPrefix}-file`} name="file" type="file" accept={accept} required={required} className={`${adminInput} min-w-0`} />
+      <input id={`${idPrefix}-file`} name="file" type="file" accept={accept} required={required} data-purpose={purpose} className={`${adminInput} min-w-0`} />
       {hint && <p className="mt-1 text-xs text-mist">{hint}</p>}
     </div>
   );

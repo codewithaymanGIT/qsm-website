@@ -8,13 +8,13 @@ const roles = rolesFor("/admin/customers/");
 
 export async function addCustomerAction(form: FormData) {
   return adminAction(roles, async () => {
-    await addCustomer(form, formFile(form, "file"));
+    await addCustomer(form, await formFile(form, "file"));
     return "Customer added.";
   });
 }
 
 export async function updateCustomerAction(id: string, form: FormData) {
-  return adminAction(roles, () => updateCustomer(id, form, formFile(form, "file")));
+  return adminAction(roles, async () => updateCustomer(id, form, await formFile(form, "file")));
 }
 
 export async function deleteCustomerAction(id: string) {

@@ -3,6 +3,7 @@
 import "server-only";
 import { AdminInputError } from "./admin-content";
 import { db } from "./db";
+import type { IncomingFile } from "./incoming";
 import { deleteMedia, storeMedia } from "./media";
 
 const str = (form: FormData, key: string) => String(form.get(key) ?? "").trim();
@@ -15,7 +16,7 @@ function aspect(form: FormData) {
   return a;
 }
 
-export async function addGalleryItem(form: FormData, file: File | null) {
+export async function addGalleryItem(form: FormData, file: IncomingFile | null) {
   const label = str(form, "label");
   if (!label) throw new AdminInputError("Describe the photo in a few words (this is also read out to blind visitors).");
   if (!file) throw new AdminInputError("Choose a photo to upload.");
@@ -32,7 +33,7 @@ export async function addGalleryItem(form: FormData, file: File | null) {
   });
 }
 
-export async function updateGalleryItem(id: string, form: FormData, file: File | null) {
+export async function updateGalleryItem(id: string, form: FormData, file: IncomingFile | null) {
   const label = str(form, "label");
   if (!label) throw new AdminInputError("Describe the photo in a few words.");
   const item = await db.galleryItem.findUniqueOrThrow({ where: { id } });
@@ -61,7 +62,7 @@ function website(form: FormData) {
   return w || null;
 }
 
-export async function addCustomer(form: FormData, file: File | null) {
+export async function addCustomer(form: FormData, file: IncomingFile | null) {
   const name = str(form, "name");
   if (!name) throw new AdminInputError("Enter the company name.");
   const stored = file ? await storeMedia(file, "image") : null;
@@ -76,7 +77,7 @@ export async function addCustomer(form: FormData, file: File | null) {
   });
 }
 
-export async function updateCustomer(id: string, form: FormData, file: File | null) {
+export async function updateCustomer(id: string, form: FormData, file: IncomingFile | null) {
   const name = str(form, "name");
   if (!name) throw new AdminInputError("Enter the company name.");
   const row = await db.partnerLogo.findUniqueOrThrow({ where: { id } });
@@ -100,7 +101,7 @@ export async function deleteCustomer(id: string) {
 }
 
 /** One brochure at a time: a new upload replaces the old file. */
-export async function replaceBrochure(form: FormData, file: File | null) {
+export async function replaceBrochure(form: FormData, file: IncomingFile | null) {
   if (!file) throw new AdminInputError("Choose a PDF to upload.");
   const stored = await storeMedia(file, "document");
   const old = await db.download.findMany({ where: { kind: "BROCHURE" } });
@@ -124,7 +125,7 @@ export async function removeBrochure() {
   await Promise.all(old.map((d) => deleteMedia(d.fileKey)));
 }
 
-export async function addCertificate(form: FormData, file: File | null) {
+export async function addCertificate(form: FormData, file: IncomingFile | null) {
   const title = str(form, "title");
   if (!title) throw new AdminInputError("Enter the certificate name, e.g. ISO 9001:2015.");
   if (!file) throw new AdminInputError("Choose the certificate file (PDF).");

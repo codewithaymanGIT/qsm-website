@@ -48,7 +48,7 @@ async function Gallery() {
         <ActionForm action={addGalleryAction} submitLabel="Upload photo" resetOnSuccess className="grid gap-4 md:grid-cols-3">
           <Field idPrefix="new-photo" label="What the photo shows" name="label" required />
           <AspectSelect idPrefix="new-photo" />
-          <FileField idPrefix="new-photo" label="Photo" accept={IMAGE_ACCEPT} required />
+          <FileField idPrefix="new-photo" label="Photo" accept={IMAGE_ACCEPT} purpose="image" required />
         </ActionForm>
       </section>
 
@@ -66,7 +66,7 @@ async function Gallery() {
             <ActionForm action={updateGalleryAction.bind(null, g.id)} className="grid gap-4 md:grid-cols-2">
               <Field idPrefix={`g${g.id}`} label="What the photo shows" name="label" defaultValue={g.label} required />
               <AspectSelect idPrefix={`g${g.id}`} value={g.aspect} />
-              <FileField idPrefix={`g${g.id}`} label={g.imageKey ? "Replace photo" : "Upload photo"} accept={IMAGE_ACCEPT} />
+              <FileField idPrefix={`g${g.id}`} label={g.imageKey ? "Replace photo" : "Upload photo"} accept={IMAGE_ACCEPT} purpose="image" />
               <div className="flex flex-wrap items-end gap-4">
                 <div className="w-24">
                   <Field idPrefix={`g${g.id}`} label="Order" name="order" type="number" defaultValue={g.order} />

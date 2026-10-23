@@ -19,7 +19,8 @@ const digest = (s: string) => createHash("sha256").update(s).digest();
 export async function createFirstAdmin(input: { name: string; email: string; password: string; token: string }, ip: string) {
   if ((await setupState()) !== "open") throw new AdminInputError("Setup is closed. Sign in instead.");
   if (await overLimit(`setup:${ip}`, 5, 15 * 60 * 1000)) throw new AdminInputError("Too many attempts. Wait 15 minutes.");
-  if (!timingSafeEqual(digest(input.token), digest(process.env.ADMIN_SETUP_TOKEN!))) {
+  // Spaces copied along with the token at either end are ignored.
+  if (!timingSafeEqual(digest(input.token.trim()), digest(process.env.ADMIN_SETUP_TOKEN!.trim()))) {
     throw new AdminInputError("The setup token is not correct.");
   }
   return createUser({ ...input, role: "ADMIN" });

@@ -21,7 +21,7 @@ describe("first admin setup", () => {
     vi.stubEnv("ADMIN_SETUP_TOKEN", input.token);
     expect(await setupState()).toBe("open");
     await expect(createFirstAdmin({ ...input, token: "wrong" }, "203.0.113.2")).rejects.toThrow(/not correct/);
-    const user = await createFirstAdmin(input, "203.0.113.2");
+    const user = await createFirstAdmin({ ...input, token: ` ${input.token}\n` }, "203.0.113.2");
     expect((await db.user.findUniqueOrThrow({ where: { id: user.id } })).role).toBe("ADMIN");
     expect(await setupState()).toBe("done");
     await expect(createFirstAdmin({ ...input, email: "second@example.com" }, "203.0.113.2")).rejects.toThrow(/closed/);

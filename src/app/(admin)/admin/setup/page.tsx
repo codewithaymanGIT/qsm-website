@@ -28,7 +28,7 @@ async function Setup() {
   if (state === "open") {
     return (
       <>
-        <p className="mt-4 text-mist">One time only. Enter the setup token you saved in Vercel’s environment variables.</p>
+        <p className="mt-4 text-mist">This page works once, to create the owner’s admin account.</p>
         <SetupForm />
       </>
     );

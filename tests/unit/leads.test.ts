@@ -27,7 +27,8 @@ afterEach(() => {
 describe("submitLead", () => {
   it("saves a valid enquiry with a reference and a privately stored drawing", async () => {
     const { reference, id } = await submitLead({ fields, drawing: pdf(), ip: freshIp() });
-    expect(reference).toBe(`QSM-${year}-0001`);
+    // The number depends on how many enquiries earlier test files created; the format does not.
+    expect(reference).toMatch(new RegExp(`^QSM-${year}-\\d{4}$`));
     const lead = await db.lead.findUniqueOrThrow({ where: { id }, include: { uploads: true } });
     expect(lead).toMatchObject({ name: "Ravi Kumar", gradeSlug: "h13", gradeName: "H13", status: "NEW" });
     expect(lead.ipHash).toMatch(/^[a-f0-9]{64}$/);

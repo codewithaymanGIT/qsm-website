@@ -54,19 +54,21 @@ function toProduct(p: ProductRow): Product {
   };
 }
 
-const toCategory = (c: { slug: string; name: string; shortDescription: string; order: number }): Category => ({
+const toCategory = (c: { slug: string; name: string; shortDescription: string; order: number; imageKey: string | null }): Category => ({
   slug: c.slug,
   name: c.name,
   shortDescription: c.shortDescription,
   order: c.order,
+  image: c.imageKey ? fileHref(c.imageKey) : null,
 });
 
-const toService = (s: { slug: string; name: string; summary: string; description: string[]; capabilities: string[] }): Service => ({
+const toService = (s: { slug: string; name: string; summary: string; description: string[]; capabilities: string[]; imageKeys: string[] }): Service => ({
   slug: s.slug,
   name: s.name,
   summary: s.summary,
   description: s.description,
   capabilities: s.capabilities,
+  images: s.imageKeys.map(fileHref),
 });
 
 export async function getCategories(): Promise<Category[]> {

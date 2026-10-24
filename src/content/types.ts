@@ -8,6 +8,8 @@ export type Category = {
   name: string;
   shortDescription: string;
   order: number;
+  /** Uploaded photo, if any. */
+  image?: string | null;
 };
 
 export type CompositionRow = {
@@ -41,6 +43,8 @@ export type Service = {
   summary: string;
   description: string[];
   capabilities: string[];
+  /** Uploaded photos (first: main, second: finished material). */
+  images?: string[];
 };
 
 export type GalleryItem = {

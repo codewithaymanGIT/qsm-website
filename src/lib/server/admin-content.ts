@@ -139,7 +139,7 @@ export async function saveCategory(id: string | null, form: FormData) {
 export async function deleteCategory(id: string) {
   const count = await db.product.count({ where: { categoryId: id } });
   if (count > 0) throw new AdminInputError(`Move or delete its ${count} grade${count === 1 ? "" : "s"} first.`);
-  await db.category.delete({ where: { id } });
+  return (await db.category.delete({ where: { id } })).imageKey;
 }
 
 const serviceSchema = z.object({

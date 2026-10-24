@@ -34,7 +34,7 @@ export async function CategoryCards({ showHeading = true, homeLabelsOn = true }:
                 >
                   <div className="relative aspect-[16/10] overflow-hidden sm:aspect-auto sm:min-h-64">
                     <div className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]">
-                      <ImageSlot label={c.name} shot="Close-up of this steel family in stock" className="h-full w-full" />
+                      <ImageSlot label={c.name} src={c.image} className="h-full w-full" />
                     </div>
                   </div>
                   <div className="flex flex-col p-7 sm:p-8">

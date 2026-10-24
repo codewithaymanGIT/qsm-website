@@ -10,7 +10,6 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { getService, getServices, getSettings } from "@/lib/content";
 import { breadcrumbLd, pageMetadata } from "@/lib/seo";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
-import { serviceShots } from "@/lib/service-shots";
 
 
 export async function generateStaticParams() {
@@ -34,8 +33,8 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
 
       <section aria-label="Photos" className="pt-20 lg:pt-28">
         <Container className="grid gap-5 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-          <ImageSlot label={`${service.name} in progress`} shot={serviceShots[service.slug]} className="aspect-[4/3] md:aspect-auto md:min-h-[460px]" />
-          <ImageSlot label="Finished material" shot={`Material after ${service.name.toLowerCase()}, ready for dispatch`} className="aspect-[4/3]" />
+          <ImageSlot label={`${service.name} in progress`} src={service.images?.[0]} className="aspect-[4/3] md:aspect-auto md:min-h-[460px]" />
+          <ImageSlot label="Finished material" src={service.images?.[1]} className="aspect-[4/3]" />
         </Container>
       </section>
 

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { rolesFor } from "@/components/admin/nav";
-import { card, ConfirmTick, dangerButton, Field, Loading, PageTitle } from "@/components/admin/ui";
+import { card, Checkbox, ConfirmTick, dangerButton, Field, FileField, IMAGE_ACCEPT, Loading, PageTitle } from "@/components/admin/ui";
 import { requireUser } from "@/lib/server/auth";
 import { db } from "@/lib/server/db";
 import { deleteCategoryAction, saveCategoryAction } from "./actions";
@@ -17,7 +17,9 @@ export default function CategoriesPage() {
   );
 }
 
-function CategoryFields({ idPrefix, c }: { idPrefix: string; c?: { name: string; slug: string; shortDescription: string; order: number } }) {
+type CategoryRow = { name: string; slug: string; shortDescription: string; order: number; imageKey: string | null };
+
+function CategoryFields({ idPrefix, c }: { idPrefix: string; c?: CategoryRow }) {
   return (
     <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_7rem]">
       <Field idPrefix={idPrefix} label="Name" name="name" defaultValue={c?.name} required />
@@ -33,6 +35,22 @@ function CategoryFields({ idPrefix, c }: { idPrefix: string; c?: { name: string;
           defaultValue={c?.shortDescription}
           required
         />
+      </div>
+      <div className="flex flex-wrap items-end gap-5 md:col-span-3">
+        {c?.imageKey && (
+          // eslint-disable-next-line @next/next/no-img-element -- admin thumbnail
+          <img src={`/files/${c.imageKey}`} alt="" className="h-20 w-32 object-cover" />
+        )}
+        <div className="min-w-0 flex-1">
+          <FileField
+            idPrefix={idPrefix}
+            label={c?.imageKey ? "Replace card photo" : "Card photo (optional)"}
+            accept={IMAGE_ACCEPT}
+            purpose="image"
+            hint="JPG, PNG or WEBP up to 8 MB. Use your own photos or ones you have the right to use (e.g. Unsplash, Pexels)."
+          />
+        </div>
+        {c?.imageKey && <Checkbox label="Remove photo" name="removePhoto" />}
       </div>
     </div>
   );

@@ -150,3 +150,27 @@ export async function deleteCertificate(id: string) {
   const row = await db.certificate.delete({ where: { id } });
   await deleteMedia(row.fileKey);
 }
+
+/** Category card photo: a new upload replaces the old one; `remove` clears it. */
+export async function setCategoryPhoto(id: string, file: IncomingFile | null, remove: boolean) {
+  if (!file && !remove) return;
+  const row = await db.category.findUniqueOrThrow({ where: { id } });
+  const stored = file ? await storeMedia(file, "image") : null;
+  await db.category.update({ where: { id }, data: { imageKey: stored?.key ?? null } });
+  await deleteMedia(row.imageKey);
+}
+
+/** Service photos by position (0: main, 1: finished material). */
+export async function setServicePhotos(id: string, slots: { file: IncomingFile | null; remove: boolean }[]) {
+  const row = await db.service.findUniqueOrThrow({ where: { id } });
+  const keys = [...row.imageKeys];
+  const old: (string | undefined)[] = [];
+  for (const [i, slot] of slots.entries()) {
+    if (!slot.file && !slot.remove) continue;
+    old.push(keys[i]);
+    keys[i] = slot.file ? (await storeMedia(slot.file, "image")).key : "";
+  }
+  if (old.length === 0) return;
+  await db.service.update({ where: { id }, data: { imageKeys: keys.filter(Boolean) } });
+  await Promise.all(old.map((k) => deleteMedia(k)));
+}

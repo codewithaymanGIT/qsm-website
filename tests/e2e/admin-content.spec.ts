@@ -123,3 +123,22 @@ test("the first-admin setup page is closed once users exist", async ({ page }) =
   await expect(page.getByText("Setup is complete.")).toBeVisible();
   await expect(page.getByLabel("Setup token")).toHaveCount(0);
 });
+
+test("a category photo uploaded in the admin replaces the placeholder on the products page", async ({ page }) => {
+  await signIn(page, "editor");
+  await page.goto("/admin/categories/");
+  const card = page.getByRole("region", { name: "Alloy Steel" });
+  await card.getByLabel("Card photo (optional)").setInputFiles({ name: "alloy.png", mimeType: "image/png", buffer: PNG });
+  await card.getByRole("button", { name: "Save" }).click();
+  await expect(card.getByText("Saved.")).toBeVisible();
+
+  await page.goto("/products/");
+  const photo = page.locator('img[data-image-slot="Alloy Steel"]');
+  await expect(photo).toHaveAttribute("src", /^\/files\/[0-9a-f-]{36}\.png$/);
+  await expect(page.getByText(/Photo to come/)).toHaveCount(0);
+
+  await page.goto("/admin/categories/");
+  await card.getByLabel("Remove photo").check();
+  await card.getByRole("button", { name: "Save" }).click();
+  await expect(card.getByText("Saved.")).toBeVisible();
+});

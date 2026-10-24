@@ -8,7 +8,6 @@ import { ImageSlot } from "@/components/ui/ImageSlot";
 import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { getServices, getSettings } from "@/lib/content";
-import { serviceShots } from "@/lib/service-shots";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -30,7 +29,7 @@ export default async function ServicesPage() {
                 <Link href={`/services/${s.slug}/`} className="group grid items-center gap-8 md:grid-cols-2 md:gap-14">
                   <div className={`relative aspect-[4/3] overflow-hidden ${i % 2 ? "md:order-2" : ""}`}>
                     <div className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]">
-                      <ImageSlot label={s.name} shot={serviceShots[s.slug]} className="h-full w-full" />
+                      <ImageSlot label={s.name} src={s.images?.[0]} className="h-full w-full" />
                     </div>
                   </div>
                   <div>

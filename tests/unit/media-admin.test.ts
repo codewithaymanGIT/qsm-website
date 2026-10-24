@@ -3,7 +3,8 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { db } from "@/lib/server/db";
 import { mediaDir } from "@/lib/server/media";
-import { addCertificate, addCustomer, addGalleryItem, replaceBrochure, updateGalleryItem } from "@/lib/server/media-admin";
+import { addCertificate, addCustomer, addGalleryItem, replaceBrochure, setCategoryPhoto, setServicePhotos, updateGalleryItem } from "@/lib/server/media-admin";
+import { getCategories, getServices } from "@/lib/content";
 
 const png = () => new File([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0])], "photo.png", { type: "image/png" });
 const pdf = () => new File([Buffer.from("%PDF-1.7\n")], "file.pdf", { type: "application/pdf" });
@@ -50,5 +51,29 @@ describe("media admin", () => {
     await expect(addCertificate(form({ title: "ISO 9001" }), null)).rejects.toThrow(/PDF/);
     await addCertificate(form({ title: "ISO 9001", validUntil: "2027-03-31" }), pdf());
     expect((await db.certificate.findFirstOrThrow({ where: { title: "ISO 9001" } })).validUntil?.toISOString()).toBe("2027-03-31T00:00:00.000Z");
+  });
+
+  it("sets, replaces and removes a category photo, deleting old files", async () => {
+    const cat = await db.category.findFirstOrThrow({ where: { slug: "hot-work-die-steel" } });
+    await setCategoryPhoto(cat.id, png(), false);
+    const first = (await db.category.findUniqueOrThrow({ where: { id: cat.id } })).imageKey;
+    expect((await getCategories()).find((c) => c.slug === cat.slug)?.image).toBe(`/files/${first}`);
+    await setCategoryPhoto(cat.id, png(), false);
+    const second = (await db.category.findUniqueOrThrow({ where: { id: cat.id } })).imageKey;
+    expect(onDisk(first)).toBe(false);
+    await setCategoryPhoto(cat.id, null, true);
+    expect((await db.category.findUniqueOrThrow({ where: { id: cat.id } })).imageKey).toBeNull();
+    expect(onDisk(second)).toBe(false);
+  });
+
+  it("keeps service photos in order and removes the right one", async () => {
+    const svc = await db.service.findFirstOrThrow({ where: { slug: "bandsaw-cutting" } });
+    await setServicePhotos(svc.id, [{ file: png(), remove: false }, { file: png(), remove: false }]);
+    const [main, finished] = (await db.service.findUniqueOrThrow({ where: { id: svc.id } })).imageKeys;
+    expect((await getServices()).find((x) => x.slug === svc.slug)?.images).toEqual([`/files/${main}`, `/files/${finished}`]);
+    await setServicePhotos(svc.id, [{ file: null, remove: false }, { file: null, remove: true }]);
+    expect((await db.service.findUniqueOrThrow({ where: { id: svc.id } })).imageKeys).toEqual([main]);
+    expect(onDisk(finished)).toBe(false);
+    await setServicePhotos(svc.id, [{ file: null, remove: true }, { file: null, remove: false }]);
   });
 });

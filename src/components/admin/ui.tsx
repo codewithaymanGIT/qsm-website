@@ -64,7 +64,9 @@ export function FileField({
   hint,
   required,
   purpose,
+  name = "file",
 }: {
+  name?: string;
   idPrefix?: string;
   label: string;
   accept: string;
@@ -75,10 +77,10 @@ export function FileField({
 }) {
   return (
     <div className="min-w-0">
-      <label htmlFor={`${idPrefix}-file`} className="mb-1.5 block text-sm text-surface/80">
+      <label htmlFor={`${idPrefix}-${name}`} className="mb-1.5 block text-sm text-surface/80">
         {label}
       </label>
-      <input id={`${idPrefix}-file`} name="file" type="file" accept={accept} required={required} data-purpose={purpose} className={`${adminInput} min-w-0`} />
+      <input id={`${idPrefix}-${name}`} name={name} type="file" accept={accept} required={required} data-purpose={purpose} className={`${adminInput} min-w-0`} />
       {hint && <p className="mt-1 text-xs text-mist">{hint}</p>}
     </div>
   );

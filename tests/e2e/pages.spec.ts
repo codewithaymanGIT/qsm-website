@@ -164,7 +164,7 @@ test("clients page shows the client count and the mills, separate from customers
   await expect(page.getByText(/1500\+ clients served since 2002/)).toBeVisible();
   const mills = page.getByRole("region", { name: "Authorized stockist" });
   await expect(mills.getByRole("img", { name: "Böhler Edelstahl" })).toBeAttached();
-  await expect(mills.getByRole("img", { name: "Daido Metal" })).toBeAttached();
+  await expect(mills.getByRole("img", { name: "Daido Steel" })).toBeAttached();
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Trusted by 1500+ clients" })).toBeVisible();
   await expect(page.getByRole("region", { name: "Trusted by" }).getByRole("img", { name: "Böhler Edelstahl" })).toHaveCount(0);

@@ -153,6 +153,13 @@ const UPDATES: { id: string; run: (db: PrismaClient) => Promise<void> }[] = [
       });
     },
   },
+  {
+    id: "2026-10-26-daido-steel-logo",
+    async run(db) {
+      // The correct Daido Steel logo replaced /mills/daido.png, so the tile takes its proper name again.
+      await db.partnerLogo.updateMany({ where: { name: "Daido Metal", kind: "MILL" }, data: { name: "Daido Steel" } });
+    },
+  },
 ];
 
 export async function applyContentUpdates(db: PrismaClient) {

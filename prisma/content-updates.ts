@@ -136,6 +136,12 @@ const UPDATES: { id: string; run: (db: PrismaClient) => Promise<void> }[] = [
       }
     },
   },
+  {
+    id: "2026-10-26-tiangong-logo",
+    async run(db) {
+      await db.partnerLogo.updateMany({ where: { name: "Tiangong", kind: "MILL", imageKey: null }, data: { imageKey: "/mills/tiangong.png" } });
+    },
+  },
 ];
 
 export async function applyContentUpdates(db: PrismaClient) {

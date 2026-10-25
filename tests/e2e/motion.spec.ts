@@ -27,7 +27,8 @@ test("mobile action bar offers WhatsApp, call and quote", async ({ page }) => {
 test("action bar is hidden on desktop", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
-  await expect(page.locator("[data-action-bar]")).toBeHidden();
+  // While the page streams in, React can briefly hold a second (hidden) copy, so count visible ones.
+  await expect(page.locator("[data-action-bar]:visible")).toHaveCount(0);
 });
 
 test("page is complete at rest without JavaScript", async ({ browser }) => {

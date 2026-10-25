@@ -98,6 +98,20 @@ const UPDATES: { id: string; run: (db: PrismaClient) => Promise<void> }[] = [
       }
     },
   },
+  {
+    id: "2026-10-25-hot-work-photos",
+    async run(db) {
+      // The hot-work category card now uses the H13 photo (same file path, replaced in public/photos).
+      const photos = [
+        { key: "/photos/gallery-h13-blocks.webp", label: "H13 hot work blocks in stock", aspect: "portrait" },
+        { key: "/photos/gallery-h11-blocks.webp", label: "H11 (1.2343) hot work blocks", aspect: "square" },
+      ];
+      for (const [i, g] of photos.entries()) {
+        if (await db.galleryItem.count({ where: { imageKey: g.key } })) continue;
+        await db.galleryItem.create({ data: { label: g.label, shot: g.label, aspect: g.aspect, imageKey: g.key, order: -75 + i } });
+      }
+    },
+  },
 ];
 
 export async function applyContentUpdates(db: PrismaClient) {

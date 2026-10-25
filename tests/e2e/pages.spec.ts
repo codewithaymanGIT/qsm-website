@@ -153,4 +153,8 @@ test("about page lists the group companies; the company's photos replace placeho
   expect((await page.request.get("/photos/category-plastic-mould-steel.webp")).status()).toBe(200);
   await page.goto("/services/bandsaw-cutting/");
   await expect(page.locator('img[src="/photos/service-bandsaw-cutting.webp"]')).toBeAttached();
+  for (const slug of ["precision-machining", "surface-grinding", "custom-cutting"]) {
+    await page.goto(`/services/${slug}/`);
+    await expect(page.locator(`img[src="/photos/service-${slug}.webp"]`)).toBeAttached();
+  }
 });

@@ -86,6 +86,18 @@ const UPDATES: { id: string; run: (db: PrismaClient) => Promise<void> }[] = [
       }
     },
   },
+  {
+    id: "2026-10-25-service-photos",
+    async run(db) {
+      // Supplied by the client with permission; the grinding photo keeps its FineMetalworking.com credit.
+      for (const slug of ["precision-machining", "surface-grinding", "custom-cutting"]) {
+        const svc = await db.service.findUnique({ where: { slug } });
+        if (svc && !(svc.imageKeys ?? []).length) {
+          await db.service.update({ where: { id: svc.id }, data: { imageKeys: [`/photos/service-${slug}.webp`] } });
+        }
+      }
+    },
+  },
 ];
 
 export async function applyContentUpdates(db: PrismaClient) {

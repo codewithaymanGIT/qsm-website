@@ -35,7 +35,7 @@ describe("one-time content updates", () => {
       "NLMK Verona",
       "SeAH CSS",
       "Böhler Edelstahl",
-      "Daido Steel",
+      "Daido Metal",
       "Tiangong",
       "GMTC",
     ]);

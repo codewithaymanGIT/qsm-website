@@ -120,12 +120,13 @@ const UPDATES: { id: string; run: (db: PrismaClient) => Promise<void> }[] = [
         { name: "NLMK Verona", imageKey: "/mills/nlmk-verona.png" },
         { name: "SeAH CSS", imageKey: "/mills/seah-css.png" },
         { name: "Böhler Edelstahl", imageKey: "/mills/bohler.png" },
-        { name: "Daido Steel", imageKey: null },
+        { name: "Daido Steel", imageKey: null, alsoKnownAs: ["Daido Metal"] },
         { name: "Tiangong", imageKey: null },
         { name: "GMTC", imageKey: "/mills/gmtc.png" },
       ];
-      for (const [i, m] of mills.entries()) {
-        if (await db.partnerLogo.count({ where: { name: m.name, kind: "MILL" } })) continue;
+      for (const [i, { alsoKnownAs = [], ...m }] of (mills as { name: string; imageKey: string | null; alsoKnownAs?: string[] }[]).entries()) {
+        // Renamed later (Daido Steel → Daido Metal): a re-run must not add it back.
+        if (await db.partnerLogo.count({ where: { name: { in: [m.name, ...alsoKnownAs] }, kind: "MILL" } })) continue;
         await db.partnerLogo.create({ data: { ...m, kind: "MILL", order: i } });
       }
       const contact = await db.setting.findUnique({ where: { key: "contact" } });
@@ -140,6 +141,16 @@ const UPDATES: { id: string; run: (db: PrismaClient) => Promise<void> }[] = [
     id: "2026-10-26-tiangong-logo",
     async run(db) {
       await db.partnerLogo.updateMany({ where: { name: "Tiangong", kind: "MILL", imageKey: null }, data: { imageKey: "/mills/tiangong.png" } });
+    },
+  },
+  {
+    id: "2026-10-26-daido-logo",
+    async run(db) {
+      // The logo supplied reads "Daido Metal", so the tile's name (and alt text) matches it.
+      await db.partnerLogo.updateMany({
+        where: { name: "Daido Steel", kind: "MILL", imageKey: null },
+        data: { name: "Daido Metal", imageKey: "/mills/daido.png" },
+      });
     },
   },
 ];

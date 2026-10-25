@@ -19,6 +19,7 @@ describe("one-time content updates", () => {
     expect((await cat("cold-work-tool-steel")).imageKey).toBe("admin-upload.png"); // never overwritten
     expect(await db.galleryItem.count({ where: { imageKey: null, published: true } })).toBe(0);
     expect(await db.galleryItem.count({ where: { imageKey: "/photos/gallery-warehouse-plates.webp" } })).toBe(1);
+    expect((await db.service.findFirstOrThrow({ where: { slug: "bandsaw-cutting" } })).imageKeys[0]).toBeDefined();
   });
 
   it("sets the owners, the office map and the group companies", async () => {

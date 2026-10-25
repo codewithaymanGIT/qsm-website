@@ -151,4 +151,6 @@ test("about page lists the group companies; the company's photos replace placeho
   await page.goto("/products/");
   await expect(page.locator('img[src="/photos/category-plastic-mould-steel.webp"]')).toBeAttached();
   expect((await page.request.get("/photos/category-plastic-mould-steel.webp")).status()).toBe(200);
+  await page.goto("/services/bandsaw-cutting/");
+  await expect(page.locator('img[src="/photos/service-bandsaw-cutting.webp"]')).toBeAttached();
 });

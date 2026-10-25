@@ -68,6 +68,24 @@ const UPDATES: { id: string; run: (db: PrismaClient) => Promise<void> }[] = [
       await db.setting.upsert({ where: { key: "groupCompanies" }, update: {}, create: { key: "groupCompanies", value: GROUP_COMPANIES } });
     },
   },
+  {
+    id: "2026-10-25-office-bandsaw",
+    async run(db) {
+      // Seeded rows may hold no list at all (NULL), which an "is empty" filter does not match.
+      const saw = await db.service.findUnique({ where: { slug: "bandsaw-cutting" } });
+      if (saw && !(saw.imageKeys ?? []).length) {
+        await db.service.update({ where: { id: saw.id }, data: { imageKeys: ["/photos/service-bandsaw-cutting.webp"] } });
+      }
+      const photos = [
+        { key: "/photos/gallery-office-entrance.webp", label: "Our office entrance", aspect: "portrait", published: true },
+        { key: "/photos/service-bandsaw-cutting.webp", label: "Bandsaw cutting a round bar", aspect: "landscape", published: true },
+      ];
+      for (const [i, g] of photos.entries()) {
+        if (await db.galleryItem.count({ where: { imageKey: g.key } })) continue;
+        await db.galleryItem.create({ data: { label: g.label, shot: g.label, aspect: g.aspect, imageKey: g.key, published: g.published, order: -50 + i } });
+      }
+    },
+  },
 ];
 
 export async function applyContentUpdates(db: PrismaClient) {

@@ -9,7 +9,9 @@ move to Vercel Pro or a VPS (Docker, `output: "standalone"`) before the site is 
    `npm run vercel-build` runs automatically: `prisma generate` → `prisma migrate deploy`
    → `scripts/seed-if-empty.ts` (starting content, **only** into an empty database) → `next build`.
 2. Environment variables (Production and Preview):
-   - `ADMIN_SETUP_TOKEN`: long passphrase; unlocks `/admin/setup/` once to create the first admin.
+   - `ADMIN_EMAIL`, `ADMIN_PASSWORD` (12+ characters), optional `ADMIN_NAME`: the next deploy
+     creates this admin if the site has no users yet. Remove `ADMIN_PASSWORD` afterwards.
+   - (Alternative) `ADMIN_SETUP_TOKEN`: unlocks `/admin/setup/` once to create the first admin.
    - `IP_HASH_SALT`: random string; anonymises visitor IPs for rate limits.
    - Optional: `SITE_URL` (when a domain is added; otherwise the vercel.app address is used),
      `SMTP_URL`, `MAIL_FROM`, `LEAD_NOTIFY_TO` (enquiry emails; without them enquiries are
@@ -20,8 +22,8 @@ move to Vercel Pro or a VPS (Docker, `output: "standalone"`) before the site is 
    (migrations prefer the unpooled one).
 4. Redeploy after connecting Blob: `BLOB_READ_WRITE_TOKEN` must exist **at build time**, because
    it switches the forms to browser-to-storage uploads (Vercel rejects request bodies over 4.5 MB).
-5. Open `https://<project>.vercel.app/admin/setup/`, enter the setup token and create the owner's
-   admin account. The page closes for good once a user exists.
+5. Sign in at `https://<project>.vercel.app/admin/login/` with ADMIN_EMAIL / ADMIN_PASSWORD
+   (or use `/admin/setup/` with the setup token). Both close for good once a user exists.
 
 ## How files work on Vercel
 

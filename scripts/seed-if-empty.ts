@@ -4,6 +4,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { databaseUrl } from "../src/lib/database-url";
 import { applyContentUpdates } from "../prisma/content-updates";
+import { createAdminFromEnv } from "../prisma/first-admin-from-env";
 import { seed } from "../prisma/seed";
 
 async function main() {
@@ -15,6 +16,7 @@ async function main() {
       console.log("Empty database: starting content added.");
     }
     await applyContentUpdates(db);
+    console.log(`First admin: ${await createAdminFromEnv(db)}`);
   } finally {
     await db.$disconnect();
   }

@@ -131,9 +131,18 @@ export async function getGallery(): Promise<GalleryItem[]> {
 }
 
 export async function getPartners(): Promise<PartnerLogo[]> {
+  return logos("CUSTOMER");
+}
+
+/** Steel mills shown under the "Authorized stockist" heading. */
+export async function getMills(): Promise<PartnerLogo[]> {
+  return logos("MILL");
+}
+
+async function logos(kind: "CUSTOMER" | "MILL"): Promise<PartnerLogo[]> {
   "use cache";
   cacheCatalog();
-  const rows = await db.partnerLogo.findMany({ where: { published: true }, orderBy: { order: "asc" } });
+  const rows = await db.partnerLogo.findMany({ where: { published: true, kind }, orderBy: { order: "asc" } });
   return rows.map((l) => ({ id: l.id, name: l.name, src: l.imageKey ? mediaHref(l.imageKey) : null }));
 }
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PartnersView } from "@/components/partners/PartnersView";
-import { getPartners } from "@/lib/content";
+import { getMills, getPartners, getSettings } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 
 // Hidden from menus and search engines until at least one customer is listed.
@@ -14,5 +14,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ClientsPage() {
-  return <PartnersView partners={await getPartners()} />;
+  const [partners, mills, s] = await Promise.all([getPartners(), getMills(), getSettings()]);
+  return <PartnersView partners={partners} mills={mills} clientsCount={s.clientsCount} millsHeading={s.millsHeading} />;
 }

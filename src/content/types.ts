@@ -74,4 +74,8 @@ export type Settings = {
   officeAddress: string;
   mapEmbedUrl: string | null;
   heroVideo: string | null;
+  /** e.g. "1500+": shown with the customer logos. */
+  clientsCount?: string | null;
+  /** Heading above the mill logos, e.g. "Authorized stockist". */
+  millsHeading?: string | null;
 };

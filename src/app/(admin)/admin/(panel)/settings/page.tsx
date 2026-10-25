@@ -44,6 +44,8 @@ async function SettingsForms() {
           <Field label="Email" name="email" type="email" defaultValue={s.email} hint="Shown on the website. Enquiry notification emails go to the address set up on the server." required />
           <Field label="Phone" name="phone" defaultValue={s.phone} hint="With country code, e.g. +91 92841 27584" required />
           <Field label="WhatsApp number" name="whatsapp" defaultValue={s.whatsapp} hint="With country code." required />
+          <Field label="Clients served" name="clientsCount" defaultValue={s.clientsCount} hint="Shown with the customer logos, e.g. 1500+. Leave blank to hide." />
+          <Field label="Mills section heading" name="millsHeading" defaultValue={s.millsHeading} hint="e.g. Authorized stockist. Use only what the mills have authorised." />
           <div className="md:col-span-2">
             <Field label="Office address" name="officeAddress" as="textarea" rows={3} defaultValue={s.officeAddress} required />
           </div>

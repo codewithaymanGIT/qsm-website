@@ -12,7 +12,7 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { href: "/admin/categories/", label: "Categories", roles: CONTENT },
   { href: "/admin/services/", label: "Services", roles: CONTENT },
   { href: "/admin/gallery/", label: "Gallery", roles: CONTENT },
-  { href: "/admin/customers/", label: "Customers", roles: CONTENT },
+  { href: "/admin/customers/", label: "Customers & mills", roles: CONTENT },
   { href: "/admin/downloads/", label: "Downloads", roles: CONTENT },
   { href: "/admin/settings/", label: "Contact & timeline", roles: CONTENT },
   { href: "/admin/seo/", label: "SEO", roles: CONTENT },

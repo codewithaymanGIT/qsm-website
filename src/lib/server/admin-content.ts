@@ -176,12 +176,14 @@ const contactSchema = z.object({
       "Map link must be a Google Maps embed link (Share → Embed a map).",
     )
     .transform((v) => v || null),
+  clientsCount: z.string().max(20, "Keep the client count short, e.g. 1500+.").transform((v) => v || null),
+  millsHeading: z.string().max(60, "Keep the heading under 60 characters.").transform((v) => v || null),
 });
 
 export async function saveSettings(form: FormData) {
   const input = check(
     contactSchema,
-    Object.fromEntries(["contactName", "phone", "whatsapp", "email", "officeAddress", "mapEmbedUrl"].map((k) => [k, text(form, k)])),
+    Object.fromEntries(["contactName", "phone", "whatsapp", "email", "officeAddress", "mapEmbedUrl", "clientsCount", "millsHeading"].map((k) => [k, text(form, k)])),
   );
   const current = ((await db.setting.findUnique({ where: { key: "contact" } }))?.value ?? {}) as Record<string, unknown>;
   await db.setting.upsert({

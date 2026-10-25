@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { CustomerBadge, CustomerMarquee } from "@/components/customers/CustomerBadge";
 import { Container } from "@/components/ui/Container";
+import { MillLogos } from "@/components/customers/MillLogos";
 import type { PartnerLogo } from "@/content/types";
 
-export function PartnersView({ partners }: { partners: PartnerLogo[] }) {
+type Props = { partners: PartnerLogo[]; mills?: PartnerLogo[]; clientsCount?: string | null; millsHeading?: string | null };
+
+export function PartnersView({ partners, mills = [], clientsCount, millsHeading }: Props) {
   if (partners.length === 0) return <NotFoundBlock />;
   return (
     <>
@@ -11,7 +14,7 @@ export function PartnersView({ partners }: { partners: PartnerLogo[] }) {
         <Container>
           <h1 className="text-display max-w-[16ch] font-semibold">Companies we have supplied.</h1>
           <p className="mt-8 max-w-2xl text-lg leading-relaxed text-surface/70">
-            Manufacturers and steel makers who rely on us for tool steel, die steel and processing.
+            {clientsCount ? `${clientsCount} clients served since 2002. ` : ""}Manufacturers and steel makers who rely on us for tool steel, die steel and processing.
           </p>
         </Container>
       </section>
@@ -28,6 +31,7 @@ export function PartnersView({ partners }: { partners: PartnerLogo[] }) {
           </ul>
         </Container>
       </section>
+      <MillLogos mills={mills} heading={millsHeading || "Mills we stock"} />
     </>
   );
 }

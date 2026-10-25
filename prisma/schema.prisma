@@ -13,6 +13,11 @@ enum Role {
   SALES
 }
 
+enum PartnerKind {
+  CUSTOMER
+  MILL
+}
+
 enum LeadStatus {
   NEW
   CONTACTED
@@ -165,14 +170,16 @@ model GalleryItem {
   createdAt DateTime @default(now())
 }
 
+/// Customer logos ("Companies we have supplied") and steel mills ("Authorized stockist").
 model PartnerLogo {
-  id        String   @id @default(cuid())
+  id        String      @id @default(cuid())
+  kind      PartnerKind @default(CUSTOMER)
   name      String
   imageKey  String?
   website   String?
-  order     Int      @default(0)
-  published Boolean  @default(true)
-  createdAt DateTime @default(now())
+  order     Int         @default(0)
+  published Boolean     @default(true)
+  createdAt DateTime    @default(now())
 }
 
 model Lead {

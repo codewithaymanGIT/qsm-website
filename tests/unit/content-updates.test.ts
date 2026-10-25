@@ -29,6 +29,16 @@ describe("one-time content updates", () => {
     expect(contact.mapEmbedUrl).toBe(OFFICE_MAP_EMBED);
     expect((await db.setting.findUniqueOrThrow({ where: { key: "groupCompanies" } })).value).toEqual(GROUP_COMPANIES);
     expect(JSON.stringify((await db.setting.findUniqueOrThrow({ where: { key: "timeline" } })).value)).not.toContain("Agrawal");
+    expect(contact.clientsCount).toBe("1500+");
+    expect(contact.millsHeading).toBe("Authorized stockist");
+    expect((await db.partnerLogo.findMany({ where: { kind: "MILL" }, orderBy: { order: "asc" } })).map((m) => m.name)).toEqual([
+      "NLMK Verona",
+      "SeAH CSS",
+      "Böhler Edelstahl",
+      "Daido Steel",
+      "Tiangong",
+      "GMTC",
+    ]);
   });
 
   it("skips updates already applied, so later admin edits survive a redeploy", async () => {

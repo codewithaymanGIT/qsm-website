@@ -158,3 +158,15 @@ test("about page lists the group companies; the company's photos replace placeho
     await expect(page.locator(`img[src="/photos/service-${slug}.webp"]`)).toBeAttached();
   }
 });
+
+test("clients page shows the client count and the mills, separate from customers", async ({ page }) => {
+  await page.goto("/clients-partners/");
+  await expect(page.getByText(/1500\+ clients served since 2002/)).toBeVisible();
+  const mills = page.getByRole("region", { name: "Authorized stockist" });
+  await expect(mills.getByRole("img", { name: "Böhler Edelstahl" })).toBeAttached();
+  await expect(mills.getByText("Daido Steel")).toBeVisible();
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "Trusted by 1500+ clients" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Trusted by" }).getByRole("img", { name: "Böhler Edelstahl" })).toHaveCount(0);
+});
+

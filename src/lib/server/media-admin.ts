@@ -56,6 +56,8 @@ export async function deleteGalleryItem(id: string) {
   await deleteMedia(item.imageKey);
 }
 
+const kind = (form: FormData) => (str(form, "kind") === "MILL" ? "MILL" : "CUSTOMER");
+
 function website(form: FormData) {
   const w = str(form, "website");
   if (w && !/^https:\/\/[^\s]+$/.test(w)) throw new AdminInputError("Website must start with https://");
@@ -70,6 +72,7 @@ export async function addCustomer(form: FormData, file: IncomingFile | null) {
   await db.partnerLogo.create({
     data: {
       name,
+      kind: kind(form),
       website: website(form),
       imageKey: stored?.key ?? null,
       order: (last._max.order ?? 0) + 1,
@@ -86,6 +89,7 @@ export async function updateCustomer(id: string, form: FormData, file: IncomingF
     where: { id },
     data: {
       name,
+      kind: kind(form),
       website: website(form),
       order: order(form),
       published: form.get("published") === "on",

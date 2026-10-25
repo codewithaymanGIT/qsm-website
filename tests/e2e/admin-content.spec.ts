@@ -44,10 +44,10 @@ test("a customer logo uploaded in the admin appears on the clients page", async 
   const name = `Logo Test ${Date.now()}`;
   await signIn(page, "editor");
   await page.goto("/admin/customers/");
-  const add = page.getByRole("region", { name: "Add a customer" });
+  const add = page.getByRole("region", { name: "Add a customer or mill" });
   await add.getByLabel("Company name").fill(name);
   await add.getByLabel("Logo").setInputFiles({ name: "logo.png", mimeType: "image/png", buffer: PNG });
-  await add.getByRole("button", { name: "Add customer" }).click();
+  await add.getByRole("button", { name: "Add", exact: true }).click();
   await expect(add.getByText("Customer added.")).toBeVisible();
 
   await page.goto("/clients-partners/");
@@ -69,14 +69,14 @@ test("a customer logo uploaded in the admin appears on the clients page", async 
 test("an SVG cannot be uploaded as a logo", async ({ page }) => {
   await signIn(page, "editor");
   await page.goto("/admin/customers/");
-  const add = page.getByRole("region", { name: "Add a customer" });
+  const add = page.getByRole("region", { name: "Add a customer or mill" });
   await add.getByLabel("Company name").fill("SVG Test");
   await add.getByLabel("Logo").setInputFiles({
     name: "logo.svg",
     mimeType: "image/svg+xml",
     buffer: Buffer.from("<svg onload='alert(1)'/>"),
   });
-  await add.getByRole("button", { name: "Add customer" }).click();
+  await add.getByRole("button", { name: "Add", exact: true }).click();
   await expect(add.getByText("Upload a JPG, PNG or WEBP file.")).toBeVisible();
 });
 

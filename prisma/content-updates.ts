@@ -112,6 +112,30 @@ const UPDATES: { id: string; run: (db: PrismaClient) => Promise<void> }[] = [
       }
     },
   },
+  {
+    id: "2026-10-25-mills-clients-count",
+    async run(db) {
+      // From the owner: mills he is a stockist for, and the client count.
+      const mills = [
+        { name: "NLMK Verona", imageKey: "/mills/nlmk-verona.png" },
+        { name: "SeAH CSS", imageKey: "/mills/seah-css.png" },
+        { name: "Böhler Edelstahl", imageKey: "/mills/bohler.png" },
+        { name: "Daido Steel", imageKey: null },
+        { name: "Tiangong", imageKey: null },
+        { name: "GMTC", imageKey: "/mills/gmtc.png" },
+      ];
+      for (const [i, m] of mills.entries()) {
+        if (await db.partnerLogo.count({ where: { name: m.name, kind: "MILL" } })) continue;
+        await db.partnerLogo.create({ data: { ...m, kind: "MILL", order: i } });
+      }
+      const contact = await db.setting.findUnique({ where: { key: "contact" } });
+      if (contact) {
+        const v = contact.value as Json;
+        const value = { ...v, clientsCount: v.clientsCount || "1500+", millsHeading: v.millsHeading || "Authorized stockist" };
+        await db.setting.update({ where: { key: "contact" }, data: { value } });
+      }
+    },
+  },
 ];
 
 export async function applyContentUpdates(db: PrismaClient) {

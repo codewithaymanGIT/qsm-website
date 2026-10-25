@@ -5,6 +5,7 @@ import { card, Checkbox, ConfirmTick, dangerButton, Field, FileField, IMAGE_ACCE
 import { requireUser } from "@/lib/server/auth";
 import { db } from "@/lib/server/db";
 import { addCustomerAction, deleteCustomerAction, updateCustomerAction } from "./actions";
+import { mediaHref } from "@/lib/media-href";
 
 export default function CustomersPage() {
   return (
@@ -21,8 +22,6 @@ export default function CustomersPage() {
   );
 }
 
-const logoSrc = (key: string) => (key.startsWith("/") ? key : `/files/${key}`);
-
 async function Customers() {
   await requireUser(rolesFor("/admin/customers/"));
   const rows = await db.partnerLogo.findMany({ orderBy: { order: "asc" } });
@@ -33,7 +32,7 @@ async function Customers() {
           <div className="flex h-24 w-full max-w-[180px] items-center justify-center bg-white p-3">
             {c.imageKey && (c.published || c.imageKey.startsWith("/")) ? (
               // eslint-disable-next-line @next/next/no-img-element -- admin thumbnail
-              <img src={logoSrc(c.imageKey)} alt="" className="max-h-full max-w-full object-contain" />
+              <img src={mediaHref(c.imageKey)} alt="" className="max-h-full max-w-full object-contain" />
             ) : (
               <span className="text-center text-sm text-ink">{c.imageKey ? "Hidden" : c.name}</span>
             )}

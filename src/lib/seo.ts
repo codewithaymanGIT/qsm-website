@@ -90,7 +90,7 @@ export function organizationLd(s: { companyName: string; phone: string; email: s
     url: `${siteUrl()}/`,
     logo: `${siteUrl()}/icon.svg`,
     foundingDate: "2002",
-    founder: { "@type": "Person", name: "Hemant Agrawal" },
+    founder: { "@type": "Person", name: "Hemant Bansal" },
     description: "Importer, stockist, distributor and trader of tool steel, die steel, plastic mould steel and special alloy steel.",
     telephone: s.phone,
     email: s.email,

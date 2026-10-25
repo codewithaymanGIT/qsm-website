@@ -3,10 +3,10 @@ import { ActionForm } from "@/components/admin/ActionForm";
 import { rolesFor } from "@/components/admin/nav";
 import { RowsEditor } from "@/components/admin/RowsEditor";
 import { card, Field, Loading, PageTitle } from "@/components/admin/ui";
-import type { Settings, TimelineEntry } from "@/content/types";
+import type { GroupCompany, Settings, TimelineEntry } from "@/content/types";
 import { requireUser } from "@/lib/server/auth";
 import { db } from "@/lib/server/db";
-import { saveContactAction, saveTimelineAction } from "./actions";
+import { saveContactAction, saveGroupAction, saveTimelineAction } from "./actions";
 
 export default function SettingsPage() {
   return (
@@ -21,10 +21,12 @@ export default function SettingsPage() {
 
 async function SettingsForms() {
   await requireUser(rolesFor("/admin/settings/"));
-  const [contactRow, timelineRow] = await Promise.all([
+  const [contactRow, timelineRow, groupRow] = await Promise.all([
     db.setting.findUnique({ where: { key: "contact" } }),
     db.setting.findUnique({ where: { key: "timeline" } }),
+    db.setting.findUnique({ where: { key: "groupCompanies" } }),
   ]);
+  const group = (groupRow?.value ?? []) as GroupCompany[];
   const s = (contactRow?.value ?? {}) as Partial<Settings>;
   const timeline = (timelineRow?.value ?? []) as TimelineEntry[];
 
@@ -50,7 +52,7 @@ async function SettingsForms() {
               label="Google Maps embed link (optional)"
               name="mapEmbedUrl"
               defaultValue={s.mapEmbedUrl}
-              hint='In Google Maps: Share → Embed a map → copy only the link inside src="…" (starts with https://www.google.com/maps/embed?).'
+              hint='In Google Maps: Share → Embed a map → copy only the link inside src="…" (starts with https://www.google.com/maps/embed?). A link like https://www.google.com/maps?q=18.80,73.71&output=embed also works.'
             />
           </div>
         </ActionForm>
@@ -76,6 +78,26 @@ async function SettingsForms() {
                 wide: true,
               },
               { key: "body", label: "Text", wide: true, multiline: true },
+            ]}
+          />
+        </ActionForm>
+      </section>
+
+      <section aria-labelledby="group" className={`${card} p-6`}>
+        <h2 id="group" className="mb-1 font-display text-lg font-semibold">
+          Group companies
+        </h2>
+        <p className="mb-5 text-sm text-mist">Sister concerns and manufacturing units, shown on the About page. Leave empty to hide the section.</p>
+        <ActionForm action={saveGroupAction}>
+          <RowsEditor
+            legend="Companies"
+            prefix="group"
+            addLabel="Add company"
+            initial={group}
+            fields={[
+              { key: "name", label: "Company name", placeholder: "Kamal Forging Pvt Ltd", wide: true },
+              { key: "role", label: "Role", placeholder: "Sister concern" },
+              { key: "location", label: "Location / address", wide: true, multiline: true },
             ]}
           />
         </ActionForm>

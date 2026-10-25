@@ -10,14 +10,14 @@ import { PageHero } from "@/components/ui/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { Download } from "@/content/types";
-import { getBrochure, getCertificates, getGallery, getSettings, getTimeline } from "@/lib/content";
+import { getBrochure, getCertificates, getGallery, getGroupCompanies, getSettings, getTimeline } from "@/lib/content";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata("/about/", {
     title: "About Us",
     description:
-      "Founded in 2002 by Hemant Agrawal, Quality Steel and Metals imports, stocks, distributes and trades tool steel, die steel, plastic mould steel and special alloy steel.",
+      "Founded in 2002 by Hemant Bansal, Quality Steel and Metals imports, stocks, distributes and trades tool steel, die steel, plastic mould steel and special alloy steel.",
   });
 }
 
@@ -43,6 +43,7 @@ const sourcing = [
 export default async function AboutPage() {
   const certificates = await getCertificates();
   const brochure = await getBrochure();
+  const group = await getGroupCompanies();
   return (
     <>
       <PageHero
@@ -68,6 +69,25 @@ export default async function AboutPage() {
           </ul>
         </Container>
       </section>
+
+      {group.length > 0 && (
+        <section aria-labelledby="group" className="py-24 lg:py-32">
+          <Container>
+            <Reveal>
+              <SectionHeading kicker="Our group" title={<span id="group">Part of a wider steel group.</span>} />
+            </Reveal>
+            <ul className="mt-14 grid gap-5 md:grid-cols-2">
+              {group.map((g) => (
+                <Reveal as="li" key={g.name} className="border border-white/10 bg-graphite p-8 lg:p-10">
+                  <p className="text-sm font-medium text-accent">{g.role}</p>
+                  <h3 className="mt-3 font-display text-2xl font-semibold">{g.name}</h3>
+                  <p className="mt-3 leading-relaxed text-mist">{g.location}</p>
+                </Reveal>
+              ))}
+            </ul>
+          </Container>
+        </section>
+      )}
 
       <InfrastructureGallery items={await getGallery()} />
 

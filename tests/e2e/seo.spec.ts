@@ -23,7 +23,7 @@ test("pages carry a canonical link, share image and structured data", async ({ p
   expect(org).toMatchObject({
     "@type": "Organization",
     foundingDate: "2002",
-    founder: { name: "Hemant Agrawal" },
+    founder: { name: "Hemant Bansal" },
   });
   expect(JSON.stringify(org)).not.toMatch(/Nighoje|Chakan|Uno Minda/i);
   await expect(page).toHaveTitle(/^Quality Steel and Metals \| Tool Steel/);

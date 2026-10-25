@@ -15,7 +15,7 @@ export function FounderTimeline({ entries }: { entries: TimelineEntry[] }) {
           </Reveal>
           <Reveal className="self-end">
             <p className="max-w-xl text-lg leading-relaxed text-surface/75">
-              In 2002, Hemant Agrawal started Quality Steel and Metals with Rs 500 and a simple idea: give toolmakers
+              In 2002, Hemant Bansal started Quality Steel and Metals with Rs 500 and a simple idea: give toolmakers
               the steel they ask for, explain it honestly and deliver when promised. Every relationship since has
               been built the same way, one order at a time.
             </p>

@@ -5,6 +5,7 @@ import { adminInput, card, Checkbox, ConfirmTick, dangerButton, Field, FileField
 import { requireUser } from "@/lib/server/auth";
 import { db } from "@/lib/server/db";
 import { addGalleryAction, deleteGalleryAction, updateGalleryAction } from "./actions";
+import { mediaHref } from "@/lib/media-href";
 
 export default function GalleryPage() {
   return (
@@ -55,9 +56,9 @@ async function Gallery() {
       {items.map((g) => (
         <section key={g.id} aria-label={g.label} className={`${card} grid gap-6 p-6 md:grid-cols-[180px_minmax(0,1fr)]`}>
           <div className="aspect-[4/3] w-full max-w-[180px] overflow-hidden bg-graphite">
-            {g.imageKey && g.published ? (
+            {g.imageKey && (g.published || g.imageKey.startsWith("/")) ? (
               // eslint-disable-next-line @next/next/no-img-element -- admin thumbnail
-              <img src={`/files/${g.imageKey}`} alt="" className="h-full w-full object-cover" />
+              <img src={mediaHref(g.imageKey)} alt="" className="h-full w-full object-cover" />
             ) : (
               <p className="p-3 text-xs text-mist">{g.imageKey ? "Hidden from the website" : `No photo yet. Shot needed: ${g.shot}`}</p>
             )}

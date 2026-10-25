@@ -19,6 +19,8 @@ export default async function ContactPage() {
   const s = await getSettings();
   // A maps link only helps once the address has a PIN code; without one it can point to the wrong place.
   const addressKnown = /\b\d{6}\b/.test(s.officeAddress);
+  // A map set from coordinates ("q=lat,lng") also gives a precise directions link.
+  const pin = s.mapEmbedUrl?.match(/[?&]q=(-?\d+(?:\.\d+)?,-?\d+(?:\.\d+)?)/)?.[1];
   return (
     <>
       <PageHero title="Talk to us." intro="Call or WhatsApp for the quickest answer. For drawings and detailed requirements, use the enquiry form." />
@@ -51,7 +53,18 @@ export default async function ContactPage() {
                 referrerPolicy="no-referrer-when-downgrade"
                 className="mt-8 aspect-[4/3] w-full border-0 grayscale invert-[0.9]"
               />
+            ) : null}
+            {pin ? (
+              <a
+                href={`https://www.google.com/maps/dir/?api=1&destination=${pin}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex min-h-11 items-center text-accent underline-offset-4 hover:underline"
+              >
+                Get directions to the office
+              </a>
             ) : (
+              !s.mapEmbedUrl &&
               addressKnown && (
                 <a
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.officeAddress)}`}

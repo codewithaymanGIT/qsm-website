@@ -8,12 +8,14 @@ import type {
   CompositionRow,
   Download,
   GalleryItem,
+  GroupCompany,
   PartnerLogo,
   Product,
   Service,
   Settings,
   TimelineEntry,
 } from "@/content/types";
+import { mediaHref } from "./media-href";
 import { db } from "./server/db";
 
 export const CATALOG_TAG = "catalog";
@@ -23,7 +25,7 @@ function cacheCatalog() {
   cacheTag(CATALOG_TAG);
 }
 
-const fileHref = (key: string) => `/files/${key}`;
+const fileHref = mediaHref;
 
 const productInclude = {
   category: { select: { slug: true } },
@@ -132,9 +134,7 @@ export async function getPartners(): Promise<PartnerLogo[]> {
   "use cache";
   cacheCatalog();
   const rows = await db.partnerLogo.findMany({ where: { published: true }, orderBy: { order: "asc" } });
-  // A key starting with "/" is a logo shipped in public/; anything else is an admin upload.
-  const src = (key: string | null) => (!key ? null : key.startsWith("/") ? key : fileHref(key));
-  return rows.map((l) => ({ id: l.id, name: l.name, src: src(l.imageKey) }));
+  return rows.map((l) => ({ id: l.id, name: l.name, src: l.imageKey ? mediaHref(l.imageKey) : null }));
 }
 
 async function getSetting<T>(key: string, fallback: T): Promise<T> {
@@ -142,6 +142,10 @@ async function getSetting<T>(key: string, fallback: T): Promise<T> {
   cacheCatalog();
   const row = await db.setting.findUnique({ where: { key } });
   return (row?.value as T | undefined) ?? fallback;
+}
+
+export async function getGroupCompanies(): Promise<GroupCompany[]> {
+  return getSetting<GroupCompany[]>("groupCompanies", []);
 }
 
 export async function getTimeline(): Promise<TimelineEntry[]> {

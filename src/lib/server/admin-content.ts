@@ -172,7 +172,7 @@ const contactSchema = z.object({
   mapEmbedUrl: z
     .string()
     .refine(
-      (v) => v === "" || /^https:\/\/(www\.)?google\.[a-z.]+\/maps\/embed\?/.test(v),
+      (v) => v === "" || /^https:\/\/(www\.)?google\.[a-z.]+\/maps(\/embed\?|\?(.*&)?output=embed(&|$))/.test(v),
       "Map link must be a Google Maps embed link (Share → Embed a map).",
     )
     .transform((v) => v || null),
@@ -230,4 +230,10 @@ export async function saveSeoEntry(path: string, form: FormData) {
     update: data,
     create: { path, ...data },
   });
+}
+
+export async function saveGroupCompanies(form: FormData) {
+  const entries = rows(form, "group", ["name", "role", "location"] as const);
+  for (const e of entries) if (!e.name || !e.role) throw new AdminInputError("Each group company needs a name and a role (e.g. Sister concern).");
+  await db.setting.upsert({ where: { key: "groupCompanies" }, update: { value: entries }, create: { key: "groupCompanies", value: entries } });
 }

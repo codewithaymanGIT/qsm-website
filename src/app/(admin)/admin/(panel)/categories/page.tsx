@@ -5,6 +5,7 @@ import { card, Checkbox, ConfirmTick, dangerButton, Field, FileField, IMAGE_ACCE
 import { requireUser } from "@/lib/server/auth";
 import { db } from "@/lib/server/db";
 import { deleteCategoryAction, saveCategoryAction } from "./actions";
+import { mediaHref } from "@/lib/media-href";
 
 export default function CategoriesPage() {
   return (
@@ -39,7 +40,7 @@ function CategoryFields({ idPrefix, c }: { idPrefix: string; c?: CategoryRow }) 
       <div className="flex flex-wrap items-end gap-5 md:col-span-3">
         {c?.imageKey && (
           // eslint-disable-next-line @next/next/no-img-element -- admin thumbnail
-          <img src={`/files/${c.imageKey}`} alt="" className="h-20 w-32 object-cover" />
+          <img src={mediaHref(c.imageKey)} alt="" className="h-20 w-32 object-cover" />
         )}
         <div className="min-w-0 flex-1">
           <FileField

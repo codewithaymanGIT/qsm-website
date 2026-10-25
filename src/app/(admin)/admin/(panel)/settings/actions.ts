@@ -2,7 +2,7 @@
 
 import { rolesFor } from "@/components/admin/nav";
 import { adminAction } from "@/lib/server/admin-action";
-import { saveSettings, saveTimeline } from "@/lib/server/admin-content";
+import { saveGroupCompanies, saveSettings, saveTimeline } from "@/lib/server/admin-content";
 
 const roles = rolesFor("/admin/settings/");
 
@@ -17,5 +17,12 @@ export async function saveTimelineAction(form: FormData) {
   return adminAction(roles, async () => {
     await saveTimeline(form);
     return "Timeline saved.";
+  });
+}
+
+export async function saveGroupAction(form: FormData) {
+  return adminAction(roles, async () => {
+    await saveGroupCompanies(form);
+    return "Group companies saved.";
   });
 }

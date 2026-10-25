@@ -62,6 +62,9 @@ export type PartnerLogo = { id: string; name: string; src: string | null };
 
 export type TimelineEntry = { year: string; title: string; body: string };
 
+/** A group company shown on the About page (sister concern or manufacturing unit). */
+export type GroupCompany = { name: string; role: string; location: string };
+
 export type Settings = {
   companyName: string;
   contactName: string;

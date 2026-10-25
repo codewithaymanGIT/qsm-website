@@ -7,6 +7,7 @@ import { card, Checkbox, Field, FileField, IMAGE_ACCEPT, Loading } from "@/compo
 import { requireUser } from "@/lib/server/auth";
 import { db } from "@/lib/server/db";
 import { saveServiceAction } from "../actions";
+import { mediaHref } from "@/lib/media-href";
 
 export default function EditServicePage({ params }: PageProps<"/admin/services/[id]">) {
   return (
@@ -52,7 +53,7 @@ async function EditService({ params }: Pick<PageProps<"/admin/services/[id]">, "
               <div key={label} className="flex min-w-0 flex-col gap-3">
                 {key && (
                   // eslint-disable-next-line @next/next/no-img-element -- admin thumbnail
-                  <img src={`/files/${key}`} alt="" className="aspect-[4/3] w-full max-w-60 object-cover" />
+                  <img src={mediaHref(key)} alt="" className="aspect-[4/3] w-full max-w-60 object-cover" />
                 )}
                 <FileField idPrefix={`svc${i}`} name={`photo${i + 1}`} label={key ? `Replace: ${label}` : label} accept={IMAGE_ACCEPT} purpose="image" />
                 {key && <Checkbox label="Remove photo" name={`removePhoto${i + 1}`} />}

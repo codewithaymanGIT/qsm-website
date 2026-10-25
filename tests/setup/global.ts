@@ -3,6 +3,7 @@
 import { execSync } from "node:child_process";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../src/generated/prisma/client";
+import { applyContentUpdates } from "../../prisma/content-updates";
 import { seed } from "../../prisma/seed";
 
 export const TEST_DATABASE_URL =
@@ -29,6 +30,7 @@ export async function resetTestDatabase(url = TEST_DATABASE_URL) {
     await db.$executeRawUnsafe(`TRUNCATE TABLE ${list} RESTART IDENTITY CASCADE`);
     await db.$executeRawUnsafe(`ALTER SEQUENCE lead_reference_seq RESTART WITH 1`);
     await seed(db);
+    await applyContentUpdates(db);
   } finally {
     await db.$disconnect();
   }

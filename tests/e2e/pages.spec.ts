@@ -89,9 +89,12 @@ test("about page tells the story without placeholder certificates", async ({ pag
   await expect(page.getByRole("heading", { name: /certificate|brochure/i })).toHaveCount(0);
 });
 
-test("contact page shows Mohit Agrawal and never a warehouse address", async ({ page }) => {
+test("contact page shows the owners, the office map and never a warehouse address", async ({ page }) => {
   await page.goto("/contact/");
-  await expect(page.getByText("Mohit Agrawal").first()).toBeVisible();
+  await expect(page.getByText("Hemant Bansal & Mitesh Bansal").first()).toBeVisible();
+  await expect(page.locator('iframe[title="Office location on Google Maps"]')).toHaveAttribute("src", /q=18\.8031369,73\.7181113/);
+  await expect(page.getByRole("link", { name: "Get directions to the office" })).toHaveAttribute("href", /destination=18\.8031369,73\.7181113/);
+  await expect(page.locator("main")).not.toContainText(/Nighoje|Chakan|Uno Minda/i);
   await expect(page.locator("main")).not.toContainText(/warehouse/i);
   await expect(page.getByRole("button", { name: "Send enquiry" })).toBeVisible();
 });
@@ -137,4 +140,15 @@ test("the clients grid centres an incomplete last row", async ({ page }) => {
   const first = boxes.filter((b) => Math.round(b.y) === rows[0]);
   const centre = (row: typeof boxes) => (Math.min(...row.map((b) => b.x)) + Math.max(...row.map((b) => b.x + b.w))) / 2;
   expect(Math.abs(centre(last) - centre(first))).toBeLessThan(2);
+});
+
+test("about page lists the group companies; the company's photos replace placeholders", async ({ page }) => {
+  await page.goto("/about/");
+  const group = page.getByRole("region", { name: "Part of a wider steel group." });
+  await expect(group.getByRole("heading", { name: "Kamal Forging Pvt Ltd" })).toBeVisible();
+  await expect(group.getByText("Powerpack Steel Industries Pvt Ltd")).toBeVisible();
+  await expect(page.locator('img[src="/photos/gallery-warehouse-plates.webp"]')).toBeAttached();
+  await page.goto("/products/");
+  await expect(page.locator('img[src="/photos/category-plastic-mould-steel.webp"]')).toBeAttached();
+  expect((await page.request.get("/photos/category-plastic-mould-steel.webp")).status()).toBe(200);
 });

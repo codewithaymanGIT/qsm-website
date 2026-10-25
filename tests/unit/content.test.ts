@@ -69,7 +69,7 @@ describe("content (database-backed)", () => {
     expect(JSON.stringify(await getTimeline())).not.toMatch(/bhosari/i);
   });
 
-  it("lists the customers the owner confirmed, and has gallery slots", async () => {
+  it("lists the customers the owner confirmed, and shows only real gallery photos", async () => {
     expect((await getPartners()).map((p) => p.name)).toEqual([
       "Maruti Suzuki",
       "Tata",
@@ -77,7 +77,9 @@ describe("content (database-backed)", () => {
       "Bhilai Steel Plant (SAIL)",
       "Sandvik Coromant",
     ]);
-    expect((await getGallery()).length).toBeGreaterThanOrEqual(6);
+    const gallery = await getGallery();
+    expect(gallery.length).toBeGreaterThanOrEqual(5);
+    expect(gallery.every((g) => g.src)).toBe(true);
   });
 
   it("never exposes a warehouse address", async () => {

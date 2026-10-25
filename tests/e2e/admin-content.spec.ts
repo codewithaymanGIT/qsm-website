@@ -124,11 +124,11 @@ test("the first-admin setup page is closed once users exist", async ({ page }) =
   await expect(page.getByLabel("Setup token")).toHaveCount(0);
 });
 
-test("a category photo uploaded in the admin replaces the placeholder on the products page", async ({ page }) => {
+test("a category photo uploaded in the admin replaces the current one on the products page", async ({ page }) => {
   await signIn(page, "editor");
   await page.goto("/admin/categories/");
   const card = page.getByRole("region", { name: "Alloy Steel" });
-  await card.getByLabel("Card photo (optional)").setInputFiles({ name: "alloy.png", mimeType: "image/png", buffer: PNG });
+  await card.getByLabel("Replace card photo").setInputFiles({ name: "alloy.png", mimeType: "image/png", buffer: PNG });
   await card.getByRole("button", { name: "Save" }).click();
   await expect(card.getByText("Saved.")).toBeVisible();
 

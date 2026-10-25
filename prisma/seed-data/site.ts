@@ -3,7 +3,7 @@ import type { Download, GalleryItem, PartnerLogo, Settings, TimelineEntry } from
 // Unknown details stay as visible tokens until the company supplies them.
 export const settings: Settings = {
   companyName: "Quality Steel and Metals",
-  contactName: "Mohit Agrawal",
+  contactName: "Hemant Bansal & Mitesh Bansal",
   phone: "+91 92841 27584",
   whatsapp: "+91 92841 27584",
   email: "qualitysteelsmetals@yahoo.com",
@@ -18,7 +18,7 @@ export const timeline: TimelineEntry[] = [
   {
     year: "2002",
     title: "A beginning with Rs 500",
-    body: "Hemant Agrawal founded Quality Steel and Metals with Rs 500 and a commitment to supplying the right steel, honestly and on time.",
+    body: "Hemant Bansal founded Quality Steel and Metals with Rs 500 and a commitment to supplying the right steel, honestly and on time.",
   },
   {
     year: "2009",

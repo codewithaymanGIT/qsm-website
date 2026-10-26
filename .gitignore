@@ -50,3 +50,6 @@ next-env.d.ts
 # Playwright output
 /test-results/
 /playwright-report/
+
+# Academic paper drafts: kept local so plagiarism checkers do not find them online
+docs/report/

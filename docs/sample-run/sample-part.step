@@ -1,0 +1,13 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION(('Sample STEP file for QSM website test - not a real part'),'2;1');
+FILE_NAME('sample-part.step','2026-10-26T00:00:00',('QSM test'),(''),'','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }'));
+ENDSEC;
+DATA;
+#1=CARTESIAN_POINT('origin',(0.,0.,0.));
+#2=DIRECTION('z',(0.,0.,1.));
+#3=DIRECTION('x',(1.,0.,0.));
+#4=AXIS2_PLACEMENT_3D('',#1,#2,#3);
+ENDSEC;
+END-ISO-10303-21;

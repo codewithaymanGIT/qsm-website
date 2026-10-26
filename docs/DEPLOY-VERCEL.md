@@ -9,8 +9,9 @@ move to Vercel Pro or a VPS (Docker, `output: "standalone"`) before the site is 
    `npm run vercel-build` runs automatically: `prisma generate` → `prisma migrate deploy`
    → `scripts/seed-if-empty.ts` (starting content, **only** into an empty database) → `next build`.
 2. Environment variables (Production and Preview):
-   - `ADMIN_EMAIL`, `ADMIN_PASSWORD` (12+ characters), optional `ADMIN_NAME`: the next deploy
-     creates this admin if the site has no users yet. Remove `ADMIN_PASSWORD` afterwards.
+   - `ADMIN_EMAIL`, `ADMIN_PASSWORD` (12+ characters), optional `ADMIN_NAME`: every deploy
+     makes this account an active admin with this password (creating it if needed). Remove
+     `ADMIN_PASSWORD` once signed in, so later deploys leave users alone.
    - (Alternative) `ADMIN_SETUP_TOKEN`: unlocks `/admin/setup/` once to create the first admin.
    - `IP_HASH_SALT`: random string; anonymises visitor IPs for rate limits.
    - Optional: `SITE_URL` (when a domain is added; otherwise the vercel.app address is used),
